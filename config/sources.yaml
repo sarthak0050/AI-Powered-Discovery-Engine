@@ -31,14 +31,25 @@ playstore:
 
 appstore:
   enabled: true
-  # Verified: the Apple customer-reviews RSS feed returns 0 entries for every app
-  # (checked against Myntra, Instagram and Meesho), so this source normally marks
-  # itself unavailable and the rest of the pipeline continues.
-  app_id: "907394059"             # Myntra - Fashion Shopping App (India storefront)
+  # Verified against Apple's own lookup API, not assumed:
+  #   trackId 907394059 = "Myntra - Fashion Shopping App"
+  #   seller Myntra Designs Private Limited, bundle com.myntra.Myntra
+  #   the only Myntra app listed in the Indian storefront
+  # Re-checked by `python run.py doctor` on every run.
+  app_id: "907394059"
   storefront: in                  # India only
   sort: mostrecent
   delay_seconds: 3                # polite delay between requests
-  limit: 2000                     # stop at this many reviews
+  # The feed's ceiling, measured rather than assumed:
+  #   50 reviews per page
+  #   page 11 onward answers HTTP 400, so 10 pages is the hard stop
+  #   10 x 50 = 500 reviews, which is the most this source will ever give
+  pages: 10
+  page_size: 50
+  limit: 500                      # 10 pages x 50 reviews
+  # The feed only ever covers the most recent few days, so this source adds an iOS
+  # perspective rather than extra history. Old coverage must come from Reddit,
+  # YouTube and the App Store web pages.
   on_zero_reviews: error_and_mark_unavailable   # never save an empty file
 
 reddit:

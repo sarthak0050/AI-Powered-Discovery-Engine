@@ -19,34 +19,18 @@ Data hygiene:
     so that what lands in raw_posts is what Google actually served.
 """
 
-import hashlib
-import json
-import re
 import time
 from datetime import datetime, timezone
-from pathlib import Path
 
 from google_play_scraper import Sort, reviews as gp_reviews
 
+from engine.collectors.common import (existing_ids, hash_author, lang_hint, mentions_myntra,
+                                      save_raw)
 from engine.db import utc_now
 
-ROOT = Path(__file__).resolve().parent.parent.parent
-BRAND_TERMS = ("myntra",)
-DEVAANAGARI = re.compile(r"[\u0900-\u097F]")
 # Safety net only: the library fetches this many per internal request. We never
 # ask for the whole allowance at once, so a crawl never bursts.
 MAX_PAGE = 4500
-
-
-def _hash_author(name: str) -> str:
-    """Hash a username so it is never written to disk in the clear."""
-    if not name:
-        return ""
-    return hashlib.sha256(f"discovery-engine::{name.strip().lower()}".encode()).hexdigest()[:16]
-
-
-def _lang_hint(text: str) -> str:
-    return "hi" if DEVAANAGARI.search(text or "") else "en"
 
 
 def _to_row(raw: dict, app_id: str, lang: str, country: str) -> dict | None:
@@ -60,31 +44,19 @@ def _to_row(raw: dict, app_id: str, lang: str, country: str) -> dict | None:
     return {
         "post_id": f"playstore:{raw.get('reviewId')}",
         "source": "playstore",
-        "myntra_explicit": int(any(term in text.lower() for term in BRAND_TERMS)),
+        "myntra_explicit": mentions_myntra(text),
         "parent_context": f"Myntra on Google Play ({country})",
-        "author_hash": _hash_author(raw.get("userName", "")),
+        "author_hash": hash_author(raw.get("userName", "")),
         "date": created,
         "text": text,
         "rating": raw.get("score"),
         "engagement": raw.get("thumbsUpCount"),
         "url": (f"https://play.google.com/store/apps/details?id={app_id}"
                 f"&reviewId={raw.get('reviewId')}&hl={lang}"),
-        "lang_hint": _lang_hint(text),
+        "lang_hint": lang_hint(text),
         "collected_at": utc_now(),
         "raw_file": None,
     }
-
-
-def _existing_ids(app_id_prefix: str = "playstore:") -> set[str]:
-    """Already-collected IDs, so a re-run resumes instead of redoing finished work."""
-    from engine import db
-    conn = db.connect()
-    try:
-        rows = conn.execute(
-            "SELECT post_id FROM raw_posts WHERE post_id LIKE ?", (app_id_prefix + "%",)).fetchall()
-        return {r["post_id"] for r in rows}
-    finally:
-        conn.close()
 
 
 def fetch_sample(cfg: dict, n: int = 5) -> tuple[list[dict], list[str]]:
@@ -110,7 +82,7 @@ def collect(cfg: dict, progress=None) -> list[dict]:
     delay = float(ps.get("delay_seconds", 1.0))
     max_pages = int(ps.get("max_pages", 10000))
 
-    already = _existing_ids()
+    already = existing_ids("playstore:")
     rows: list[dict] = []
     seen: set[str] = set()
     token = None
@@ -152,15 +124,4 @@ def collect(cfg: dict, progress=None) -> list[dict]:
 
     if not rows:
         return []
-    return _save_raw(rows, ROOT / "data" / "raw", app_id)
-
-
-def _save_raw(rows: list[dict], raw_dir: Path, app_id: str) -> list[dict]:
-    """Keep the untouched API payload for traceability, as AGENTS.md requires."""
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S")
-    path = raw_dir / f"playstore_{app_id}_{stamp}.json"
-    raw_dir.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(rows, ensure_ascii=False, indent=1), encoding="utf-8")
-    for row in rows:
-        row["raw_file"] = path.name
-    return rows
+    return save_raw(rows, f"playstore_{app_id}")
