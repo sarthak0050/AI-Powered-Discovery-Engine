@@ -1,0 +1,26 @@
+# Secrets — never commit
+.env
+data/manual/*.csv
+
+# Raw API responses (traceability only, can be large)
+data/raw/
+
+# SQLite database (pipeline state)
+data/engine.db
+data/engine.db-journal
+data/engine.db-wal
+data/engine.db-shm
+
+# LLM disk cache lives inside the SQLite db, nothing extra to ignore
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

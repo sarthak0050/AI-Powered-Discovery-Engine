@@ -1,0 +1,32 @@
+# Fashion Shopping Discovery Engine — all packages are free.
+# Install with:  pip install -r requirements.txt
+# Pinned so a re-install months later behaves identically.
+
+# --- data + config ---
+pandas==3.0.3
+PyYAML==6.0.3
+python-dotenv==1.2.4
+requests==2.34.2
+tqdm==4.70.1
+
+# --- LLM access + validation ---
+pydantic==2.13.5
+
+# --- collectors ---
+google-play-scraper==1.2.7
+
+# --- embeddings + clustering (local, offline, free) ---
+numpy==2.4.6
+scikit-learn==1.9.0
+sentence-transformers==6.0.0
+hdbscan==0.8.44
+umap-learn==0.5.12
+
+# --- dashboard ---
+streamlit==1.62.0
+plotly==7.1.0
+
+# Note on the LLM layer: engine/llm.py calls the Gemini and Groq REST APIs
+# directly with requests instead of installing their SDKs. Both providers are
+# plain JSON-over-HTTP, so this keeps the dependency list smaller and the
+# provider switch easier to read. See README.md.

@@ -1,0 +1,49 @@
+# How opportunity areas are scored (section 7, Module 6).
+# Add a factor here and it is picked up automatically — no code changes needed.
+# To add a *new kind* of factor you also need a matching function in engine/score.py.
+
+factors:
+  frequency:
+    weight: 0.35
+    description: Share of relevant posts in this opportunity (count / relevant total).
+    # Already 0-1, no normalisation needed.
+  severity:
+    weight: 0.30
+    description: Mean severity (1-5) of the posts in this opportunity.
+    normalise_from: [1, 5]
+  proximity_to_purchase:
+    weight: 0.20
+    description: Journey stages where the problem appears, later stages weigh more.
+    stage_weights:
+      browsing: 0.2
+      saved_or_wishlisted: 0.4
+      in_cart: 0.6
+      comparing: 0.7
+      postponed: 0.7
+      abandoned: 0.9
+      purchased: 0.8
+      returned: 1.0
+      other: 0.3
+  non_monetary_addressability:
+    weight: 0.15
+    description: Share of posts whose barrier_type is not "financial".
+    normalise_from: [0, 1]
+
+# Barriers counted as "monetary" for the addressability factor.
+monetary_barriers:
+  - financial
+
+# Example of a factor you could add later by editing YAML only:
+#   return_rate:
+#     weight: 0.10
+#     description: Share of posts mentioning a return.
+#     normalise_from: [0, 1]
+
+coverage:
+  low_confidence_below: 100   # groups under this many posts are flagged
+
+targets:
+  other_emerging_rate_max: 0.10
+  low_confidence_share_max: 0.15
+  agreement_primary_code_min: 0.80
+  agreement_barrier_type_min: 0.80

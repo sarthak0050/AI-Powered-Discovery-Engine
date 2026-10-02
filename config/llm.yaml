@@ -1,0 +1,42 @@
+# LLM settings. Everything here is editable — no code changes needed.
+# Change provider or model by editing this file.
+
+provider: gemini          # gemini | groq
+model: gemini-3.5-flash   # best model that actually works on the free tier
+fallback_provider: groq   # used only if the primary fails
+fallback_model: openai/gpt-oss-120b
+
+# A cheaper, faster model for the high-volume stages (relevance filtering).
+# Set per_stage_models.bulk to null to use the main model everywhere.
+per_stage_models:
+  bulk: gemini-3.5-flash-lite
+  precision: gemini-3.5-flash
+
+temperature: 0            # ignored by some Gemini 3 endpoints; JSON schema is what
+                          # actually enforces structure (see README "Determinism")
+max_retries: 3
+timeout_seconds: 90
+
+# Free tier limits, per project. Requests per day reset at midnight Pacific.
+rate_limits:
+  gemini:
+    rpm: 15               # requests per minute
+    tpm: 1000000          # tokens per minute
+    rpd: 1500             # requests per day
+  groq:
+    rpm: 30
+    tpm: 6000
+    rpd: 1000
+
+# When a daily limit is hit we stop cleanly and resume tomorrow rather than
+# hammering the endpoint.
+on_quota_exhausted: stop_and_resume_tomorrow
+
+batch:
+  relevance: 20           # posts per LLM call (section 7, Module 2)
+  extraction: 12          # posts per LLM call (section 7, Module 4)
+  open_coding: 10
+
+cache:
+  enabled: true           # every call cached by prompt hash + input id
+  db_table: llm_cache

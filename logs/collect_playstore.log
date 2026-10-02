@@ -1,0 +1,128 @@
+
+== playstore
+   one page fetched: 5 reviews
+   raw fields from the API: appVersion, at, content, repliedAt, replyContent, reviewCreatedVersion, reviewId, score, thumbsUpCount, userImage, userName
+   - [★5 | playstore | 2026-10-01 | en] 👍
+   - [★5 | playstore | 2026-10-01 | en] i love this app
+   (2 of 5 rows shown, picked at random)
+   ...72 new (page 1, 28 already seen)
+   ...170 new (page 2, 30 already seen)
+   ...270 new (page 3, 30 already seen)
+   ...370 new (page 4, 30 already seen)
+   ...470 new (page 5, 30 already seen)
+   ...570 new (page 6, 30 already seen)
+   ...670 new (page 7, 30 already seen)
+   ...770 new (page 8, 30 already seen)
+   ...870 new (page 9, 30 already seen)
+   ...970 new (page 10, 30 already seen)
+   ...1070 new (page 11, 30 already seen)
+   ...1170 new (page 12, 30 already seen)
+   ...1270 new (page 13, 30 already seen)
+   ...1370 new (page 14, 30 already seen)
+   ...1470 new (page 15, 30 already seen)
+   ...1570 new (page 16, 30 already seen)
+   ...1670 new (page 17, 30 already seen)
+   ...1770 new (page 18, 30 already seen)
+   ...1870 new (page 19, 30 already seen)
+   ...1970 new (page 20, 30 already seen)
+   ...2070 new (page 21, 30 already seen)
+   ...2170 new (page 22, 30 already seen)
+   ...2270 new (page 23, 30 already seen)
+   ...2370 new (page 24, 30 already seen)
+   ...2470 new (page 25, 30 already seen)
+   ...2570 new (page 26, 30 already seen)
+   ...2670 new (page 27, 30 already seen)
+   ...2770 new (page 28, 30 already seen)
+   ...2870 new (page 29, 30 already seen)
+   ...2970 new (page 30, 30 already seen)
+   ...3070 new (page 31, 30 already seen)
+   ...3170 new (page 32, 30 already seen)
+   ...3270 new (page 33, 30 already seen)
+   ...3370 new (page 34, 30 already seen)
+   ...3470 new (page 35, 30 already seen)
+   ...3570 new (page 36, 30 already seen)
+   ...3670 new (page 37, 30 already seen)
+   ...3770 new (page 38, 30 already seen)
+   ...3870 new (page 39, 30 already seen)
+   ...3970 new (page 40, 30 already seen)
+   ...4070 new (page 41, 30 already seen)
+   ...4170 new (page 42, 30 already seen)
+   ...4270 new (page 43, 30 already seen)
+   ...4370 new (page 44, 30 already seen)
+   ...4470 new (page 45, 30 already seen)
+   ...4570 new (page 46, 30 already seen)
+   ...4670 new (page 47, 30 already seen)
+   ...4770 new (page 48, 30 already seen)
+   ...4870 new (page 49, 30 already seen)
+   ...4970 new (page 50, 30 already seen)
+   ...5070 new (page 51, 30 already seen)
+   ...5170 new (page 52, 30 already seen)
+   ...5270 new (page 53, 30 already seen)
+   ...5370 new (page 54, 30 already seen)
+   ...5470 new (page 55, 30 already seen)
+   ...5570 new (page 56, 30 already seen)
+   ...5670 new (page 57, 30 already seen)
+   ...5770 new (page 58, 30 already seen)
+   ...5870 new (page 59, 30 already seen)
+   ...5970 new (page 60, 30 already seen)
+   ...6070 new (page 61, 30 already seen)
+   ...6170 new (page 62, 30 already seen)
+   ...6270 new (page 63, 30 already seen)
+   ...6370 new (page 64, 30 already seen)
+   ...6470 new (page 65, 30 already seen)
+   ...6570 new (page 66, 30 already seen)
+   ...6670 new (page 67, 30 already seen)
+   ...6770 new (page 68, 30 already seen)
+   ...6870 new (page 69, 30 already seen)
+   ...6970 new (page 70, 30 already seen)
+   ...7070 new (page 71, 30 already seen)
+   ...7170 new (page 72, 30 already seen)
+   ...7270 new (page 73, 30 already seen)
+   ...7370 new (page 74, 30 already seen)
+   ...7470 new (page 75, 30 already seen)
+   ...7570 new (page 76, 30 already seen)
+   ...7670 new (page 77, 30 already seen)
+   ...7770 new (page 78, 30 already seen)
+   ...7870 new (page 79, 30 already seen)
+   ...7970 new (page 80, 30 already seen)
+   ...8070 new (page 81, 30 already seen)
+   ...8170 new (page 82, 30 already seen)
+   ...8270 new (page 83, 30 already seen)
+   ...8370 new (page 84, 30 already seen)
+   ...8470 new (page 85, 30 already seen)
+   ...8570 new (page 86, 30 already seen)
+   ...8670 new (page 87, 30 already seen)
+   ...8770 new (page 88, 30 already seen)
+   ...8870 new (page 89, 30 already seen)
+   ...8970 new (page 90, 30 already seen)
+   ...9070 new (page 91, 30 already seen)
+   ...9170 new (page 92, 30 already seen)
+   ...9270 new (page 93, 30 already seen)
+   ...9370 new (page 94, 30 already seen)
+   ...9470 new (page 95, 30 already seen)
+   ...9570 new (page 96, 30 already seen)
+   ...9670 new (page 97, 30 already seen)
+   ...9770 new (page 98, 30 already seen)
+   ...9870 new (page 99, 30 already seen)
+   ...9970 new (page 100, 30 already seen)
+
+   9970 rows saved to raw_posts and to raw_posts_playstore.csv
+   total rows in the database now: 10000
+   dates: 2026-09-11 to 2026-10-01
+   ratings: 1 star 1184, 2 star 91, 3 star 134, 4 star 771, 5 star 7790
+   languages: en 9942, hi 28
+   mention Myntra by name: 1146 of 9970
+   length: 1-110 words (mean 9.2)
+   - [★5 | playstore | 2026-09-16 | en] good
+   - [★5 | playstore | 2026-09-14 | en] Great!!
+   - [★5 | playstore | 2026-09-26 | en] Must say affordable with quality 🫰
+   - [★5 | playstore | 2026-09-17 | en] Best App💫❤️
+   - [★5 | playstore | 2026-09-27 | en] super
+   - [★5 | playstore | 2026-09-13 | en] good
+   - [★5 | playstore | 2026-09-16 | en] good
+   - [★5 | playstore | 2026-09-25 | en] best hai
+   - [★5 | playstore | 2026-09-25 | en] nice app
+   - [★5 | playstore | 2026-09-30 | en] 👍👍👍
+   (10 of 9970 rows shown, picked at random)
+
+Done. raw_posts now holds 10000 rows in total.

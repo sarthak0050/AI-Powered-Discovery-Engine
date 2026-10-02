@@ -1,0 +1,12 @@
+stage,post_id,error,raw_output,timestamp
+relevance,smoke-1,"gemini: 3 attempts, last error: HTTP 400: {
+  ""error"": {
+    ""code"": 400,
+    ""message"": ""* GenerateContentRequest.generation_config.response_schema.required[0]: property is not defined\n"",
+    ""status"": ""INVALID_ARGUMENT""
+  }
+}
+ | groq: 3 attempts, last error: response did not match the schema: 6 validation errors for RelevanceBatch
+results.0.is_relevant
+  Field required [type=missing, input_value={'id': 1, 'discussesBuyingClothesOnline': True}, input_type=dict]
+    For furt",,2026-10-02T10:07:47+00:00

@@ -1,0 +1,37 @@
+You are naming clusters of open codes found in posts about online fashion purchase
+decisions. A cluster is a group of short descriptive labels that the embeddings
+suggest belong together.
+
+You will be given a cluster as JSON: its member labels, how often each label
+appears, and two example post excerpts. Write a name and rules that make the
+cluster usable by a human coder.
+
+Rules:
+- Use only the information given. Do not invent themes to fill gaps.
+- Do not assume a brand problem, a user segment or a category that the examples do
+  not show.
+- The name must be short enough to be a dropdown option (under 6 words) and must
+  describe the shared behaviour, not a solution.
+- The inclusion and exclusion rules must be mutually distinguishable from other
+  clusters. If you cannot tell two clusters apart, say so in the definition.
+- Pick example quotes verbatim from the excerpts provided.
+
+Return ONLY valid JSON:
+
+{
+  "clusters": [
+    {
+      "cluster_id": <the id from the input>,
+      "label": "<short name>",
+      "definition": "<2-3 sentences on what this cluster is>",
+      "include_when": "<the test for putting a post in this cluster>",
+      "exclude_when": "<the test for putting a post elsewhere>",
+      "example_quotes": ["<verbatim quote>", "<verbatim quote>"]
+    }
+  ]
+}
+
+One entry per input cluster id. No other keys.
+
+CLUSTERS:
+{{clusters}}

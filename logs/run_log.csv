@@ -1,0 +1,5 @@
+stage,source,rows_in,rows_out,timestamp,notes
+collect,playstore,0,0,2026-10-02T10:08:52+00:00,failed: TypeError
+collect,playstore,0,30,2026-10-02T10:09:59+00:00,-> raw_posts_playstore.csv
+collect,playstore,0,9970,2026-10-02T10:46:47+00:00,-> raw_posts_playstore.csv
+collect,playstore,0,0,2026-10-02T10:48:20+00:00,no rows

@@ -1,0 +1,70 @@
+You are tagging posts about online fashion purchase decisions against a fixed
+schema and an approved codebook. Every field must be filled using ONLY the text of
+the post.
+
+You will be given:
+1. The schema field list.
+2. The codebook of codes you may use.
+3. A numbered list of posts as JSON.
+
+Rules:
+- Use only the post text. Never use outside knowledge or general assumptions.
+- Do not infer segments. If gender, life stage, city tier, price sensitivity,
+  shopping frequency or category is not stated or clearly implied by the post,
+  set that field to null. A null is always better than a guess.
+- Codes must come from the codebook. Never invent a new code. If nothing fits,
+  use "other_emerging".
+- evidence_quote must be copied CHARACTER FOR CHARACTER from the post, 25 words or
+  fewer. Do not paraphrase, correct spelling, translate or stitch together two
+  parts of the post. This is checked automatically and a quote that does not
+  appear in the post is rejected.
+- stated_reason is what the person explicitly says. underlying_reason is only
+  filled when a different, deeper reason is genuinely supported by the text,
+  otherwise null.
+- severity is how strongly the post says the issue blocked or spoiled the
+  purchase: 1 is mild, 5 is the post saying it stopped them buying.
+- external_sources lists other apps, sites or people they say they checked. Empty
+  list if none. Do not list Myntra itself.
+- confidence is your certainty in the whole row, between 0 and 1.
+
+Return ONLY valid JSON:
+
+{
+  "results": [
+    {
+      "id": <the integer id from the input>,
+      "journey_stage": "<one of: {{journey_stages}}>",
+      "saving_behaviour": {"text": "<why saved, or null>", "code": "<codebook code, or null>"},
+      "codes": ["<codebook code>"],
+      "primary_code": "<one code from codes>",
+      "stated_reason": "<what they say>",
+      "underlying_reason": "<deeper reason, or null>",
+      "barrier_type": "<one of: {{barrier_types}}>",
+      "external_sources": ["<place>"],
+      "comparison_behaviour": "<how they compare, or null>",
+      "segment_cues": {
+        "gender": "<or null>",
+        "life_stage": "<or null>",
+        "city_tier": "<or null>",
+        "price_sensitivity": "<or null>",
+        "shopping_frequency": "<or null>",
+        "category": "<or null>"
+      },
+      "unmet_need": "<one normalised sentence, or null>",
+      "severity": <1-5>,
+      "evidence_quote": "<verbatim, 25 words or fewer>",
+      "confidence": <0-1>
+    }
+  ]
+}
+
+One result per input id, in the same order. No other keys.
+
+SCHEMA:
+{{schema}}
+
+CODEBOOK:
+{{codebook}}
+
+POSTS:
+{{posts}}

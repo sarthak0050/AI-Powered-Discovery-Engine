@@ -1,0 +1,20 @@
+# GENERATED IN MILESTONE 3 — DO NOT HAND-WRITE.
+#
+# This file is produced by the pilot run from 300 sampled relevant posts, then
+# you edit it. Until then it holds only the one code that must always exist, so
+# that no post can be left untagged while the pilot is still running.
+
+version: 0
+generated_at: null
+approved_by_user: false      # the pipeline must not proceed past Milestone 3
+                             # until this is set to true by hand
+
+codes:
+  - code: other_emerging
+    label: Other emerging theme
+    definition: >
+      Anything that does not fit any other code. Used sparingly: if this code
+      exceeds 10% of posts, the codebook is missing something and should be revised.
+    include_when: Nothing else clearly fits.
+    exclude_when: Another code applies.
+    example_quotes: []

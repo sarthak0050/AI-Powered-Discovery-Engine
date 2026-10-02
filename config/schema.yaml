@@ -1,0 +1,105 @@
+# The fixed tagging schema. Describes decision behaviour generically.
+# It contains no assumed user problem, theme or barrier — every theme code comes
+# from the pilot (config/codebook.yaml).
+#
+# Changing this file changes what the LLM is asked to produce. Do not add
+# brand-specific or problem-specific values here.
+
+enum:
+  journey_stage:
+    - browsing
+    - saved_or_wishlisted
+    - in_cart
+    - comparing
+    - postponed
+    - abandoned
+    - purchased
+    - returned
+    - other
+  barrier_type:
+    - informational        # user lacks information to decide
+    - confidence           # user does not trust their own judgement
+    - social               # what others think, dress code, gifting pressure
+    - occasion_timing      # wedding, festival, season, deadline
+    - decision_comparison  # too many options, cannot narrow down
+    - trust                # trust in the platform, seller or product
+    - financial            # price, discount, budget
+    - functional           # size, fit, features, quality
+    - none                 # no barrier mentioned
+    - other
+  severity:
+    min: 1
+    max: 5
+    note: "1 = mild annoyance, 5 = the post says the problem stopped them buying"
+  confidence:
+    min: 0
+    max: 1
+  codes_per_post:
+    min: 1
+    max: 4
+  evidence_quote:
+    max_words: 25
+    must_be_verbatim: true   # checked against the original post text; reject if not found
+
+fields:
+  journey_stage:
+    type: enum
+    description: Where the user is in the decision journey, as stated in the post.
+  saving_behaviour:
+    type: object
+    properties:
+      text: string      # why the item was saved, in the user's own terms
+      code: string      # codebook code, or null if not stated
+    description: Only when the post mentions saving or wishlisting. Otherwise null.
+  codes:
+    type: list
+    item: string        # codebook code
+    description: 1-4 codebook codes that this post supports.
+  primary_code:
+    type: string
+    description: The single best code from `codes`.
+  stated_reason:
+    type: string
+    description: What the user explicitly says is the reason. Quote-level only.
+  underlying_reason:
+    type: string
+    description: The likely deeper reason if it differs from stated_reason, else null.
+  barrier_type:
+    type: enum
+    description: The main thing standing between the user and the purchase.
+  external_sources:
+    type: list
+    item: string
+    description: Other places the user says they checked. Empty list if none.
+  comparison_behaviour:
+    type: string
+    description: How the user compares, if mentioned. Null otherwise.
+  segment_cues:
+    type: object
+    description: Only what the text supports. Null when unknown — never guess.
+    properties:
+      gender: string
+      life_stage: string
+      city_tier: string
+      price_sensitivity: string
+      shopping_frequency: string
+      category: string
+  unmet_need:
+    type: string
+    description: One normalised sentence, or null.
+  severity:
+    type: enum
+  evidence_quote:
+    type: string
+    description: Verbatim substring of the post, 25 words or fewer.
+  confidence:
+    type: number
+
+# Stored as individual SQLite columns for easier filtering.
+segment_cue_columns:
+  - gender
+  - life_stage
+  - city_tier
+  - price_sensitivity
+  - shopping_frequency
+  - category

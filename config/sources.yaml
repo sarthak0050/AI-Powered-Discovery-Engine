@@ -1,0 +1,80 @@
+# Which posts to collect. Scope is Myntra only.
+# Edit this file to change what gets collected — no code changes needed.
+
+target:
+  brand: Myntra
+
+date_range:
+  # Months of history to collect. Reddit sources are unreliable for deep history,
+  # so the collectors stop cleanly when a source runs out.
+  months_back: 24
+
+playstore:
+  enabled: true
+  app_id: com.myntra.android      # verified: "Myntra - Fashion Shopping App", 100M+ installs
+  lang: en
+  country: in
+  sort: newest                    # newest first, so recent behaviour dominates
+  limit: 10000                    # stop at this many reviews
+  page_size: 100                  # reviews per request; keeps us polite
+  delay_seconds: 1.0              # pause between pages
+  max_pages: 10000                # hard stop, so a bug can never loop forever
+
+appstore:
+  enabled: true
+  # Verified: the Apple customer-reviews RSS feed returns 0 entries for every app
+  # (checked against Myntra, Instagram and Meesho), so this source normally marks
+  # itself unavailable and the rest of the pipeline continues.
+  app_id: "907394059"             # Myntra - Fashion Shopping App (India storefront)
+  storefront: in                  # India only
+  sort: mostrecent
+  delay_seconds: 3                # polite delay between requests
+  limit: 2000                     # stop at this many reviews
+  on_zero_reviews: error_and_mark_unavailable   # never save an empty file
+
+reddit:
+  enabled: true
+  # Arctic Shift is a free volunteer API with no uptime guarantee. It requires a
+  # subreddit (it cannot search across all of Reddit), it degrades to 422/429 under
+  # repeated calls, and limit=100 times out server-side. Treat as supplementary.
+  base_url: https://arctic-shift.photon-reddit.com/api
+  subreddits:
+    - india
+    - IndianStreetBets
+    - AskIndia
+    - onlineShopping
+    - Shopping
+  query: myntra
+  include_comments: true
+  page_size: 5            # verified working size; larger values time out
+  delay_seconds: 5
+  max_pages_per_subreddit: 4
+  treat_as_best_effort: true
+
+youtube:
+  enabled: true           # needs YOUTUBE_API_KEY in .env
+  queries:
+    - myntra review
+    - myntra shopping experience
+    - myntra returns refund
+  max_videos_per_query: 5
+  max_comments_per_video: 40
+  order: relevance
+  # search.list costs 100 quota units, commentThreads.list costs 1 per 100 comments
+  cache_search_results: true
+
+manual:
+  enabled: true
+  # Drop any CSV into data/manual/ with these columns and it is picked up:
+  # text,date,author,source_note,url
+  glob: "*.csv"
+
+# Neutral search terms for sources that need a query string.
+search_terms:
+  - myntra
+  - myntra app
+
+# Milestone 2 reads this. Kept here so nothing about post quality lives in code.
+clean:
+  min_length_words: 5
+  near_duplicate_similarity: 0.95

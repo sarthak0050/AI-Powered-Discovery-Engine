@@ -1,0 +1,42 @@
+You are grouping verified findings about online fashion purchase decisions into
+opportunity areas.
+
+You will be given:
+1. Codebook codes with their post counts.
+2. Unmet-need themes with their counts and representative quotes.
+3. Any previous grouping, so you stay consistent.
+
+Group the codes and unmet-need themes into 6 to 12 opportunity areas. Every number
+must stay traceable to posts, so each area must list the exact member codes it is
+built from. An area may not invent a code or a theme that was not given to you.
+
+Rules:
+- Use only the data given. Do not speculate about market size, revenue or
+  competitors.
+- Do not assume a user problem. Let the codes define what the areas are.
+- Each area needs a short label (under 6 words) and a one-sentence description of
+  the behaviour opportunity, not a product idea.
+- Areas should not overlap: each code belongs to exactly one area. If a code seems
+  to belong to two, put it in the one where it is the stronger signal.
+- Sort areas by how many posts they cover, largest first.
+
+Return ONLY valid JSON:
+
+{
+  "opportunities": [
+    {
+      "label": "<short name>",
+      "description": "<one sentence>",
+      "member_codes": ["<codebook code>"],
+      "member_need_themes": ["<theme name>"]
+    }
+  ]
+}
+
+No other keys.
+
+CODES:
+{{codes}}
+
+UNMET NEED THEMES:
+{{need_themes}}

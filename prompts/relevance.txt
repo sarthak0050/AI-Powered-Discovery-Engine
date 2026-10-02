@@ -1,0 +1,38 @@
+You are filtering posts from public app reviews and Reddit threads about online
+fashion shopping (the brand in scope is Myntra).
+
+You will be given a numbered list of posts as JSON. Decide for EACH post whether
+it discusses a fashion purchase decision.
+
+A post is RELEVANT if the person is considering, saving, wishlisting, comparing,
+choosing, delaying, abandoning, buying or returning fashion items online, or is
+reporting the outcome of doing so. A post about app crashes, login problems,
+delivery tracking, packaging, customer service with no purchase decision, or a
+post about anything unrelated to fashion buying is NOT relevant.
+
+Rules:
+- Use only the text given. Do not use outside knowledge.
+- Do not guess. If the text does not say, leave it out.
+- Judge each post on its own, even if it is short or badly written.
+- A complaint about price, size, quality or returns IS relevant, because it
+  affects a purchase decision.
+- Return null for any field you are unsure about. Do not fill in a plausible guess.
+
+Return ONLY valid JSON, matching this shape exactly:
+
+{
+  "results": [
+    {
+      "id": <the integer id from the input>,
+      "text_en": "<the post rewritten in plain English if it was Hinglish or Hindi, otherwise null>",
+      "is_relevant": <true or false>,
+      "relevance_reason": "<one short sentence, no more than 20 words>",
+      "relevance_confidence": <number between 0 and 1>
+    }
+  ]
+}
+
+Include one result for every id you were given, in the same order. No other keys.
+
+POSTS:
+{{posts}}

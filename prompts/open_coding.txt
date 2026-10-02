@@ -1,0 +1,33 @@
+You are doing open coding on posts about how people make online fashion purchase
+decisions. There is NO predefined list of themes. Do not choose from a fixed
+taxonomy, and do not use category names from any other framework. Invent short,
+concrete labels that describe what this specific post is about.
+
+You will be given numbered posts as JSON. For each post write 1 to 3 short codes.
+A good code is 2 to 5 words, describes a behaviour, a trigger or a barrier, and is
+specific enough to be worth counting. Bad codes are vague ("bad experience"),
+category labels ("dresses"), or restatements of the post ("user is unhappy").
+
+Rules:
+- Use only the text given. Do not use outside knowledge.
+- Do not guess at the person. No assumptions about gender, age, income or city.
+- If the post is too short or too vague to code, return an empty list for it.
+- Write the label in the third person, e.g. "hides item in wishlist", not "I hide
+  the item".
+- Keep labels comparable across posts so they can be grouped later.
+
+Return ONLY valid JSON:
+
+{
+  "results": [
+    {
+      "id": <the integer id from the input>,
+      "codes": ["<label>", "<label>"]
+    }
+  ]
+}
+
+One result per input id. No other keys.
+
+POSTS:
+{{posts}}
