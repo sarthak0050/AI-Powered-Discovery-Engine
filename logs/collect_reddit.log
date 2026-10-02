@@ -1,0 +1,74 @@
+
+== reddit
+   window: 2024-10-12 to 2026-10-02
+   verifying 22 subreddits
+   Myntradiscount: still timing out over 720 days, narrowing to two halves
+   Myntradiscount: still timing out over 360 days, narrowing to two halves
+   Myntradiscount: timed out on a 2-day window; recording partial coverage for this subreddit
+   Myntradiscount: timed out on a 1-day window; recording partial coverage for this subreddit
+   Myntradiscount          95 posts,  79 comments
+   MyntraSucks             76 posts, 179 comments
+   IndianFashionAddicts: still timing out over 720 days, narrowing to two halves
+   IndianFashionAddicts: still timing out over 360 days, narrowing to two halves
+   IndianFashionAddicts: still timing out over 180 days, narrowing to two halves
+   IndianFashionAddicts: timed out on a 1-day window; recording partial coverage for this subreddit
+   IndianFashionAddicts: still timing out over 90 days, narrowing to two halves
+   IndianFashionAddicts: timed out on a 45-day window; recording partial coverage for this subreddit
+   IndianFashionAddicts: timed out on a 0-day window; recording partial coverage for this subreddit
+   IndianFashionAddicts: timed out on a 0-day window; recording partial coverage for this subreddit
+   IndianFashionAddicts   312 posts, 5011 comments
+   IndianFashionTribe: still timing out over 720 days, narrowing to two halves
+   IndianFashionTribe     118 posts, 1256 comments
+   IndianFashionIcons: still timing out over 720 days, narrowing to two halves
+   IndianFashionIcons      18 posts,  65 comments
+   IndianFashionFit         4 posts,  44 comments
+   indianfashiontrend       9 posts,  94 comments
+   IndianFashion: timed out on a 0-day window; recording partial coverage for this subreddit
+   IndianFashion           79 posts, 945 comments
+   IndianFashionAdda        7 posts,  43 comments
+   OnlineShopping: still timing out over 720 days, narrowing to two halves
+   OnlineShopping: still timing out over 360 days, narrowing to two halves
+   OnlineShopping: still timing out over 180 days, narrowing to two halves
+   mumbai                  22 posts, 174 comments
+   delhi                   73 posts, 258 comments
+   bangalore               17 posts,  77 comments
+   hyderabad: still timing out over 720 days, narrowing to two halves
+   hyderabad: still timing out over 360 days, narrowing to two halves
+   hyderabad: still timing out over 180 days, narrowing to two halves
+   hyderabad: still timing out over 90 days, narrowing to two halves
+   hyderabad: timed out on a 45-day window; recording partial coverage for this subreddit
+   hyderabad: timed out on a 45-day window; recording partial coverage for this subreddit
+   hyderabad: still timing out over 360 days, narrowing to two halves
+   hyderabad: still timing out over 180 days, narrowing to two halves
+   hyderabad               33 posts, 168 comments
+   pune                    16 posts,  93 comments
+   chennai: still timing out over 720 days, narrowing to two halves
+   chennai: still timing out over 360 days, narrowing to two halves
+   chennai                  7 posts,  23 comments
+   kolkata                 21 posts, 119 comments
+   ahmedabad: still timing out over 720 days, narrowing to two halves
+   ahmedabad               15 posts,  85 comments
+   gurgaon                 22 posts,  49 comments
+   jaipur                  12 posts,  49 comments
+   1146 requests, 0 rate-limit waits, 0 subreddits skipped
+
+   9767 new rows added to raw_posts
+   9767 rows for reddit now in the database and in raw_posts_reddit.csv
+   dates: 2024-10-13 to 2026-10-02
+   ratings: None star 9767
+   languages: en 9758, hi 9
+   mention Myntra by name: 1154 of 9767
+   length: 1-5840 words (mean 19.4)
+   - [reddit | 2026-02-17 | en] [removed]
+   - [reddit | 2025-08-14 | en] [removed]
+   - [reddit | 2025-04-08 | en] ![gif](giphy|tiP6DWUdHhvck)
+   - [reddit | 2025-09-19 | en] The skirt already has some beautiful floral pattern. Go with a solid basic top. First one looks good.
+   - [reddit | 2026-01-27 | en] Looks great 👍
+   - [reddit | 2026-04-06 | en] Vizag native ani anav chudu adaney ardam adi Andhra munda ani. Hyderabad nunchi dengey eh Andhra bajaru lanja ani analsindi.
+   - [reddit | 2026-01-26 | en] [removed]
+   - [reddit | 2025-09-22 | en] Any Myntra discount hacks Hi all. I have been shopping like a lot on myntra but now my pocket is getting tight. Can you please help me with any good c
+   - [reddit | 2025-03-28 | en] Your nails look so pretty girl😭😭
+   - [reddit | 2025-10-05 | en] Happy bday !
+   (10 of 9767 rows shown, picked at random)
+
+Done. raw_posts now holds 60267 rows in total.

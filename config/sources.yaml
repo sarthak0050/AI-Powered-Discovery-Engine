@@ -54,22 +54,86 @@ appstore:
 
 reddit:
   enabled: true
-  # Arctic Shift is a free volunteer API with no uptime guarantee. It requires a
-  # subreddit (it cannot search across all of Reddit), it degrades to 422/429 under
-  # repeated calls, and limit=100 times out server-side. Treat as supplementary.
+  # Arctic Shift is a free volunteer API with no uptime guarantee, so the rules
+  # below are measured behaviour, not preferences. Verified on this machine:
+  #   - keyword search REQUIRES a subreddit; there is no global text search
+  #   - adding `sort` to a keyword query returns 422 "Timeout", so never sort here
+  #   - `after` must be supplied or the query times out
+  #   - page 11+ style deep pagination is unreliable; this collector walks the
+  #     date range instead and bisects it when the server times out
+  #   - 429 arrives after a handful of quick calls. X-RateLimit-Reset says how many
+  #     seconds to wait, and it is obeyed rather than guessed
   base_url: https://arctic-shift.photon-reddit.com/api
+  # Every name below was confirmed to exist via /api/subreddits/search.
+  # The two Myntra-specific communities are the highest-signal sources by far.
   subreddits:
-    - india
-    - IndianStreetBets
-    - AskIndia
-    - onlineShopping
-    - Shopping
-  query: myntra
+    - Myntradiscount
+    - MyntraSucks
+    - IndianFashionAddicts
+    - IndianFashionTribe
+    - IndianFashionIcons
+    - IndianFashionFit
+    - indianfashiontrend
+    - IndianFashion
+    - IndianFashionAdda
+    - OnlineShopping
+    - indianshoppingdeals
+    - mumbai
+    - delhi
+    - bangalore
+    - hyderabad
+    - pune
+    - chennai
+    - kolkata
+    - ahmedabad
+    - gurgaon
+    - noida
+    - jaipur
+  # Neutral commerce and clothing words. Deliberately not biased toward any
+  # hypothesis: the point is to catch people describing their shopping experience,
+  # not people already complaining about a feature we suspect.
+  search_terms:
+    - fashion
+    - shopping
+    - clothes
+    - clothing
+    - dress
+    - dresses
+    - apparel
+    - outfit
+    - wear
+    - style
+    - purchase
+    - bought
+    - order
+    - delivery
+    - product
+    - quality
+    - size
+    - fit
+    - price
+    - return
+    - refund
+    - exchange
+  query: myntra            # the brand we require to be present
+  months_back: 24          # default date range
   include_comments: true
-  page_size: 5            # verified working size; larger values time out
-  delay_seconds: 5
-  max_pages_per_subreddit: 4
-  treat_as_best_effort: true
+  # Also sweep comments directly, to catch comments that mention Myntra inside
+  # threads whose post did not match. Comment search is Postgres full-text and
+  # much slower, so it is allowed to fail without stopping the run.
+  search_comments_directly: true
+  page_size: 100
+  delay_seconds: 6         # this is a free volunteer service: pace requests
+  max_pages_per_subreddit: 5
+  # Requests allowed per subreddit before it is left partially covered. A free
+  # volunteer API is not worth exhausting, so coverage is bounded rather than total.
+  requests_per_subreddit: 8
+  max_warmup_retries: 2     # the docs say a cold query often works on a second try
+  title_fallback: true      # title-only search is cheaper and often succeeds
+  min_split_days: 60       # do not bisect a window smaller than this
+  max_comments_per_post: 300
+  max_retries: 3
+  on_error: skip_and_log   # a dead subreddit must not stop the others
 
 youtube:
   enabled: true           # needs YOUTUBE_API_KEY in .env

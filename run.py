@@ -51,12 +51,17 @@ def report_shape(rows):
     ratings = {}
     langs = {}
     for row in rows:
-        ratings[row.get("rating")] = ratings.get(row.get("rating"), 0) + 1
+        if row.get("rating") is not None:
+            ratings[row["rating"]] = ratings.get(row["rating"], 0) + 1
         langs[row.get("lang_hint", "?")] = langs.get(row.get("lang_hint", "?"), 0) + 1
     explicit = sum(r.get("myntra_explicit") or 0 for r in rows)
     words = [len((r.get("text") or "").split()) for r in rows]
     print(f"   dates: {dates[0][:10]} to {dates[-1][:10]}")
-    print("   ratings: " + ", ".join(f"{k} star {v}" for k, v in sorted(ratings.items(), key=lambda x: str(x[0]))))
+    if ratings:
+        print("   ratings: " + ", ".join(f"{k} star {v}" for k, v in
+                                        sorted(ratings.items(), key=lambda x: str(x[0]))))
+    else:
+        print("   ratings: not used by this source")
     print("   languages: " + ", ".join(f"{k} {v}" for k, v in sorted(langs.items())))
     print(f"   mention Myntra by name: {explicit} of {len(rows)}")
     if words:
