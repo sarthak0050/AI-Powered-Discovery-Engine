@@ -134,7 +134,8 @@ discovery-engine/
 - **Done when** each source writes `raw_posts` rows, the run log shows counts, and I've seen 10 samples per source.
 
 ### Module 2 — Clean + relevance filter
-- Remove exact and near duplicates (embedding similarity > 0.95), spam, and posts under 5 words.
+- Remove exact and near duplicates (embedding similarity > 0.95) and spam.
+- Do **not** remove short posts. A one-word review like "good" is real sentiment from a real customer, and the volume of them is itself a signal. Length is not a quality test.
 - Use the LLM to normalise Hinglish to English, keeping the original text.
 - Run the LLM relevance check in batches of 20 posts per call, using `prompts/relevance.txt`. Relevant means the post discusses considering, saving, comparing, choosing, delaying, abandoning or buying fashion items online.
 - Export 50 kept and 50 dropped posts to `data/labels/relevance_check.csv` for me to review.

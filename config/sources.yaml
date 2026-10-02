@@ -15,7 +15,16 @@ playstore:
   lang: en
   country: in
   sort: newest                    # newest first, so recent behaviour dominates
-  limit: 10000                    # stop at this many reviews
+  limit: 50000                   # stop at this many reviews for this source.
+                                # Myntra serves roughly 475 reviews a day, so 50k
+                                # covers about 3.5 months of daily behaviour:
+                                # comfortably past the point where recent
+                                # behaviour has settled, and still ~5x the
+                                # 1,500-post target once duplicates are removed.
+                                # Reaching a 24-month window from Play Store
+                                # alone would need roughly 350,000 reviews, which
+                                # this source does not serve. Older coverage has
+                                # to come from App Store, Reddit and YouTube.
   page_size: 100                  # reviews per request; keeps us polite
   delay_seconds: 1.0              # pause between pages
   max_pages: 10000                # hard stop, so a bug can never loop forever
@@ -75,6 +84,8 @@ search_terms:
   - myntra app
 
 # Milestone 2 reads this. Kept here so nothing about post quality lives in code.
+# Note: there is no minimum word count on purpose. Short reviews are kept because
+# they are real sentiment, and their volume is a finding in itself.
 clean:
-  min_length_words: 5
+  min_length_words: 0
   near_duplicate_similarity: 0.95

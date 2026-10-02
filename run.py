@@ -139,7 +139,7 @@ def cmd_collect(args) -> int:
         written = db.upsert(conn, "raw_posts", rows)
         # Export everything held for this source, not just this run, so the CSV and
         # the database never drift apart after a resumed collection.
-        stored = db.rows_by_source(conn, "raw_posts", name)
+        stored = [dict(r) for r in db.rows_by_source(conn, "raw_posts", name)]
         csv_path = ROOT / "data" / "exports" / f"raw_posts_{name}.csv"
         db.export_csv(stored, csv_path)
         db.log_run(conn, "collect", name, 0, written, f"-> {csv_path.name}")
