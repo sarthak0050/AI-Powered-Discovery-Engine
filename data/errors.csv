@@ -10,3 +10,5 @@ relevance,smoke-1,"gemini: 3 attempts, last error: HTTP 400: {
 results.0.is_relevant
   Field required [type=missing, input_value={'id': 1, 'discussesBuyingClothesOnline': True}, input_type=dict]
     For furt",,2026-10-02T10:07:47+00:00
+collect,,search 'myntra haul': HTTP 400,YouTube request failed,2026-10-02T14:38:28+00:00
+collect,,"comments UJKLdtlqVm0: HTTP 403 The video identified by the <code><a href=""/youtube/v3/docs/commentThreads/list#videoId"">videoId</a></code> parameter has disabled comments.",YouTube request failed,2026-10-02T14:57:26+00:00

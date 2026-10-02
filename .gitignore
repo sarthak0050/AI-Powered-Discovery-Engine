@@ -13,6 +13,10 @@ data/engine.db-shm
 
 # LLM disk cache lives inside the SQLite db, nothing extra to ignore
 
+# Local collector caches (YouTube search results are 100 quota units each, so they
+# are worth keeping on this machine but must never be committed)
+data/cache/
+
 # Python
 .venv/
 __pycache__/

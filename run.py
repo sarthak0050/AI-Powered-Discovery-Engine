@@ -185,10 +185,33 @@ def cmd_doctor(_args) -> int:
         section = cfg.get(name, {})
         note = "enabled" if section.get("enabled", True) else "disabled in config"
         if name == "appstore":
-            note += "  (Apple RSS verified empty — will self-mark unavailable)"
-        if name == "reddit":
+            note += "  (~500 most recent reviews only)"
+        elif name == "youtube":
+            note += f"  ({len(section.get('queries', []))} queries, "
+            note += f"{section.get('quota_budget', 0)} of "
+            note += f"{section.get('daily_quota_limit', 0)} units per day)"
+        elif name == "reddit":
             note += "  (fragile service, best-effort)"
         print(f"    {name:12} {note}")
+
+    # Confirm the configured App Store ID still points at the app we think it does.
+    # App IDs get reused, so this is checked rather than trusted.
+    if cfg.get("appstore", {}).get("enabled", True):
+        print("\n  app store lookup")
+        try:
+            from engine.collectors.appstore import lookup_app
+            found = lookup_app(cfg)
+            name = found.get("trackName", "")
+            expected = cfg["appstore"].get("expected_app_name", "Myntra")
+            if not name:
+                print(f"    id {cfg['appstore']['app_id']} returned nothing — the ID may be wrong")
+            elif expected.lower() in name.lower():
+                print(f"    {cfg['appstore']['app_id']} is {name}")
+            else:
+                print(f"    MISMATCH: id {cfg['appstore']['app_id']} is now {name!r}, "
+                      f"expected {expected!r}")
+        except Exception as exc:                      # noqa: BLE001 - report, never crash
+            print(f"    could not check ({type(exc).__name__}: {str(exc)[:80]})")
     print("\n  Run a stage:  python run.py collect --source playstore --preview-only")
     return 0
 

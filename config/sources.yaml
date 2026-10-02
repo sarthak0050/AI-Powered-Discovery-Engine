@@ -38,6 +38,7 @@ appstore:
   # Re-checked by `python run.py doctor` on every run.
   app_id: "907394059"
   storefront: in                  # India only
+  expected_app_name: Myntra       # `python run.py doctor` warns if the ID points elsewhere
   sort: mostrecent
   delay_seconds: 3                # polite delay between requests
   # The feed's ceiling, measured rather than assumed:
@@ -136,16 +137,35 @@ reddit:
   on_error: skip_and_log   # a dead subreddit must not stop the others
 
 youtube:
-  enabled: true           # needs YOUTUBE_API_KEY in .env
+  enabled: true           # needs YOUTUBE_API_KEY in .env (verified working)
+  # Measured quota costs, which is why search results are cached to disk:
+  #   search.list        100 units per call
+  #   commentThreads.list  1 unit per call, up to 100 top-level comments
+  #   comments.list       1 unit per call, up to 100 replies
+  #   daily limit       10,000 units, shared across everything using the key
   queries:
+    - myntra haul
+    - myntra try on haul
+    - myntra finds
+    - myntra wishlist
+    - myntra sale haul
     - myntra review
-    - myntra shopping experience
-    - myntra returns refund
-  max_videos_per_query: 5
-  max_comments_per_video: 40
+  videos_per_query: 20
+  months_back: 24          # only videos published in the last 24 months
   order: relevance
-  # search.list costs 100 quota units, commentThreads.list costs 1 per 100 comments
+  region_code: IN
+  relevance_language: en
+  safe_search: moderate
+  include_videos: true      # the video's own title/description is a creator review too
+  include_replies: true
+  max_top_level_comments: 300   # the user asked for up to 300, which is 3 API pages
+  max_reply_pages_per_thread: 2  # at most 100 replies per thread
+  max_reply_units_per_video: 40  # worst case across 120 videos stays inside the budget
   cache_search_results: true
+  daily_quota_limit: 10000
+  # Stop cleanly with headroom rather than hitting Google's ceiling and getting
+  # locked out for the rest of the day.
+  quota_budget: 8000
 
 manual:
   enabled: true
