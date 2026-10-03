@@ -1,6 +1,10 @@
 # Secrets — never commit
 .env
+# Hand-copied posts (Quora, X, Instagram, blogs) stay on this machine.
+# The template is the one exception: it holds only fake example rows, and shipping it
+# means a fresh clone can start filling it in immediately.
 data/manual/*.csv
+!data/manual/TEMPLATE_manual_posts.csv
 
 # Raw API responses (traceability only, can be large)
 data/raw/

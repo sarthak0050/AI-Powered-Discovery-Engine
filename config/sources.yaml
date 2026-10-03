@@ -169,8 +169,15 @@ youtube:
 
 manual:
   enabled: true
-  # Drop any CSV into data/manual/ with these columns and it is picked up:
-  # text,date,author,source_note,url
+  # Quora, X, Instagram and blogs are not scraped. You copy posts by hand into
+  # data/manual/*.csv and this collector reads your files. Nothing is fetched.
+  # The first run writes a filled-in example at data/manual/TEMPLATE_manual_posts.csv.
+  #
+  # Required columns: source_name, url, date, text
+  # Also read when present, ignored when blank: author, engagement, rating, notes
+  #
+  # source_name becomes post_id and parent_context, so spell it the same way on
+  # every row ("x" everywhere, not "X" on some rows and "twitter" on others).
   glob: "*.csv"
 
 # Neutral search terms for sources that need a query string.

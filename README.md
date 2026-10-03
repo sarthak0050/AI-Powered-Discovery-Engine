@@ -87,7 +87,12 @@ calls you have used today. Run it any time something looks wrong.
 |---|---|
 | `python run.py collect --source playstore` | Fetch posts. Always shows you one page of raw fields first, so you can see exactly what came back before a full run |
 | `python run.py collect --source playstore --preview-only` | Just the one page, then stop |
-| `python run.py clean` | Remove duplicates, spam and very short posts; translate Hinglish |
+| `python run.py collect --source appstore` | The same app's iOS reviews |
+| `python run.py collect --source reddit` | Posts and comments from subreddits |
+| `python run.py collect --source youtube` | Comments on Myntra haul, try-on and review videos |
+| `python run.py collect --source manual` | Read your hand-copied posts from `data/manual/` (see below) |
+| `python run.py clean` | Remove duplicates and spam; translate Hinglish. Short posts are kept on purpose |
+| `python run.py doctor` | Check keys, sources and the App Store app ID |
 | `python run.py relevance` | Keep only posts about a fashion buying decision (batches of 20) |
 | `python run.py pilot` | Build the codebook from 300 posts. **Stops for your approval** |
 | `python run.py extract` | Tag every post against the codebook you approved |
@@ -99,6 +104,51 @@ calls you have used today. Run it any time something looks wrong.
 
 Stages are built one milestone at a time. If you run one that is not built yet, it
 says so and changes nothing.
+
+### Hand-copying posts from Quora, X, Instagram or blogs
+
+Those sites have no public feed we are allowed to read, so you copy the posts
+yourself into `data/manual/`.
+
+The first run creates a filled-in example for you to start from:
+
+```bash
+python run.py collect --source manual
+```
+
+```
+data/manual/TEMPLATE_manual_posts.csv    opened in Excel or Numbers
+```
+
+Copy it, rename it to something like `quora_posts.csv`, delete the example rows and
+paste your posts underneath. Four columns are needed:
+
+| Column | What to put in it |
+|---|---|
+| `source_name` | Where the post came from: `quora`, `x`, `instagram`, `blog`. Keep it spelled the same way on every row |
+| `url` | Link to the post |
+| `date` | Anything Excel understands, such as `2025-08-14` or `14/08/2025` |
+| `text` | The post itself |
+
+Four more columns are used if you fill them in and ignored if you leave them blank:
+`author`, `engagement`, `rating`, `notes`. Any author name is hashed on the way in
+and never stored in the clear.
+
+Then run the same command again and your posts are loaded:
+
+```bash
+python run.py collect --source manual
+```
+
+Useful to know:
+
+- You can use as many files as you like. Each one is reported separately.
+- Running it twice does not create duplicates.
+- A file starting with `_` is ignored, so you can keep scratch notes in the folder.
+- Blank rows are skipped. A post with an unreadable date is still kept, just without one.
+- If a column is missing or misspelled, it stops and tells you what it found, rather
+  than importing something half-right.
+- Your files are never committed to git.
 
 ---
 
