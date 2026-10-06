@@ -32,6 +32,9 @@ from engine.llm import LLM, QuotaExhausted, render_prompt
 
 PROMPT = db.ROOT / "prompts" / "relevance.txt"
 LABEL_EXPORT = db.ROOT / "data" / "labels" / "relevance_check.csv"
+# Same rows, shuffled, with the engine's verdict stripped out. You label this one so
+# your answers are not anchored by what the engine said.
+LABEL_BLIND = db.ROOT / "data" / "labels" / "relevance_check_blind.csv"
 
 # Truncate very long posts before sending them. A 5,000-word YouTube essay would cost
 # a fortune in tokens and adds nothing to a relevance decision that a sentence answers.
@@ -286,6 +289,18 @@ def export_label_check(conn, kept: int = 50, dropped: int = 50, seed: int = 7) -
                              row["relevance_confidence"], row["relevance_reason"],
                              " ".join((row["text_original"] or "").split()),
                              row["text_en"] or "", ""])
+
+    # Blind copy: the same rows, shuffled, carrying only an opaque id, the text and an
+    # empty verdict. Written here rather than by hand so the two files cannot drift —
+    # the id is derived from post_id, so your answers always land on the same post.
+    blind = list(chosen)
+    random.Random(seed + 1).shuffle(blind)
+    with open(LABEL_BLIND, "w", newline="", encoding="utf-8") as fh:
+        writer = csv.writer(fh)
+        writer.writerow(["id", "text", "my_judgement"])
+        for _flag, row in blind:
+            writer.writerow([db.label_id(row["post_id"]),
+                             " ".join((row["text_original"] or "").split()), ""])
     return len(chosen)
 
 

@@ -1,4 +1,8 @@
-"""Report precision and recall from your hand labels in data/labels/relevance_check.csv.
+"""Report precision and recall from your hand labels.
+
+You fill in data/labels/relevance_check_blind.csv (id, text, my_judgement — no verdict,
+no confidence, no source). Your answers are merged back onto
+data/labels/relevance_check.csv by id, which is what everything else reads.
 
 The sample is stratified: 50 kept and 50 dropped, split evenly across sources. The
 corpus is not split that way (playstore is 70% of kept, appstore 1%), so averaging
@@ -19,6 +23,8 @@ from collections import defaultdict
 from engine import db
 
 LABELS = db.ROOT / "data" / "labels" / "relevance_check.csv"
+BLIND = db.ROOT / "data" / "labels" / "relevance_check_blind.csv"
+BLIND_COLUMNS = ["id", "text", "my_judgement"]
 
 DECISION = re.compile(
     r"stop|never (buy|order)|no longer|won'?t (buy|order)|uninstall|switch|"
@@ -45,13 +51,110 @@ def corpus_counts(conn) -> dict:
     return out
 
 
-def load_labels() -> list[dict]:
+def read_blind() -> tuple[dict[str, int], dict[str, str]]:
+    """Your labels and texts, keyed by id. Fails loudly rather than guessing.
+
+    Both dicts come back empty when the blind file does not exist yet, so the report
+    can still run off answers merged on an earlier run.
+    """
+    if not BLIND.exists():
+        return {}, {}
+    with open(BLIND, newline="", encoding="utf-8") as fh:
+        reader = csv.DictReader(fh)
+        header = list(reader.fieldnames or [])
+        if header != BLIND_COLUMNS:
+            raise SystemExit(
+                f"{BLIND.name}: expected columns {BLIND_COLUMNS}, got {header}. "
+                f"Restore the file to exactly id, text, my_judgement.")
+        labels: dict[str, int] = {}
+        texts: dict[str, str] = {}
+        for line, row in enumerate(reader, start=2):
+            rid = (row.get("id") or "").strip()
+            value = (row.get("my_judgement") or "").strip()
+            if not rid:
+                raise SystemExit(f"{BLIND.name}: line {line} has an empty id.")
+            if rid in labels:
+                raise SystemExit(f"{BLIND.name}: line {line} repeats id {rid}.")
+            if value not in {"0", "1"}:
+                found = value or "(empty)"
+                raise SystemExit(
+                    f"{BLIND.name}: line {line} (id {rid}) has my_judgement="
+                    f"{found} — every row must be 0 or 1.")
+            labels[rid] = int(value)
+            texts[rid] = row.get("text") or ""
+    return labels, texts
+
+
+def merge_labels(fieldnames: list[str], rows: list[dict]) -> None:
+    """Copy your judgement from the blind file onto the answer key, by id.
+
+    Any id missing on either side, or any text that does not match, aborts: a silent
+    merge onto the wrong post would corrupt the whole quality report.
+    """
+    labels, texts = read_blind()
+    if not labels:
+        # No blind file: trust whatever was merged on an earlier run, still checking
+        # that each value is 0, 1 or blank.
+        for row in rows:
+            value = str(row.get("my_judgement", "")).strip()
+            if value not in {"", "0", "1"}:
+                raise SystemExit(
+                    f"{LABELS.name}: id {row['post_id']} has my_judgement="
+                    f"{value!r} — must be 0 or 1.")
+        return
+
+    by_id = {db.label_id(r["post_id"]): r for r in rows}
+    unknown = sorted(set(labels) - set(by_id))
+    if unknown:
+        raise SystemExit(
+            f"{BLIND.name}: {len(unknown)} id(s) are not in {LABELS.name} "
+            f"({', '.join(unknown[:5])}{'…' if len(unknown) > 5 else ''}). "
+            f"The two files come from different samples — re-export them together.")
+    unlabelled = sorted(set(by_id) - set(labels))
+    if unlabelled:
+        raise SystemExit(
+            f"{BLIND.name}: {len(unlabelled)} row(s) are missing an id present in "
+            f"{LABELS.name} ({', '.join(unlabelled[:5])}"
+            f"{'…' if len(unlabelled) > 5 else ''}). Nothing was merged.")
+
+    bad_text = [rid for rid, row in by_id.items()
+                if " ".join(texts[rid].split())
+                != " ".join((row["text_original"] or "").split())]
+    if bad_text:
+        raise SystemExit(
+            f"{BLIND.name}: text does not match {LABELS.name} for "
+            f"{len(bad_text)} id(s) ({', '.join(bad_text[:5])}"
+            f"{'…' if len(bad_text) > 5 else ''}). Nothing was merged.")
+
+    for rid, value in labels.items():
+        by_id[rid]["my_judgement"] = str(value)
+
+    # Write the merged answers back so every other tool reads one file.
+    with open(LABELS, "w", newline="", encoding="utf-8") as fh:
+        writer = csv.DictWriter(fh, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def read_check() -> tuple[list[str], list[dict]]:
+    """The answer key as it stands: engine verdict, plus your judgement once merged."""
     with open(LABELS, newline="", encoding="utf-8") as fh:
-        rows = list(csv.DictReader(fh))
+        reader = csv.DictReader(fh)
+        return list(reader.fieldnames or []), list(reader)
+
+
+def annotate(rows: list[dict]) -> list[dict]:
     for r in rows:
         r["engine"] = int(r["engine_said_relevant"])
         r["mine"] = int(r["my_judgement"]) if str(r["my_judgement"]).strip() else None
     return rows
+
+
+def load_labels() -> list[dict]:
+    """Answer key with your answers merged in from the blind file."""
+    fieldnames, rows = read_check()
+    merge_labels(fieldnames, rows)
+    return annotate(rows)
 
 
 def strata(rows: list[dict], verdict: int) -> dict:
@@ -155,9 +258,9 @@ def selftest() -> None:
     conn = db.connect()
     corpus = corpus_counts(conn)
     conn.close()
-    rows = [r for r in load_labels() if str(r["my_judgement"]).strip() != ""]
-    if not rows:
-        rows = load_labels()
+    # Reads the answer key only — no merge, no file writes, no dependence on the
+    # blind file being filled in yet.
+    rows = annotate(read_check()[1])
     for r in rows:
         r["mine"] = r["engine"]          # pretend you agreed with the engine
 

@@ -1,8 +1,13 @@
 # Labelling guide: relevance
 
-**File to fill in:** `data/labels/relevance_check.csv`
-**Column to fill:** `my_judgement` — put `1` if you agree the post is relevant, `0` if not.
-Leave the other columns alone.
+**File to fill in:** `data/labels/relevance_check_blind.csv`
+**Column to fill:** `my_judgement` — put `1` if the post is relevant, `0` if not.
+
+The blind file has exactly three columns: `id`, `text`, `my_judgement`. It is shuffled,
+and it hides which posts the engine kept, its confidence, and which source a post came
+from, so your judgement is not anchored by the engine's answer. The `id` is an opaque
+key — your answers are merged back onto the full file by `label_report.py` when you are
+done, so you never need to look up a post yourself.
 
 You are labelling 100 posts: 50 the engine kept, 50 it dropped. Your answers are how
 relevance precision and recall get measured. There are no wrong answers here — if you
@@ -35,6 +40,21 @@ Any one of these is enough:
 
 The complaint is the *cause*. The changed buying behaviour is the *relevance*. Without
 that second half, it is a support ticket, not a shopping decision.
+
+## Returns and refunds
+
+**Returns and refunds count as relevant only when tied to a buying decision.**
+
+- **Relevant** — the return experience feeds a purchase decision: *"easy to shop and
+  cod easy to return so so good for shooping llve it"* (`appstore:14606302466`), or it
+  changed how the author shops — now ordering two sizes to keep one, checking the
+  return window before adding to cart, or buying somewhere *because* returns are easy.
+- **NOT relevant** — a pure return/refund process complaint with no buying link:
+  *"I have not received the full refund and they are saying that the platform fee is
+  not refunded"* (`playstore:fae1d562-b6cc-49dc-af3c-7081cf685dfd`).
+
+Same shape as every other complaint: the process alone is `0`; a stated change to
+future buying is `1`.
 
 ---
 
@@ -117,10 +137,16 @@ inconsistently.
 Your rule settles it: **returning and refunding are relevant only when the post also
 says what the author will do next time they buy.**
 
+**The prompt will not be touched until your labels are in.** We measure the filter as
+it stands first, so precision and recall describe the system that actually ran. The
+contradiction is fixed in `prompts/relevance.txt` only afterwards, and only on your
+approval.
+
 That is a real tightening, so expect to disagree with the engine on some rows. In
 particular, watch for the engine keeping complaints like *"Full of scam... They
-cancelled my order... haven't processed a refund"* — under this rule that should be
-`0`, because the author never says they will change how they shop.
+cancelled my order... haven't processed a refund"* (`playstore:e504636a...`) or a bare
+refund complaint about platform fees (`playstore:fae1d562...`) — under this rule both
+should be `0`, because neither author says they will change how they shop.
 
 Disagreements are the point of this exercise. They will drive the revised prompt if
 precision or recall comes in under 85%.
@@ -129,4 +155,7 @@ precision or recall comes in under 85%.
 
 ## When you are done
 
-Save the file and tell me. Do not fill in any column other than `my_judgement`.
+Fill in every `my_judgement` in `data/labels/relevance_check_blind.csv`, save it, and
+tell me. Nothing else needs editing — the answers are merged back onto
+`data/labels/relevance_check.csv` by id, and the report fails loudly if an id is
+missing or a value is anything other than `0` or `1`.

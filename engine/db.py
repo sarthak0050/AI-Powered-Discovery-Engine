@@ -9,6 +9,7 @@ Run `python run.py doctor` to create the database.
 """
 
 import csv
+import hashlib
 import os
 import re
 import sqlite3
@@ -17,6 +18,15 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DB_PATH = ROOT / "data" / "engine.db"
+
+
+def label_id(post_id: str) -> str:
+    """Opaque key for one row of a hand-labelling file.
+
+    Derived from post_id so it survives a re-export of the sample, and hashed so the
+    blind file cannot be read as a source name: post_ids start with the source.
+    """
+    return hashlib.sha1(post_id.encode("utf-8")).hexdigest()[:10]
 
 SCHEMA = """
 -- Section 6: raw_posts. One row per collected post, deduplicated on post_id.
