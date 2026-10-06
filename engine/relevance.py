@@ -28,7 +28,7 @@ import sys
 from pydantic import BaseModel, Field
 
 from engine import db
-from engine.llm import LLM, QuotaExhausted, render_prompt
+from engine.llm import LLM, LLMError, QuotaExhausted, render_prompt
 
 PROMPT = db.ROOT / "prompts" / "relevance.txt"
 LABEL_EXPORT = db.ROOT / "data" / "labels" / "relevance_check.csv"
@@ -140,7 +140,7 @@ def judge(conn, posts: list, progress=None) -> tuple[int, int]:
     by_id = {i + 1: p for i, p in enumerate(posts)}
 
     kept = dropped = failed = 0
-    batches = call_json_batched(llm, template, items, BatchJudgement)
+    batches = call_json_batched(llm, template, items, BatchJudgement, by_id)
 
     for index, (batch_index, chunk, outcome, stats) in enumerate(batches):
         if isinstance(outcome, QuotaExhausted):
@@ -149,8 +149,16 @@ def judge(conn, posts: list, progress=None) -> tuple[int, int]:
             break
         if isinstance(outcome, Exception):
             failed += len(chunk)
-            db.log_error(conn, "relevance", f"batch {batch_index}: {outcome}"[:400],
-                         post_id=",".join(str(i["id"]) for i in chunk[:5]))
+            # call_json already wrote one row per real post_id for an LLMError, so
+            # logging again here would only duplicate it. Anything else (a bug in this
+            # file rather than a failed API call) has not been recorded yet.
+            if not isinstance(outcome, LLMError):
+                for item in chunk:
+                    row = by_id.get(item["id"])
+                    if row:
+                        db.log_error(conn, "relevance",
+                                     f"batch {batch_index}: {outcome}"[:400],
+                                     post_id=row["post_id"])
             print(f"   batch {batch_index} failed: {str(outcome)[:80]}")
             conn.commit()
             continue
@@ -200,21 +208,28 @@ def judge(conn, posts: list, progress=None) -> tuple[int, int]:
     return kept, dropped
 
 
-def call_json_batched(llm, template, items, schema):
+def call_json_batched(llm, template, items, schema, by_id=None):
     """Yield (batch_index, chunk, parsed_or_exception) one batch at a time.
 
     This is a generator on purpose. Collecting every batch into a list first meant
     nothing was written to the database until all ~1,700 calls had finished, so a
     crash or a quota stop lost the whole run and progress looked frozen. Yielding
     lets the caller commit each batch as it lands.
+
+    by_id maps the prompt's 1..N numbering to the rows behind it, so a batch that
+    fails is recorded against real post_ids rather than numbers that mean nothing
+    outside this run. Without it the prompt numbering is logged as before.
     """
     batch_size = int((llm.config.get("batch") or {}).get("relevance", 20)) or 20
     chunks = [items[i:i + batch_size] for i in range(0, len(items), batch_size)]
     for index, chunk in enumerate(chunks, start=1):
         try:
+            real_ids = [by_id[i["id"]]["post_id"] for i in chunk
+                        if by_id and i["id"] in by_id]
             parsed, stats = llm.call_json(
                 render_prompt(template, {"posts": json.dumps(chunk, ensure_ascii=False)}),
-                schema, input_id=",".join(str(i["id"]) for i in chunk))
+                schema, input_id=",".join(str(i["id"]) for i in chunk),
+                post_ids=real_ids or None)
             # stats carries the provider that actually answered. Dropping it here meant
             # judge() had to guess from the configured primary, so a batch handed to the
             # fallback was recorded as the primary's name and judged_by was silently wrong.

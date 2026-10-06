@@ -114,7 +114,7 @@ class TestOffline(unittest.TestCase):
             model = "gemini-3.5-flash-lite"
             config = {"batch": {"relevance": 20}}
 
-            def call_json(self, prompt, schema, input_id=None):
+            def call_json(self, prompt, schema, input_id=None, post_ids=None):
                 return (R.BatchJudgement(results=[R.Judgement(
                         id=1, is_relevant=False, relevance_reason="x",
                         relevance_confidence=0.9, text_en=None)]),
@@ -188,6 +188,67 @@ class TestOffline(unittest.TestCase):
         # Groq's numbers come from its response headers: 1000 requests, 8000 tokens.
         self.assertEqual(cfg["rate_limits"]["groq"]["rpd"], 900)
         self.assertEqual(cfg["rate_limits"]["groq"]["tpm"], 7200)
+
+    def test_errors_record_real_post_ids(self):
+        """A failed call is logged once per real post id, not as prompt numbering.
+
+        The prompt numbers posts 1..N for the model's convenience. Those numbers mean
+        nothing once the run is over, so errors.csv used to hold "10621,10622,..." and
+        could not be joined back onto the posts it was about.
+        """
+        import sqlite3
+        import tempfile
+        from unittest.mock import patch
+
+        from engine.llm import LLMError
+
+        llm = LLM(stage="relevance")
+
+        def fail(*_args, **_kwargs):
+            raise LLMError("HTTP 400: bad request")
+
+        llm._call_one = fail                       # no network
+        conn = sqlite3.connect(":memory:")
+        conn.row_factory = sqlite3.Row
+        conn.executescript(db.SCHEMA)              # errors table, nothing else touched
+        real_ids = ["playstore:aaa", "playstore:bbb", "reddit:post:ccc"]
+
+        with tempfile.TemporaryDirectory() as tmp:
+            with patch.object(db, "ROOT", Path(tmp)), \
+                    patch.object(db, "connect", lambda *a, **k: conn):
+                with self.assertRaises(LLMError):
+                    llm.call_json("prompt", RelevanceBatch, input_id="10621,10622,10623",
+                                  post_ids=real_ids)
+                rows = [r["post_id"] for r in
+                        conn.execute("SELECT post_id FROM errors ORDER BY id")]
+        conn.close()
+
+        self.assertEqual(rows, real_ids)
+        self.assertNotIn("10621,10622,10623", rows)
+
+    def test_relevance_batches_carry_real_post_ids(self):
+        """relevance.call_json_batched maps the prompt's 1..N back to post_ids."""
+        from engine.relevance import call_json_batched
+
+        seen = []
+
+        class Stub:
+            config = {"batch": {"relevance": 3}}
+
+            def call_json(self, prompt, schema, input_id="", post_ids=None):
+                seen.append((input_id, post_ids))
+                return "parsed", {"provider": "gemini", "model": "stub"}
+
+        items = [{"id": i + 1, "text": f"post {i}"} for i in range(5)]
+        by_id = {i + 1: {"post_id": f"youtube:comment:{i}"} for i in range(5)}
+
+        out = list(call_json_batched(Stub(), "template", items, RelevanceBatch, by_id))
+
+        self.assertEqual(len(out), 2)              # 5 posts, batches of 3
+        self.assertEqual(seen, [
+            ("1,2,3", ["youtube:comment:0", "youtube:comment:1", "youtube:comment:2"]),
+            ("4,5", ["youtube:comment:3", "youtube:comment:4"]),
+        ])
 
 
 class TestLive(unittest.TestCase):

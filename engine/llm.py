@@ -464,11 +464,16 @@ class LLM:
 
     # ---------- public API ----------
 
-    def call_json(self, prompt: str, schema: type[BaseModel], input_id: str = "") -> tuple:
+    def call_json(self, prompt: str, schema: type[BaseModel], input_id: str = "",
+                  post_ids: list | None = None) -> tuple:
         """One logical call, validated against a Pydantic model.
 
         Returns (parsed_model, stats_dict). Tries the primary provider first, then the
         fallback. Raises QuotaExhausted when the day's limit is used up.
+
+        post_ids are the real ids of the rows behind this call, one per row. Errors are
+        then recorded once per post, so data/errors.csv can be joined back onto the
+        posts it is talking about. input_id stays the cache key and is left alone.
         """
         chain = [(self._provider, self.model)]
         fallback = self.config.get("fallback_provider")
@@ -496,7 +501,16 @@ class LLM:
             except LLMError as exc:
                 errors.append(f"{provider}: {exc}")
         from engine import db
-        db.log_error(db.connect(), self.stage, " | ".join(errors)[:480], post_id=input_id)
+        conn = db.connect()
+        message = " | ".join(errors)[:480]
+        if post_ids:
+            # One row per post. A batch of 20 that failed is 20 posts that still need
+            # judging, and a comma-joined list of ids in a single row cannot be joined
+            # onto anything downstream.
+            for pid in post_ids:
+                db.log_error(conn, self.stage, message, post_id=pid)
+        else:
+            db.log_error(conn, self.stage, message, post_id=input_id)
         raise LLMError(f"{self.stage or 'llm'} call failed for all providers -> " + " | ".join(errors))
 
     def _call_one(self, provider, model, prompt, schema, input_id):
@@ -574,8 +588,13 @@ class LLM:
 
     def call_json_batched(self, prompt_template: str, items: list[dict],
                           schema: type[BaseModel], input_key: str = "posts",
-                          extra_values: dict | None = None) -> list[tuple]:
-        """One call per batch of posts. Returns [(parsed, stats), ...] in order."""
+                          extra_values: dict | None = None,
+                          id_map: dict | None = None) -> list[tuple]:
+        """One call per batch of posts. Returns [(parsed, stats), ...] in order.
+
+        id_map maps each item's "id" to the real row id (post_id). When given, errors
+        are recorded against the real ids instead of the 1..N numbers the prompt uses.
+        """
         default = 20
         batch_size = int((self.config.get("batch") or {}).get(self.stage, default)) or default
         extra_values = extra_values or {}
@@ -586,5 +605,10 @@ class LLM:
             values[input_key] = json.dumps(chunk, ensure_ascii=False)
             prompt = render_prompt(prompt_template, values)
             ids = ",".join(str(c.get("id")) for c in chunk)
-            results.append(self.call_json(prompt, schema, input_id=ids))
+            post_ids = None
+            if id_map:
+                found = [id_map[c["id"]] for c in chunk if c.get("id") in id_map]
+                post_ids = found or None
+            results.append(self.call_json(prompt, schema, input_id=ids,
+                                          post_ids=post_ids))
         return results
