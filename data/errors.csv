@@ -12,3 +12,130 @@ results.0.is_relevant
     For furt",,2026-10-02T10:07:47+00:00
 collect,,search 'myntra haul': HTTP 400,YouTube request failed,2026-10-02T14:38:28+00:00
 collect,,"comments UJKLdtlqVm0: HTTP 403 The video identified by the <code><a href=""/youtube/v3/docs/commentThreads/list#videoId"">videoId</a></code> parameter has disabled comments.",YouTube request failed,2026-10-02T14:57:26+00:00
+relevance,"2741,2742,2743,2744,2745",batch 138: 'candidates',,2026-10-03T08:30:50+00:00
+relevance,"10621,10622,10623,10624,10625,10626,10627,10628,10629,10630,10631,10632,10633,10634,10635,10636,10637,10638,10639,10640","gemini: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex | groq: 3 attempts, last error: ConnectionError: HTTPSConnectionPool(host='api.groq.com', port=443): Max retries exceeded with url: /open",,2026-10-03T09:46:55+00:00
+relevance,"10621,10622,10623,10624,10625","batch 532: relevance call failed for all providers -> gemini: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex | g",,2026-10-03T09:46:55+00:00
+relevance,"10641,10642,10643,10644,10645,10646,10647,10648,10649,10650,10651,10652,10653,10654,10655,10656,10657,10658,10659,10660","gemini: 3 attempts, last error: ConnectionError: HTTPSConnectionPool(host='generativelanguage.googleapis.com', port=443): Max retries exceeded with url: /v1beta/models/gemini-3.5-flash-lite:generateContent?key=*** (Caused by NameResolutionError(""HTTPSConnection(host='generativelanguage.googleapis.com', port=443): Failed to resolve 'generativelanguage.googleapis.com' ([Errno 8] nodename nor servname provided, or not known)"")) | groq: 3 attempts, last error: ConnectionError: HT",,2026-10-03T09:47:28+00:00
+relevance,"10641,10642,10643,10644,10645","batch 533: relevance call failed for all providers -> gemini: 3 attempts, last error: ConnectionError: HTTPSConnectionPool(host='generativelanguage.googleapis.com', port=443): Max retries exceeded with url: /v1beta/models/gemini-3.5-flash-lite:generateContent?key=*** (Caused by NameResolutionError(""HTTPSConnection(host='generativelanguage.googleapis.com', port=443): Failed to resolve 'generativela",,2026-10-03T09:47:28+00:00
+relevance,"10721,10722,10723,10724,10725,10726,10727,10728,10729,10730,10731,10732,10733,10734,10735,10736,10737,10738,10739,10740","gemini: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex | groq: 3 attempts, last error: HTTP 429: {""error"":{""message"":""Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01",,2026-10-03T10:50:00+00:00
+relevance,"10721,10722,10723,10724,10725","batch 537: relevance call failed for all providers -> gemini: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex | g",,2026-10-03T10:50:00+00:00
+relevance,"9241,9242,9243,9244,9245,9246,9247,9248,9249,9250,9251,9252,9253,9254,9255,9256,9257,9258,9259,9260","gemini: 3 attempts, last error: ConnectionError: HTTPSConnectionPool(host='generativelanguage.googleapis.com', port=443): Max retries exceeded with url: /v1beta/models/gemini-3.5-flash-lite:generateContent?key=*** (Caused by NameResolutionError(""HTTPSConnection(host='generativelanguage.googleapis.com', port=443): Failed to resolve 'generativelanguage.googleapis.com' ([Errno 8] nodename nor servname provided, or not known)"")) | groq: 3 attempts, last error: ConnectionError: HT",,2026-10-04T10:06:36+00:00
+relevance,"9241,9242,9243,9244,9245","batch 463: relevance call failed for all providers -> gemini: 3 attempts, last error: ConnectionError: HTTPSConnectionPool(host='generativelanguage.googleapis.com', port=443): Max retries exceeded with url: /v1beta/models/gemini-3.5-flash-lite:generateContent?key=*** (Caused by NameResolutionError(""HTTPSConnection(host='generativelanguage.googleapis.com', port=443): Failed to resolve 'generativela",,2026-10-04T10:06:36+00:00
+relevance,smoke-1,"groq: 3 attempts, last error: response did not match the schema: 6 validation errors for RelevanceBatch
+results.0.is_relevant
+  Field required [type=missing, input_value={'id': 1, 'discussesBuyingClothesOnline': True}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+results.0.relevance_reason
+  Field required [type=missing, input_value={'id': 1, 'discussesBuyingClothesOnline': True}, input_type=dict]
+    For further information vi",,2026-10-04T20:15:37+00:00
+relevance,smoke-1,"groq: 3 attempts, last error: response did not match the schema: 6 validation errors for RelevanceBatch
+results.0.is_relevant
+  Field required [type=missing, input_value={'id': 1, 'discussesBuyingClothesOnline': True}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+results.0.relevance_reason
+  Field required [type=missing, input_value={'id': 1, 'discussesBuyingClothesOnline': True}, input_type=dict]
+    For further information vi",,2026-10-04T20:15:41+00:00
+relevance,"281,282,283,284,285",batch 15: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:39+00:00
+relevance,"301,302,303,304,305",batch 16: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:39+00:00
+relevance,"321,322,323,324,325",batch 17: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:39+00:00
+relevance,"341,342,343,344,345",batch 18: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:39+00:00
+relevance,"361,362,363,364,365",batch 19: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:40+00:00
+relevance,"381,382,383,384,385",batch 20: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:40+00:00
+relevance,"401,402,403,404,405",batch 21: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:40+00:00
+relevance,"421,422,423,424,425",batch 22: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:40+00:00
+relevance,"441,442,443,444,445",batch 23: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:40+00:00
+relevance,"461,462,463,464,465",batch 24: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:40+00:00
+relevance,"481,482,483,484,485",batch 25: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:40+00:00
+relevance,"501,502,503,504,505",batch 26: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:40+00:00
+relevance,"521,522,523,524,525",batch 27: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:40+00:00
+relevance,"541,542,543,544,545",batch 28: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:40+00:00
+relevance,"561,562,563,564,565",batch 29: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:40+00:00
+relevance,"581,582,583,584,585",batch 30: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:40+00:00
+relevance,"601,602,603,604,605",batch 31: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:40+00:00
+relevance,"621,622,623,624,625",batch 32: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:41+00:00
+relevance,"641,642,643,644,645",batch 33: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:41+00:00
+relevance,"661,662,663,664,665",batch 34: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:41+00:00
+relevance,"681,682,683,684,685",batch 35: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:41+00:00
+relevance,"701,702,703,704,705",batch 36: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:41+00:00
+relevance,"721,722,723,724,725",batch 37: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:41+00:00
+relevance,"741,742,743,744,745",batch 38: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:41+00:00
+relevance,"761,762,763,764,765",batch 39: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:41+00:00
+relevance,"781,782,783,784,785",batch 40: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:41+00:00
+relevance,"801,802,803,804,805",batch 41: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:41+00:00
+relevance,"821,822,823,824,825",batch 42: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:41+00:00
+relevance,"841,842,843,844,845",batch 43: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:41+00:00
+relevance,"861,862,863,864,865",batch 44: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:24:41+00:00
+relevance,"881,882,883,884,885",batch 45: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:39+00:00
+relevance,"901,902,903,904,905",batch 46: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:39+00:00
+relevance,"921,922,923,924,925",batch 47: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:40+00:00
+relevance,"941,942,943,944,945",batch 48: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:40+00:00
+relevance,"961,962,963,964,965",batch 49: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:40+00:00
+relevance,"981,982,983,984,985",batch 50: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:40+00:00
+relevance,"1001,1002,1003,1004,1005",batch 51: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:40+00:00
+relevance,"1021,1022,1023,1024,1025",batch 52: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:40+00:00
+relevance,"1041,1042,1043,1044,1045",batch 53: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:40+00:00
+relevance,"1061,1062,1063,1064,1065",batch 54: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:40+00:00
+relevance,"1081,1082,1083,1084,1085",batch 55: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:40+00:00
+relevance,"1101,1102,1103,1104,1105",batch 56: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:40+00:00
+relevance,"1121,1122,1123,1124,1125",batch 57: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:40+00:00
+relevance,"1141,1142,1143,1144,1145",batch 58: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:40+00:00
+relevance,"1161,1162,1163,1164,1165",batch 59: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:41+00:00
+relevance,"1181,1182,1183,1184,1185",batch 60: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:41+00:00
+relevance,"1201,1202,1203,1204,1205",batch 61: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:41+00:00
+relevance,"1221,1222,1223,1224,1225",batch 62: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:41+00:00
+relevance,"1241,1242,1243,1244,1245",batch 63: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:41+00:00
+relevance,"1261,1262,1263,1264,1265",batch 64: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:41+00:00
+relevance,"1281,1282,1283,1284,1285",batch 65: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:41+00:00
+relevance,"1301,1302,1303,1304,1305",batch 66: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:41+00:00
+relevance,"1321,1322,1323,1324,1325",batch 67: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:41+00:00
+relevance,"1341,1342,1343,1344,1345",batch 68: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:42+00:00
+relevance,"1361,1362,1363,1364,1365",batch 69: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:42+00:00
+relevance,"1381,1382,1383,1384,1385",batch 70: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:42+00:00
+relevance,"1401,1402,1403,1404,1405",batch 71: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:42+00:00
+relevance,"1421,1422,1423,1424,1425",batch 72: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:42+00:00
+relevance,"1441,1442,1443,1444,1445",batch 73: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:42+00:00
+relevance,"1461,1462,1463,1464,1465",batch 74: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:25:42+00:00
+relevance,"1481,1482,1483,1484,1485",batch 75: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:39+00:00
+relevance,"1501,1502,1503,1504,1505",batch 76: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:40+00:00
+relevance,"1521,1522,1523,1524,1525",batch 77: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:40+00:00
+relevance,"1541,1542,1543,1544,1545",batch 78: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:40+00:00
+relevance,"1561,1562,1563,1564,1565",batch 79: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:40+00:00
+relevance,"1581,1582,1583,1584,1585",batch 80: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:40+00:00
+relevance,"1601,1602,1603,1604,1605",batch 81: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:40+00:00
+relevance,"1621,1622,1623,1624,1625",batch 82: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:40+00:00
+relevance,"1641,1642,1643,1644,1645",batch 83: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:40+00:00
+relevance,"1661,1662,1663,1664,1665",batch 84: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:40+00:00
+relevance,"1681,1682,1683,1684,1685",batch 85: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:41+00:00
+relevance,"1701,1702,1703,1704,1705",batch 86: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:41+00:00
+relevance,"1721,1722,1723,1724,1725",batch 87: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:41+00:00
+relevance,"1741,1742,1743,1744,1745",batch 88: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:41+00:00
+relevance,"1761,1762,1763,1764,1765",batch 89: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:41+00:00
+relevance,"1781,1782,1783,1784,1785",batch 90: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:41+00:00
+relevance,"1801,1802,1803,1804,1805",batch 91: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:41+00:00
+relevance,"1821,1822,1823,1824,1825",batch 92: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:41+00:00
+relevance,"1841,1842,1843,1844,1845",batch 93: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:41+00:00
+relevance,"1861,1862,1863,1864,1865",batch 94: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:41+00:00
+relevance,"1881,1882,1883,1884,1885",batch 95: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:41+00:00
+relevance,"1901,1902,1903,1904,1905",batch 96: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:41+00:00
+relevance,"1921,1922,1923,1924,1925",batch 97: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:41+00:00
+relevance,"1941,1942,1943,1944,1945",batch 98: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:42+00:00
+relevance,"1961,1962,1963,1964,1965",batch 99: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:42+00:00
+relevance,"1981,1982,1983,1984,1985",batch 100: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:42+00:00
+relevance,"2001,2002,2003,2004,2005",batch 101: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:42+00:00
+relevance,"2021,2022,2023,2024,2025",batch 102: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:42+00:00
+relevance,"2041,2042,2043,2044,2045",batch 103: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:42+00:00
+relevance,"2061,2062,2063,2064,2065",batch 104: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:43+00:00
+relevance,"1,2,3",test error,,2026-10-04T21:50:27+00:00
+relevance,"1,2,3,4,5",batch 1: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T22:07:16+00:00

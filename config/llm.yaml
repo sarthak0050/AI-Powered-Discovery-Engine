@@ -1,13 +1,17 @@
 # LLM settings. Everything here is editable — no code changes needed.
 # Change provider or model by editing this file.
 
-provider: gemini          # gemini | groq
+provider: gemini           # gemini | groq
 model: gemini-3.5-flash   # best model that actually works on the free tier
 fallback_provider: groq   # used only if the primary fails
 fallback_model: openai/gpt-oss-120b
 
 # A cheaper, faster model for the high-volume stages (relevance filtering).
 # Set per_stage_models.bulk to null to use the main model everywhere.
+#
+# The free tier allows 500 requests per day PER MODEL, so these two models have
+# separate allowances rather than sharing 500. That is worth 1,000 calls a day instead
+# of 500, which is the difference between finishing relevance in one day and two.
 per_stage_models:
   bulk: gemini-3.5-flash-lite
   precision: gemini-3.5-flash
@@ -16,17 +20,59 @@ temperature: 0            # ignored by some Gemini 3 endpoints; JSON schema is w
                           # actually enforces structure (see README "Determinism")
 max_retries: 3
 timeout_seconds: 90
+# Failing to connect is different from a slow answer. Without this, a dead socket after
+# the Mac wakes from sleep can sit there until timeout_seconds, three times over, before
+# the batch is written off.
+connect_timeout_seconds: 15
 
-# Free tier limits, per project. Requests per day reset at midnight Pacific.
+# Free tier limits. Read out of the providers' own responses, not guessed.
+#
+# gemini rpd: 500 per day PER MODEL. This comes from the API's own 429 body:
+#   "Quota exceeded for metric: .../generate_content_free_tier_requests, limit: 500,
+#    model: gemini-3.5-flash-lite"
+#   quotaId: GenerateRequestsPerDayPerModel-FreeTier
+# The limit is per model, so gemini-3.5-flash and gemini-3.5-flash-lite have separate
+# 500s. The run confirmed it: flash-lite logged exactly 500 successful calls then 429s.
+# 450 is that limit paced 10% below.
+#
+# gemini rpm / tpm: UNVERIFIED. The 429 named the per-day metric only and carried no
+# per-minute or token figure, and I cannot read your AI Studio rate-limit page from
+# here. These are left at Google's commonly published flash-lite free-tier figures and
+# paced 10% below. If they are wrong the symptom is 429s during the run, which are now
+# logged separately and do not consume the daily allowance, so a wrong guess here costs
+# throughput rather than correctness. Check them against AI Studio and correct if needed.
 rate_limits:
   gemini:
-    rpm: 15               # requests per minute
-    tpm: 1000000          # tokens per minute
-    rpd: 1500             # requests per day
+    rpm: 13               # requests per minute (unverified, see above)
+    tpm: 900000           # tokens per minute (unverified, see above)
+    rpd: 430              # requests per day PER MODEL. Measured hard ceiling 500, which
+                          # then returns 429. 430 sits under that with margin.
   groq:
+    # rpm / tpm / rpd come from Groq's own response headers:
+    #   x-ratelimit-limit-requests: 1000
+    #   x-ratelimit-limit-tokens: 8000   (this one is PER MINUTE)
+    # Paced 10% below.
+    #
+    # tpd is the one that is NOT in any header. Groq's real ceiling, from its 429 body:
+    #   "Rate limit reached for model `openai/gpt-oss-120b` ... on tokens per day (TPD):
+    #    Limit 200000, Used 197508, Requested 4003."
+    # Without this the throttler saw 833 requests left and kept sending ~4,000-token
+    # batches until the daily token pool was gone, then stalled on 429s for 105 batches.
+    # A request count alone does not describe Groq's free tier.
     rpm: 30
-    tpm: 6000
-    rpd: 1000
+    tpm: 7200
+    rpd: 900
+    tpd: 180000            # tokens per day PER MODEL. Limit 200000, paced 10% below.
+
+# When the primary has spent its daily allowance, hand the batch to the fallback (true)
+# or stop the stage cleanly and leave the rest for the next day (false).
+#
+# False for relevance, so the corpus stays single-judge. A 100-post stratified re-judge
+# put groq at 93.1% agreement with gemini, and the six disagreements were all groq
+# dropping praise-only posts that gemini keeps. That is defensible, but it means the
+# corpus would quietly be ~72% gemini and ~28% groq. Groq is still configured above and
+# now has a correct tpd ceiling, so it can be used later if that tradeoff is accepted.
+fallback_on_daily_quota: false
 
 # When a daily limit is hit we stop cleanly and resume tomorrow rather than
 # hammering the endpoint.

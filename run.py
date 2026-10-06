@@ -229,7 +229,8 @@ def cmd_stage(name: str, args) -> int:
 
     try:
         module = importlib.import_module(f"engine.{name}")
-        return module.run() or 0
+        # Pass the parsed args so a stage can read its own --limit/--sample flags.
+        return module.run(args) or 0
     except NotImplementedError as exc:
         print(f"\n{exc}\n")
         print(f"{STAGES.get(name, 'That stage')} is not built yet. Nothing was changed.")
@@ -265,6 +266,19 @@ def build_parser() -> argparse.ArgumentParser:
     ]:
         sub = subs.add_parser(name, help=help_text)
         sub.set_defaults(func=lambda a, n=name: cmd_stage(n, a))
+        if name == "clean":
+            sub.add_argument("--limit", type=int,
+                             help="only the first N raw posts, for a pilot run")
+        if name == "relevance":
+            sub.add_argument("--limit", type=int,
+                             help="only judge the first N posts, for a pilot run")
+            sub.add_argument("--sample", type=int, default=10,
+                             help="how many random rows to show (default 10)")
+            sub.add_argument("--rejudge", action="store_true",
+                             help="judge every post again, ignoring what is already judged")
+            sub.add_argument("--rejudge-by", metavar="PROVIDER",
+                             help="re-judge only the posts that provider judged "
+                                  "(e.g. groq), leaving everyone else's answer alone")
     return parser
 
 

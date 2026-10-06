@@ -10,6 +10,7 @@ Run `python run.py doctor` to create the database.
 
 import csv
 import os
+import re
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
@@ -35,6 +36,47 @@ CREATE TABLE IF NOT EXISTS raw_posts (
     raw_file        TEXT
 );
 
+-- Module 2 step 1: what survived cleaning, with the reason for every removal kept
+-- separately in data/exports/clean_dropped.csv.
+CREATE TABLE IF NOT EXISTS clean_posts (
+    post_id         TEXT PRIMARY KEY REFERENCES raw_posts(post_id),
+    source          TEXT,
+    date            TEXT,
+    myntra_explicit INTEGER,
+    parent_context  TEXT,
+    text_clean      TEXT,
+    text_en         TEXT,
+    is_relevant     INTEGER,
+    -- Written by the relevance stage. They live here rather than only in
+    -- relevant_posts so a re-judgement can overwrite them without touching that table.
+    relevance_reason     TEXT,
+    relevance_confidence REAL,
+    model                TEXT,
+    judged_by            TEXT,
+    judged_at            TEXT,
+    -- A second opinion, kept beside the final judgement rather than replacing it.
+    -- Populated when a post was judged by groq and then re-judged by gemini, so the
+    -- cross-model comparison survives and the final label is still single-judge.
+    groq_is_relevant     INTEGER,
+    groq_reason          TEXT,
+    groq_confidence      REAL,
+    groq_model           TEXT,
+    groq_judged_at       TEXT,
+    engagement      INTEGER,
+    rating          REAL,
+    lang_hint       TEXT,
+    url             TEXT,
+    cleaned_at      TEXT
+);
+
+-- Embedding cache, keyed by post_id, so near-duplicate detection never re-embeds
+-- text it has already seen. Vectors are stored as comma-separated floats.
+CREATE TABLE IF NOT EXISTS embeddings (
+    key       TEXT PRIMARY KEY,
+    vector    TEXT,
+    text_hash TEXT
+);
+
 -- Section 6: relevant_posts. raw_posts plus the clean, translated and judged fields.
 CREATE TABLE IF NOT EXISTS relevant_posts (
     post_id              TEXT PRIMARY KEY REFERENCES raw_posts(post_id),
@@ -44,6 +86,7 @@ CREATE TABLE IF NOT EXISTS relevant_posts (
     relevance_reason     TEXT,
     relevance_confidence REAL,
     model                TEXT,
+    judged_by            TEXT,   -- which provider answered: gemini or groq
     judged_at            TEXT
 );
 
@@ -170,7 +213,47 @@ def utc_now() -> str:
 
 
 def today() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    """The current quota day, in Pacific time.
+
+    Google resets the Gemini and Groq daily request quota at midnight Pacific, not at
+    midnight UTC. Counting against a UTC day makes our counter roll over up to seven
+    hours before the provider's does, which looks like a fresh allowance and produces a
+    burst of HTTP 429s in the evening. This is used only for quota accounting, never for
+    post dates.
+    """
+    try:
+        from zoneinfo import ZoneInfo
+        return datetime.now(ZoneInfo("America/Los_Angeles")).strftime("%Y-%m-%d")
+    except Exception:  # noqa: BLE001 - no tzdata on this machine, fall back to UTC
+        return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+
+def _migrate(conn: sqlite3.Connection) -> None:
+    """Add columns that were introduced after a database was first created.
+
+    CREATE TABLE IF NOT EXISTS silently does nothing when the table already exists, so
+    a new column in SCHEMA would never reach an older database and every write to it
+    would fail with "no such column". This walks SCHEMA and adds anything missing.
+    """
+    for match in re.finditer(
+            r"CREATE TABLE IF NOT EXISTS (\w+)\s*\((.*?)\n\s*\);", SCHEMA, re.S):
+        name, columns = match.group(1), match.group(2)
+        if not conn.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?",
+                            (name,)).fetchone():
+            continue
+        have = {r["name"] for r in conn.execute(f"PRAGMA table_info({name})")}
+        for line in columns.splitlines():
+            line = line.strip()
+            if not line or line.startswith("--"):
+                continue
+            # ALTER TABLE rejects the trailing comma that separates columns.
+            definition = line.rstrip(",")
+            # ...and any trailing SQL comment, which is fine in the schema file but is a
+            # syntax error once spliced into ALTER TABLE. Strip it first.
+            definition = re.sub(r"\s*--.*$", "", definition).strip().rstrip(",")
+            if definition.split()[0].isidentifier() and definition.split()[0] not in have:
+                conn.execute(f"ALTER TABLE {name} ADD COLUMN {definition}")
+    conn.commit()
 
 
 def connect(path=None) -> sqlite3.Connection:
@@ -180,6 +263,7 @@ def connect(path=None) -> sqlite3.Connection:
     conn = sqlite3.connect(path)
     conn.row_factory = sqlite3.Row
     conn.executescript(SCHEMA)
+    _migrate(conn)
     conn.commit()
     return conn
 

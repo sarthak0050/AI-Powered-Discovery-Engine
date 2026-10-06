@@ -1,0 +1,72 @@
+# Module 2 — Clean. Everything that decides what gets thrown away lives here, never
+# in code. Read by engine/clean.py.
+#
+# min_length_words
+#   Posts with fewer words than this are dropped. Set it to 0 to keep every post
+#   whatever its length.
+#   Kept at 0 on purpose. A 5-word floor removed 35,683 posts (55.6% of the corpus),
+#   and the ones sampled back included real purchase signals such as "Madam please
+#   give link....." and "Earrings link". AGENTS.md section 7 says the same thing: short
+#   posts are not to be removed. Length is a weak signal for whether a post describes a
+#   shopping decision, and the LLM relevance stage is a much better judge of that than a
+#   word count, so length is left out of it.
+#   Raising this to 5 will bring that removal back.
+min_length_words: 0
+
+# Near-duplicate removal. Two posts whose embeddings are more similar than this are
+# treated as the same post, and the later one is dropped. Raise it toward 1.0 to keep
+# more, lower it to remove more aggressively.
+near_duplicate_similarity: 0.95
+
+# A multilingual model, run locally and free, so it handles Hinglish and Devanagari
+# without sending text anywhere.
+embedding_model: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+
+# Rows sent to the embedding model at once. Lower it if your machine runs out of
+# memory; it does not change the results.
+embedding_batch_size: 256
+
+# Spam patterns are matched against the post text (case-insensitive). These are
+# automated notices, not people: subreddit moderator bots, and "check my profile for
+# links" advertising.
+spam_patterns:
+  - "every post in this community goes through a manual review"
+  # Removed on purpose. "please read before ordering" used to be listed here, and it
+  # caught a real shopper describing an 18-day undelivered return pickup from Myntra,
+  # which is one of the clearest purchase-decision posts in the corpus. The phrase is
+  # common in genuine complaint posts as well as moderator notices, so it cannot be
+  # used as a spam signal.
+  - "this is a reminder to ensure that your recent submission"
+  - "kindly refer to the rules"
+  - "please read the rules before posting"
+  - "check my profile for link"
+  - "link in bio"
+  - "telegram for all the links"
+  - "check telegram"
+  - "check community post for link"
+  - "for business inquiries contact"
+  - "dm for details"
+  - "i am not a doctor"
+  - "^\\s*promoted\\s*$"
+  - "^\\s*(official|admin|moderator)\\s*$"
+  # Creator self-promotion. One channel posts the same link-dropping text under all of
+  # its own videos, so these repeat dozens of times across unrelated creators' threads.
+  # These are ads pointing somewhere, not shoppers describing a decision. Counted across
+  # the 5,966 YouTube comments and replies: 163 mention a community tab or community
+  # post for links, 27 point at a Telegram or WhatsApp channel.
+  - "community post for link"
+  - "community tab"
+  - "check description"
+  - "whatsapp channel"
+  - "telegram channel"
+  - "your taste is simply impeccable"
+
+# Posts that are only a link, or only an emoji run, carry no words to analyse.
+# This is separate from min_length_words because it catches long posts that are
+# nonetheless just a URL, which the word count alone would miss.
+drop_link_only: true
+drop_emoji_only: true
+
+# Where the clean stage writes its own output.
+exports:
+  dropped: data/exports/clean_dropped.csv

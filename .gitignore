@@ -21,6 +21,10 @@ data/engine.db-shm
 # are worth keeping on this machine but must never be committed)
 data/cache/
 
+# Local safety copies of the pipeline DB, taken before risky stages. These are 200MB+
+# snapshots of collected data: keep them on this machine, never in the repo.
+backups/
+
 # Python
 .venv/
 __pycache__/

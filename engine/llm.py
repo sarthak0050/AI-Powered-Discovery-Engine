@@ -43,6 +43,32 @@ GROQ_BASE = "https://api.groq.com/openai/v1/chat/completions"
 # itself is wrong, and repeating it only wastes quota.
 RETRY_STATUSES = {408, 425, 429, 500, 502, 503, 504}
 
+# A 429 that asks us to wait longer than this is a daily quota, not a burst. Waiting
+# hours inside a batch would stall the stage, so the batch goes to the fallback.
+MAX_HONOURED_RETRY_DELAY = 30
+
+
+def _retry_delay_seconds(body: str) -> float | None:
+    """Pull retryDelay out of a Google RPC error body, in seconds.
+
+    Their errors carry details[].retryDelay as a string like "14689s". Returns None when
+    there is no usable delay, which the caller treats as "do not wait".
+    """
+    import re
+    match = re.search(r'"retryDelay"\s*:\s*"([0-9.]+)s"', body or "")
+    if match:
+        try:
+            return float(match.group(1))
+        except ValueError:
+            return None
+    match = re.search(r'retry in ([0-9hms]+)', body or "", re.IGNORECASE)
+    if match:
+        total = 0.0
+        for value, unit in re.findall(r'([0-9.]+)([hms])', match.group(1)):
+            total += float(value) * {"h": 3600, "m": 60, "s": 1}[unit]
+        return total or None
+    return None
+
 DEFAULT_LIMITS = {"rpm": 10, "tpm": 100000, "rpd": 1000}
 
 
@@ -157,9 +183,13 @@ class LLM:
 
     def __post_init__(self):
         self._recent_calls: deque = deque()   # timestamps inside the last minute
+        self._token_window: list = []        # (timestamp, tokens) inside the last minute
         self._day = None
         self._day_calls = 0
         self._day_tokens = 0
+        self._day_rejected = 0
+        self._day_by_model: dict = {}        # ok calls per model today; limits are per model
+        self._day_tokens_by_model: dict = {} # ok tokens per model today, for the tpd ceiling
 
     # ---------- model selection ----------
 
@@ -243,8 +273,26 @@ class LLM:
         try:
             row = conn.execute(
                 "SELECT COUNT(*) AS calls, COALESCE(SUM(COALESCE(prompt_tokens,0) + COALESCE(output_tokens,0)), 0) AS tokens "
-                "FROM llm_call_log WHERE day = ? AND from_cache = 0", (today,)).fetchone()
+                "FROM llm_call_log WHERE day = ? AND from_cache = 0 AND status = 'ok' "
+                "AND model = ?", (today, self.model)).fetchone()
+            rejected = conn.execute(
+                "SELECT COUNT(*) AS n FROM llm_call_log WHERE day = ? AND from_cache = 0 "
+                "AND status = 'http_429' AND model = ?", (today, self.model)).fetchone()["n"]
             self._day, self._day_calls, self._day_tokens = today, row["calls"], row["tokens"]
+            self._day_rejected = rejected
+            # Every model's usage today, not just this one, so switching models or
+            # falling back sees an accurate count for whichever it is about to use.
+            self._day_by_model = {
+                r["model"]: r["calls"] for r in conn.execute(
+                    "SELECT model, COUNT(*) AS calls FROM llm_call_log "
+                    "WHERE day = ? AND from_cache = 0 AND status = 'ok' GROUP BY model",
+                    (today,))}
+            self._day_tokens_by_model = {
+                r["model"]: r["tokens"] for r in conn.execute(
+                    "SELECT model, COALESCE(SUM(COALESCE(prompt_tokens,0) "
+                    "+ COALESCE(output_tokens,0)), 0) AS tokens FROM llm_call_log "
+                    "WHERE day = ? AND from_cache = 0 AND status = 'ok' GROUP BY model",
+                    (today,))}
         finally:
             conn.close()
 
@@ -273,24 +321,62 @@ class LLM:
         if status == "ok":
             self._day_calls += 1
             self._day_tokens += int(pt or 0) + int(ot or 0)
+            self._token_window.append((time.time(), int(pt or 0) + int(ot or 0)))
+            self._day_by_model[model] = self._day_by_model.get(model, 0) + 1
+            self._day_tokens_by_model[model] = (
+                self._day_tokens_by_model.get(model, 0) + int(pt or 0) + int(ot or 0))
+        elif status == "http_429":
+            # A rejected request is not a request against the allowance. Counting it
+            # meant a day of pure 429s looked like a full quota.
+            self._day_rejected += 1
 
     def _limits(self, provider: str) -> dict:
         return (self.config.get("rate_limits") or {}).get(provider, DEFAULT_LIMITS)
 
     # ---------- rate limiting ----------
 
-    def _throttle(self, provider: str, est_tokens: int) -> None:
+    def _recent_tokens(self, provider: str) -> int:
+        """Tokens sent in the last 60 seconds.
+
+        Tracked as a rolling window rather than a running daily total. TPM is a
+        per-minute limit, so it has to be compared with the last minute's usage.
+        """
+        now = time.time()
+        cutoff = now - 60
+        self._token_window = [(t, tok) for t, tok in self._token_window if t > cutoff]
+        return sum(tok for _t, tok in self._token_window)
+
+    def _throttle(self, provider: str, est_tokens: int, model_name: str = "") -> None:
         """Sleep until it is polite and legal to send this request."""
         self._load_day()
         limits = self._limits(provider)
         rpm = int(limits.get("rpm", 10))
         tpm = int(limits.get("tpm", 100000))
         rpd = int(limits.get("rpd", 0))
+        tpd = int(limits.get("tpd", 0))     # tokens per DAY
 
-        if rpd and self._day_calls >= rpd:
+        # The free tier limit is per model per day, not per provider, so the count that
+        # matters is this model's. gemini-3.5-flash and -flash-lite have separate 500s.
+        # Zero, not the provider-wide total, for a model with no calls yet. The limit is
+        # per model, so a model that has never run still has its full allowance.
+        used = self._day_by_model.get(model_name, 0)
+        if rpd and used >= rpd:
             raise QuotaExhausted(
-                f"Daily quota reached for {provider}: {self._day_calls}/{rpd} requests. "
-                f"Everything so far is saved — run the same command tomorrow to continue.")
+                f"Daily request quota reached for {provider}/{model_name}: "
+                f"{used}/{rpd} requests. "
+                f"Everything so far is saved — run the same command after the reset to continue.")
+
+        # Some providers cap tokens per day as well, and that ceiling is not visible in
+        # the response headers: groq returns limit-requests and limit-tokens (per minute)
+        # but its 200,000 tokens/day only appears in the 429 body. Tracking only requests
+        # meant the run sailed past the real ceiling and then stalled on 429s, because
+        # the throttler still believed it had its full request allowance.
+        tokens_today = self._day_tokens_by_model.get(model_name, 0)
+        if tpd and tokens_today + est_tokens > tpd:
+            raise QuotaExhausted(
+                f"Daily token quota reached for {provider}/{model_name}: "
+                f"{tokens_today} used, this batch needs about {est_tokens}, limit {tpd}. "
+                f"Everything so far is saved — run the same command after the reset to continue.")
 
         now = time.time()
         while self._recent_calls and now - self._recent_calls[0] >= 60:
@@ -301,13 +387,34 @@ class LLM:
             while self._recent_calls and now - self._recent_calls[0] >= 60:
                 self._recent_calls.popleft()
 
-        # Token ceiling. Extraction batches are large, so this binds before RPM does.
-        while tpm and self._day_tokens and self._day_tokens + est_tokens > tpm:
-            time.sleep(5)
+        # Token ceiling, measured over the last minute. Extraction batches are large, so
+        # this binds before RPM does. The wait is capped: if a single request is itself
+        # bigger than the per-minute limit, waiting cannot help, so it proceeds rather
+        # than sleeping until the heat death of the universe. An earlier version compared
+        # the whole day's tokens to this per-minute limit, which deadlocked permanently
+        # once the day passed tpm.
+        if tpm:
+            waited = 0.0
+            while waited < 120:
+                used = self._recent_tokens(provider)
+                if used + est_tokens <= tpm or used == 0:
+                    break
+                time.sleep(5)
+                waited += 5
 
         self._recent_calls.append(time.time())
 
     # ---------- provider calls ----------
+
+    def _timeout(self) -> tuple:
+        """(connect, read) timeouts.
+
+        Split so a dead socket after the Mac wakes from sleep fails in seconds rather
+        than sitting there for the full read timeout, three retries over.
+        """
+        read = self.config.get("timeout_seconds", 90)
+        connect = self.config.get("connect_timeout_seconds", 15)
+        return (connect, read)
 
     def _call_gemini(self, model: str, prompt: str, schema: dict | None):
         key = os.environ.get("GEMINI_API_KEY", "").strip()
@@ -320,7 +427,7 @@ class LLM:
         if schema:
             cfg["responseSchema"] = schema
         resp = requests.post(f"{GEMINI_BASE}/{model}:generateContent",
-                             params={"key": key}, timeout=self.config.get("timeout_seconds", 90),
+                             params={"key": key}, timeout=self._timeout(),
                              json={"contents": [{"parts": [{"text": prompt}]}], "generationConfig": cfg})
         if resp.status_code != 200:
             raise _HttpFailure(resp.status_code, _scrub(resp.text))
@@ -334,7 +441,7 @@ class LLM:
         if not key:
             raise LLMError("GROQ_API_KEY is missing. Paste it into .env (see README.md).")
         resp = requests.post(GROQ_BASE, headers={"Authorization": f"Bearer {key}"},
-                             timeout=self.config.get("timeout_seconds", 90),
+                             timeout=self._timeout(),
                              json={"model": model,
                                    "messages": [{"role": "user", "content": prompt}],
                                    "temperature": self.config.get("temperature", 0),
@@ -372,8 +479,20 @@ class LLM:
         for provider, model in chain:
             try:
                 return self._call_one(provider, model, prompt, schema, input_id)
-            except QuotaExhausted:
-                raise
+            except QuotaExhausted as exc:
+                # We already know this model's daily allowance is spent, before even
+                # asking the API. Re-raising would end the whole stage on the first
+                # batch. Hand the batch to the fallback instead and let it finish.
+                #
+                # "Is there anywhere left to fall back to" is decided by whether this is
+                # the last provider in the chain, not by the fallback_on_daily_quota
+                # flag. Keying it off the flag meant that turning the flag off only
+                # worked while a differently-named fallback was configured, so the
+                # switch silently did nothing and the stage stopped anyway.
+                if not self.config.get("fallback_on_daily_quota", True) or provider == chain[-1][0]:
+                    raise
+                errors.append(f"{provider}/{model}: {exc}")
+                continue
             except LLMError as exc:
                 errors.append(f"{provider}: {exc}")
         from engine import db
@@ -387,8 +506,13 @@ class LLM:
         max_retries = int(self.config.get("max_retries", 3))
         attempts = 0
         last_error = "no attempt made"
+        # A batch that keeps hitting 429 or a dead socket is not going to recover by
+        # being retried a fourth time. Give up on this batch and let the caller record
+        # it, so the post stays unjudged and is retried on the next run instead of
+        # parking the whole stage on one bad batch.
+        give_up_after = int(self.config.get("max_retries", 3))
 
-        while attempts < max_retries:
+        while attempts < give_up_after:
             attempts += 1
             key = self._cache_key(provider, model, prompt, input_id)
 
@@ -402,12 +526,24 @@ class LLM:
                     last_error = f"cached response no longer valid: {exc}"
                     self._cache_delete(key)      # drop it and ask again
 
-            self._throttle(provider, est)
+            self._throttle(provider, est, model)
             try:
                 payload, pt, ot = self._dispatch(provider, model, prompt, gemini_schema)
             except _HttpFailure as exc:
                 last_error = _scrub(str(exc))
                 self._log_call(provider, model, 0, 0, f"http_{exc.status}", last_error, attempts)
+                if exc.status == 429:
+                    # Gemini tells us exactly how long to wait in the body. Honour it when
+                    # it is short. When it is hours, waiting is pointless and the batch
+                    # goes straight to the fallback rather than burning three retries.
+                    delay = _retry_delay_seconds(str(exc))
+                    if delay is not None and 0 < delay <= MAX_HONOURED_RETRY_DELAY:
+                        print(f"      429: waiting {delay:.0f}s as the API asked")
+                        time.sleep(delay)
+                        continue
+                    raise LLMError(
+                        f"{provider} daily quota is spent, retry in "
+                        f"{(delay / 3600):.1f}h. Handing this batch to the fallback.")
                 if exc.status in RETRY_STATUSES:
                     self._backoff(attempts)
                     continue
@@ -434,7 +570,7 @@ class LLM:
             return parsed, {"cached": False, "attempts": attempts, "provider": provider,
                             "model": model, "prompt_tokens": pt, "output_tokens": ot}
 
-        raise LLMError(f"{max_retries} attempts, last error: {last_error}")
+        raise LLMError(f"{give_up_after} attempts, last error: {last_error}")
 
     def call_json_batched(self, prompt_template: str, items: list[dict],
                           schema: type[BaseModel], input_key: str = "posts",

@@ -156,7 +156,14 @@ youtube:
   region_code: IN
   relevance_language: en
   safe_search: moderate
-  include_videos: true      # the video's own title/description is a creator review too
+  # Off on purpose. A video's title and description are the creator's words, not a
+  # shopper describing their own decision, so they are not user conversation and do not
+  # belong in raw_posts. The video title is still kept on every comment as
+  # parent_context, which is what makes a comment readable. With this true, 97 video
+  # rows entered the corpus and the relevance model correctly called titles like
+  # "Day 4: Myntra vs Ajio" genuine platform comparisons, inflating the YouTube
+  # relevance rate above the other sources for the wrong reason.
+  include_videos: false
   include_replies: true
   max_top_level_comments: 300   # the user asked for up to 300, which is 3 API pages
   max_reply_pages_per_thread: 2  # at most 100 replies per thread
@@ -185,9 +192,6 @@ search_terms:
   - myntra
   - myntra app
 
-# Milestone 2 reads this. Kept here so nothing about post quality lives in code.
-# Note: there is no minimum word count on purpose. Short reviews are kept because
-# they are real sentiment, and their volume is a finding in itself.
-clean:
-  min_length_words: 0
-  near_duplicate_similarity: 0.95
+# Clean settings are not here. They live in config/clean.yaml, which is the only
+# place the clean stage reads. An earlier copy of these two settings sat in this file
+# and was never read, which meant changing it did nothing.

@@ -13,3 +13,16 @@ collect,manual,0,4,2026-10-02T15:45:48+00:00,-> raw_posts_manual.csv
 collect,manual,0,0,2026-10-02T15:45:48+00:00,failed: ManualFormatError
 collect,placeholder_test,0,0,2026-10-02T15:46:27+00:00,removed 4 example rows imported while testing the collector; data/manual/ is empty
 collect,manual,0,0,2026-10-02T15:47:20+00:00,no rows
+collect,manual,0,0,2026-10-03T05:21:37+00:00,no rows
+clean,all,64226,25071,2026-10-03T05:36:01+00:00,39155 removed -> clean_dropped.csv
+relevance,all,300,42,2026-10-03T05:59:23+00:00,-> relevant_posts.csv
+relevance,all,100,24,2026-10-03T06:00:13+00:00,-> relevant_posts.csv
+clean,all,64226,33897,2026-10-03T06:05:02+00:00,30329 removed -> clean_dropped.csv
+clean,all,64129,33799,2026-10-03T06:26:16+00:00,30330 removed -> clean_dropped.csv
+relevance,all,100,19,2026-10-03T06:30:41+00:00,-> relevant_posts.csv
+relevance,all,200,39,2026-10-03T06:31:09+00:00,-> relevant_posts.csv
+relevance,all,100,21,2026-10-03T06:52:39+00:00,-> relevant_posts.csv
+relevance,all,23519,4741,2026-10-04T11:01:00+00:00,-> relevant_posts.csv
+relevance,all,24395,4856,2026-10-05T08:27:14+00:00,-> relevant_posts.csv
+relevance,all,32273,6442,2026-10-05T09:38:13+00:00,-> relevant_posts.csv
+relevance,all,33799,6663,2026-10-06T07:47:25+00:00,-> relevant_posts.csv
