@@ -418,6 +418,8 @@ def run(argv=None, **kwargs):
 
     picked = export_label_check(conn)
     print(f"\n   {picked} posts written to data/labels/relevance_check.csv")
-    print("   Fill in the my_judgement column, then run: python run.py relevance")
+    print(f"   ...and the same {picked}, shuffled and without the verdict, to")
+    print("   data/labels/relevance_check_blind.csv")
+    print("   Judge them with: python run.py label-relevance")
     conn.close()
     return 0

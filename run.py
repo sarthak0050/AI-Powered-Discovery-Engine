@@ -5,7 +5,8 @@
     python run.py clean                           remove duplicates and junk
     python run.py relevance                       decide which posts are about buying
     python run.py pilot                           build the codebook (then stop for you)
-    python run.py extract                         tag posts against the codebook
+    python run.py extract                         tag every post against the codebook
+    python run.py label-relevance                 fill in your relevance judgements in the terminal
     python run.py label                           hand-label 100 posts in the browser
     python run.py validate                        compare the LLM against your labels
     python run.py analyze                         build the analysis tables
@@ -216,6 +217,12 @@ def cmd_doctor(_args) -> int:
     return 0
 
 
+def cmd_label_relevance(_args) -> int:
+    """Your own relevance judgements, one post at a time, in this terminal."""
+    from engine.labeller import run
+    return run()
+
+
 def cmd_stage(name: str, args) -> int:
     if name in ("label", "dashboard"):
         page = ROOT / "dashboard" / f"{name}.py"
@@ -252,6 +259,11 @@ def build_parser() -> argparse.ArgumentParser:
 
     doctor = subs.add_parser("doctor", help="check keys, sources and the database")
     doctor.set_defaults(func=cmd_doctor)
+
+    labeller = subs.add_parser(
+        "label-relevance",
+        help="judge the 100-post sample yourself, one post at a time")
+    labeller.set_defaults(func=cmd_label_relevance)
 
     for name, help_text in [
         ("clean", "remove duplicates, spam and very short posts"),
