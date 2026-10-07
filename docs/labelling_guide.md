@@ -1,21 +1,49 @@
 # Labelling guide: relevance
 
-**File to fill in:** `data/labels/relevance_check_blind.csv`
-**Column to fill:** `my_judgement` — put `1` if the post is relevant, `0` if not.
+This document **is** the rubric. It is what an independent judge reads to decide
+whether each of the 100 checked posts is relevant, and it is also the rule the engine's
+prompt is written against. If the two disagree, this guide wins.
 
-The blind file has exactly three columns: `id`, `text`, `my_judgement`. It is shuffled,
-and it hides which posts the engine kept, its confidence, and which source a post came
-from, so your judgement is not anchored by the engine's answer. The `id` is an opaque
-key — your answers are merged back onto the full file by `label_report.py` when you are
-done, so you never need to look up a post yourself.
-
-You are labelling 100 posts: 50 the engine kept, 50 it dropped. Your answers are how
-relevance precision and recall get measured. There are no wrong answers here — if you
-disagree with the engine, that is the useful result.
+The 100 posts are 50 the engine kept and 50 it dropped. Their answers measure relevance
+precision and recall. There are no wrong answers here — disagreement with the engine is
+the useful result.
 
 ---
 
 ## The rule
+
+> **A post is relevant if it describes any part of a fashion buying journey.**
+> A **pure post-purchase complaint is NOT relevant** — unless it links back to that
+> journey. The complaint test below is an *exception* to the rule, not the whole rule.
+
+### What counts as part of the buying journey
+
+Relevant when the text describes any one of these, in any direction, whether or not the
+purchase happened. This is the engine's own definition from `prompts/relevance.txt`,
+written out here so the rubric can be read on its own:
+
+- looking for something to wear, or searching what a platform or brand offers
+- saving, wishlisting, shortlisting, or bookmarking an item
+- putting something in a cart
+- comparing options, or comparing one platform against another
+- choosing between alternatives
+- deciding not to buy, holding off, or postponing
+- abandoning a cart or an order
+- buying, ordering, or paying
+- returning, refunding, or exchanging something already bought
+- describing how such a decision was made, or what happened as a result
+
+**Short, low-information posts about choosing still count as relevant.** *"which one?"*,
+*"keep the last one, pl"*, *"full sleeve available or not?"*, *"Buy a Birkenstock"* —
+all part of the journey. A post can be relevant while three words long and irrelevant
+while three paragraphs long: length and detail are not evidence either way, and a post
+does not become `0` for lack of detail.
+
+Scope is unchanged from the prompt: fashion shopping online. Anything outside it —
+phones, cars, food, gym, careers — is `0`, and so is chatter, greetings or jokes with
+no shopping decision in them.
+
+### The exception: a pure complaint
 
 > **A pure post-purchase complaint is NOT relevant.**
 > A complaint becomes **relevant** only when the post links that experience to a
@@ -30,7 +58,8 @@ Two halves, and the second one is what makes a post relevant:
 
 ## What counts as "links to a buying decision"
 
-Any one of these is enough:
+Any one of these is enough — this list is what separates a relevant complaint from a
+support ticket, and it is not a test applied to posts that are not complaints:
 
 - **Stop buying** — "I won't order from here again", "I'm deleting the app"
 - **Delay** — "I'll wait for the sale", "not buying until this is fixed", postponing an order
@@ -43,12 +72,15 @@ that second half, it is a support ticket, not a shopping decision.
 
 ## Returns and refunds
 
-**Returns and refunds count as relevant only when tied to a buying decision.**
+Returning and refunding are on the list above, so a post about them follows the same
+two-part shape as everything else: a stated change to future buying makes it `1`, the
+process on its own is `0`.
 
-- **Relevant** — the return experience feeds a purchase decision: *"easy to shop and
-  cod easy to return so so good for shooping llve it"* (`appstore:14606302466`), or it
-  changed how the author shops — now ordering two sizes to keep one, checking the
-  return window before adding to cart, or buying somewhere *because* returns are easy.
+- **Relevant** — the return or exchange drives an explicit buying decision: *"Even when
+  an exchange is eligible, they don't resolve the issue despite calling customer care
+  multiple times. I'm deleting the app and will never shop from Myntra again"*
+  (`appstore:14610049074`); or the author now orders two sizes to keep one, checks the
+  return window before adding to cart, or buys somewhere *because* returns are easy.
 - **NOT relevant** — a pure return/refund process complaint with no buying link:
   *"I have not received the full refund and they are saying that the platform fee is
   not refunded"* (`playstore:fae1d562-b6cc-49dc-af3c-7081cf685dfd`).
@@ -137,13 +169,13 @@ inconsistently.
 Your rule settles it: **returning and refunding are relevant only when the post also
 says what the author will do next time they buy.**
 
-**The prompt will not be touched until your labels are in.** We measure the filter as
-it stands first, so precision and recall describe the system that actually ran. The
-contradiction is fixed in `prompts/relevance.txt` only afterwards, and only on your
-approval.
+**The prompt will not be touched until the reference answers are in and the filter has
+been measured.** We measure it as it stands first, so precision and recall describe the
+system that actually ran. The contradiction is fixed in `prompts/relevance.txt` only
+afterwards, and only on your approval.
 
-That is a real tightening, so expect to disagree with the engine on some rows. In
-particular, watch for the engine keeping complaints like *"Full of scam... They
+That is a real tightening, so expect some disagreement with the engine. In
+particular, the engine keeps complaints like *"Full of scam... They
 cancelled my order... haven't processed a refund"* (`playstore:e504636a...`) or a bare
 refund complaint about platform fees (`playstore:fae1d562...`) — under this rule both
 should be `0`, because neither author says they will change how they shop.
@@ -153,9 +185,39 @@ precision or recall comes in under 85%.
 
 ---
 
-## When you are done
+## How the answers are produced
 
-Fill in every `my_judgement` in `data/labels/relevance_check_blind.csv`, save it, and
-tell me. Nothing else needs editing — the answers are merged back onto
-`data/labels/relevance_check.csv` by id, and the report fails loudly if an id is
-missing or a value is anything other than `0` or `1`.
+```
+python run.py judge-relevance            # judge the 100 rows against this guide
+python -m engine.label_report --judge    # measure precision and recall
+```
+
+The judge reads this guide plus the post text — nothing else. Answers land in
+`judge_label` and `judge_reason` on `data/labels/relevance_check.csv`. The
+`my_judgement` column stays empty, and the blind file plus `python run.py
+label-relevance` remain available whenever you want a human cross-check.
+
+## Methodology
+
+The relevance check is a **cross-model validation against a written rubric**, not human
+validation.
+
+- **System under test:** Gemini's verdict on each of the 100 rows
+  (`engine_said_relevant`, with its `relevance_reason`).
+- **Reference answers:** an independent judge — a different model (Groq,
+  `openai/gpt-oss-120b`) — applying this guide as the rubric.
+- **Independence:** the judge never sees the engine's verdict, confidence, source or
+  date, so agreement is two independent reads of the same written rule, not one model
+  grading its own homework. The judge is hard-pinned to Groq with no fallback, because
+  a fallback to Gemini would silently break that.
+- **Reported twice:** across all 100 rows, and excluding the 8 rows quoted as worked
+  examples in this guide — the judge was handed those answers inside the rubric, so
+  they are not independent evidence.
+- **Weighting:** precision, recall and the estimated count of wrongly dropped posts are
+  post-stratified to the real source mix of the corpus (playstore is 70% of kept rows,
+  appstore 1%), never averaged over the sample.
+- **Human labels are still possible:** `my_judgement` is untouched by the judge, so a
+  hand-labelled run can be added later as a third opinion.
+- **Extraction validation (Module 4) uses the same shape:** about 50 posts, judged on
+  `primary_code` and `barrier_type` against `config/codebook.yaml` instead of this
+  guide, again by a model that has not seen the system's answer.
