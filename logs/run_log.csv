@@ -28,3 +28,5 @@ relevance,all,32273,6442,2026-10-05T09:38:13+00:00,-> relevant_posts.csv
 relevance,all,33799,6663,2026-10-06T07:47:25+00:00,-> relevant_posts.csv
 judge,relevance_check,100,50,2026-10-07T09:29:15+00:00,groq/openai/gpt-oss-120b
 judge,relevance_check,100,100,2026-10-07T11:19:48+00:00,groq/openai/gpt-oss-120b
+in_scope,relevance_check,50,50,2026-10-07T15:26:43+00:00,gemini/gemini-3.5-flash
+in_scope,pilot,300,300,2026-10-07T15:38:59+00:00,gemini/gemini-3.5-flash

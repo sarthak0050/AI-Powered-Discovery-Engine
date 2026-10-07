@@ -8,6 +8,8 @@
     python run.py extract                         tag every post against the codebook
     python run.py label-relevance                 fill in your relevance judgements in the terminal
     python run.py judge-relevance                 judge the 100-post sample with an independent model
+    python run.py in-scope                        stage-2 scope check on the kept rows (locked rubric)
+    python run.py in-scope --pilot                draw the 300 pilot posts and check them first
     python run.py label                           hand-label 100 posts in the browser
     python run.py validate                        compare the LLM against your labels
     python run.py analyze                         build the analysis tables
@@ -230,6 +232,14 @@ def cmd_judge_relevance(args) -> int:
     return run(force=getattr(args, "force", False))
 
 
+def cmd_in_scope(args) -> int:
+    """Stage 2: the locked rubric applied to what the relevance filter kept."""
+    from engine.inscope import run_pilot, run_sample
+    if getattr(args, "pilot", False):
+        return run_pilot(force=getattr(args, "force", False))
+    return run_sample(force=getattr(args, "force", False))
+
+
 def cmd_stage(name: str, args) -> int:
     if name in ("label", "dashboard"):
         page = ROOT / "dashboard" / f"{name}.py"
@@ -278,6 +288,15 @@ def build_parser() -> argparse.ArgumentParser:
     judder.add_argument("--force", action="store_true",
                         help="re-judge rows that already have a judge_label")
     judder.set_defaults(func=cmd_judge_relevance)
+
+    inscope = subs.add_parser(
+        "in-scope",
+        help="apply the locked rubric as the second-stage scope check (in_scope)")
+    inscope.add_argument("--pilot", action="store_true",
+                         help="draw the 300 Module 3 pilot posts and check them first")
+    inscope.add_argument("--force", action="store_true",
+                         help="re-check rows that already have an in_scope verdict")
+    inscope.set_defaults(func=cmd_in_scope)
 
     for name, help_text in [
         ("clean", "remove duplicates, spam and very short posts"),

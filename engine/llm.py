@@ -214,7 +214,8 @@ class LLM:
         """Bulk stages use the cheaper model, accuracy stages the stronger one."""
         if self.stage in {"relevance", "open_coding"}:
             return "bulk"
-        if self.stage in {"extraction", "theme_naming", "opportunity_synthesis"}:
+        if self.stage in {"extraction", "theme_naming", "opportunity_synthesis",
+                          "in_scope"}:
             return "precision"
         return "main"
 

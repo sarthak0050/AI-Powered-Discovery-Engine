@@ -1,0 +1,28 @@
+You decide whether each post is in scope for analysis, by applying ONE written rule
+to the text of the post. Nothing else: no outside knowledge, no benefit of the doubt,
+no guessing what the author probably meant.
+
+The rule, verbatim. It is the whole rule, base test plus exception, and it wins over
+anything else you might assume:
+
+{{rubric}}
+
+For each post return:
+- in_scope.value: true only when the post is in scope under that rule.
+- in_scope.reason: one line naming the phrase in the post that decided it.
+
+Return ONLY valid JSON:
+
+{
+  "results": [
+    {
+      "id": <the integer id from the input>,
+      "in_scope": {"value": <true or false>, "reason": "<one line>"}
+    }
+  ]
+}
+
+One result per input id, in the same order. No other keys.
+
+POSTS:
+{{posts}}

@@ -39,11 +39,28 @@ JUDGE_REASON = "judge_reason"
 
 METHODOLOGY = """\
 METHODOLOGY — cross-model validation against a written rubric
-  The engine's verdicts were produced by Gemini. The reference answers come from an
-  independent judge (a different model, run on Groq) applying docs/labelling_guide.md
-  as the rubric. The judge never saw the engine's verdict, confidence, source or date.
+  Two-stage filtering. Stage 1 is the broad relevance pass (prompts/relevance.txt
+  over the whole corpus): its verdict is engine_said_relevant, and every number below
+  measures it. Stage 2 is an in_scope check against docs/labelling_guide.md — base
+  rule plus the pure-complaint exception — run on what stage 1 kept, during extraction
+  (python run.py in-scope). Posts that fail stage 2 are excluded from every analysis
+  table but stay in the database; its precision is reported by that command.
+  Model per stage: stage 1 relevance ran on Gemini; the judge, the pilot's in_scope
+  screening and Module 3 coding ran on Groq (openai/gpt-oss-120b) because Gemini's
+  quota was exhausted that day — sampling, recorded, not hidden. Pilot screening pass
+  rate: 150 of 300 posts (50%). The 50-row stage-2 validation answered by Groq, the
+  judge's own model, is marked INVALID in in_scope_status and re-run on Gemini before
+  any stage-2 precision number is quoted.
+  Reference answers: an independent judge (a different model, run on Groq) applying
+  docs/labelling_guide.md as the rubric. The judge never saw the engine's verdict,
+  confidence, source or date.
   This is NOT human validation: no hand labels were used, my_judgement stays empty.
-  Metrics are post-stratified to the real source mix of the corpus, not to the sample."""
+  Metrics are post-stratified to the real source mix of the corpus, not to the sample.
+  Recall limitation: the filter mainly misses short, low-information posts, because
+  length is not evidence and terse posts are the ones it drops by mistake. The
+  estimated number of wrongly dropped posts is therefore reported as a 95% confidence
+  interval rather than a point estimate — the interval is wide, and that width is the
+  honest form of the number."""
 
 
 DECISION = re.compile(
@@ -255,6 +272,37 @@ def post_stratify(group: dict, corpus: dict, verdict: int):
     return est, sampled_total, corpus_total
 
 
+def missed_ci(rows: list[dict], corpus: dict) -> tuple[float, float, float]:
+    """Point estimate and 95% CI for the relevant posts the filter wrongly dropped.
+
+    The estimator is post-stratified over source within the dropped verdict:
+        est  = sum_h N_h * p_h
+        var  = sum_h N_h^2 * (1 - n_h/N_h) * s_h^2 / n_h
+    where h is a source, N_h its corpus size, p_h the share of sampled rows from that
+    source the reference called relevant, and s_h^2 the sample variance of that
+    binary share. Standard design-based variance for a stratified estimate, normal
+    approximation, clamped to [0, dropped population].
+
+    The interval is the number that gets reported, not the point estimate: with 12-13
+    rows per source against strata of thousands, the sampling error is large and a
+    single figure would imply a precision the sample cannot support.
+    """
+    est = var = 0.0
+    pop_total = 0
+    for source, srows in strata(rows, 0).items():
+        pop = corpus.get((0, source), 0)
+        if not srows or not pop:
+            continue
+        n = len(srows)
+        p = sum(r["mine"] for r in srows) / n
+        s2 = (p * (1 - p)) * n / (n - 1) if n > 1 else 0.0
+        est += pop * p
+        var += (pop ** 2) * max(1 - n / pop, 0.0) * s2 / n
+        pop_total += pop
+    sd = var ** 0.5
+    return est, max(0.0, est - 1.96 * sd), min(float(pop_total), est + 1.96 * sd)
+
+
 def report(rows: list[dict] | None = None) -> dict:
     conn = db.connect()
     corpus = corpus_counts(conn)
@@ -274,6 +322,7 @@ def report(rows: list[dict] | None = None) -> dict:
     # Missed: of what the engine dropped, how much you say was relevant after all.
     fn, _, drop_pop = post_stratify(strata(rows, 0), corpus, 0)
     recall = tp / (tp + fn) if (tp + fn) else 0.0
+    _, missed_lo, missed_hi = missed_ci(rows, corpus)
 
     raw_p = sum(r["mine"] for r in kept_rows) / len(kept_rows)
     raw_fn = sum(r["mine"] for r in drop_rows) / len(drop_rows)
@@ -283,7 +332,7 @@ def report(rows: list[dict] | None = None) -> dict:
         "tp": tp, "fn": fn,
         "raw_precision": raw_p, "raw_missed_rate": raw_fn,
         "kept_pop": kept_pop, "drop_pop": drop_pop,
-        "missed_total": fn,
+        "missed_total": fn, "missed_lo": missed_lo, "missed_hi": missed_hi,
         "kept_rows": kept_rows, "drop_rows": drop_rows,
         "corpus": corpus, "rows": rows,
     }
@@ -360,7 +409,8 @@ def _print_metrics(title: str, res: dict, detail: bool = True,
     print("-" * 74)
     print(f"  precision            {P*100:.1f}%")
     print(f"  recall               {R*100:.1f}%")
-    print(f"  relevant posts wrongly dropped (estimated)   {res['missed_total']:,.0f}")
+    print(f"  relevant posts wrongly dropped (95% CI)      {res['missed_lo']:,.0f} – "
+          f"{res['missed_hi']:,.0f}")
     print(f"  rows behind this view: {len(res['kept_rows'])} kept + "
           f"{len(res['drop_rows'])} dropped")
     print()

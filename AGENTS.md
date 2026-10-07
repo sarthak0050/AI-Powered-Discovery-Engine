@@ -108,6 +108,7 @@ discovery-engine/
 **relevant_posts**: raw_posts + `text_clean`, `text_en` (English normalisation of Hinglish/Hindi), `is_relevant` (bool), `relevance_reason`, `relevance_confidence`.
 
 **tagged_posts**: one row per post, with the fields defined in `config/schema.yaml`. The default schema is below; it describes decision behaviour generically and contains no assumed problem:
+- `in_scope`: `{ value: bool, reason: one line }` — **first field, first decision.** Defined by the locked rubric in `docs/labelling_guide.md` (base rule + pure-complaint exception). `value = false` posts are excluded from every analysis table but stay in the database.
 - `journey_stage`: browsing | saved_or_wishlisted | in_cart | comparing | postponed | abandoned | purchased | returned | other
 - `saving_behaviour`: free text + code from codebook (why the item was saved, if mentioned)
 - `codes`: list of codebook codes (1–4 per post)
@@ -143,6 +144,7 @@ discovery-engine/
 
 ### Module 3 — Pilot and codebook builder
 - Draw a stratified sample of 300 relevant posts (balanced across sources).
+- Put that sample through the `in_scope` check first (`python run.py in-scope --pilot`), so the codebook is built only from posts that pass the locked rubric — a pilot full of pure complaints would teach it the wrong categories.
 - Open coding: for each post, the LLM writes 1–3 short free-text descriptive codes with no predefined list (`prompts/open_coding.txt`).
 - Embed and cluster the open codes. The LLM names each cluster and drafts a definition, inclusion rule, exclusion rule and 2 example quotes (`prompts/theme_naming.txt`).
 - Write a draft `config/codebook.yaml` (target 20–40 codes) plus `data/exports/codebook_review.csv` for me to edit. Always include an `other_emerging` code.

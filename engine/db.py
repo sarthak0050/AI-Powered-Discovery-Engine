@@ -102,8 +102,13 @@ CREATE TABLE IF NOT EXISTS relevant_posts (
 
 -- Section 6: tagged_posts. One row per post, matching config/schema.yaml.
 -- segment_cues from the spec is stored as separate columns so they are easy to filter.
+-- in_scope is the first field of the schema and the second stage of the relevance
+-- filter: it is decided by the locked rubric in docs/labelling_guide.md. Rows with
+-- in_scope = 0 stay in this table and are excluded from every analysis table.
 CREATE TABLE IF NOT EXISTS tagged_posts (
     post_id                 TEXT PRIMARY KEY REFERENCES relevant_posts(post_id),
+    in_scope                INTEGER,
+    in_scope_reason         TEXT,
     journey_stage           TEXT,
     saving_behaviour_text   TEXT,
     saving_behaviour_code   TEXT,

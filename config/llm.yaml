@@ -83,6 +83,8 @@ batch:
   judge: 10               # rows per call for the independent judge (python run.py
                           # judge-relevance). Kept at 10 rather than 20 because the
                           # rubric rides along in every prompt and groq's tpm is 7,200.
+  in_scope: 20            # posts per call for the stage-2 scope check (python run.py
+                          # in-scope): 50 kept rows = 3 calls, the 300-post pilot = 15.
   extraction: 12          # posts per LLM call (section 7, Module 4)
   open_coding: 10
 

@@ -2,6 +2,10 @@
 # It contains no assumed user problem, theme or barrier — every theme code comes
 # from the pilot (config/codebook.yaml).
 #
+# in_scope is the first field and the first decision. It is defined by the locked
+# rubric in docs/labelling_guide.md (base rule + complaint exception): posts that
+# fail it are excluded from every analysis table but stay in the database.
+#
 # Changing this file changes what the LLM is asked to produce. Do not add
 # brand-specific or problem-specific values here.
 
@@ -42,6 +46,20 @@ enum:
     must_be_verbatim: true   # checked against the original post text; reject if not found
 
 fields:
+  in_scope:
+    type: object
+    description: >
+      THE FIRST DECISION. value is true only when the post is in scope for analysis,
+      under the locked rubric in docs/labelling_guide.md: the base rule ("a post is
+      relevant if it describes any part of a fashion buying journey") with the
+      complaint exception ("a pure post-purchase complaint is NOT relevant unless it
+      links back to that journey"). reason is one line naming the phrase in the post
+      that decided it. When value is false, every other field is null and the post is
+      excluded from all analysis — the row and this verdict stay in the database. If
+      this description and docs/labelling_guide.md ever disagree, the guide wins.
+    properties:
+      value: boolean
+      reason: string
   journey_stage:
     type: enum
     description: Where the user is in the decision journey, as stated in the post.

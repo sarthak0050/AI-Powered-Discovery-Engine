@@ -216,6 +216,31 @@ validation.
 - **Weighting:** precision, recall and the estimated count of wrongly dropped posts are
   post-stratified to the real source mix of the corpus (playstore is 70% of kept rows,
   appstore 1%), never averaged over the sample.
+- **Two-stage filtering:** stage 1 is the broad relevance pass (`prompts/relevance.txt`
+  over the whole corpus) — that is what `engine_said_relevant` holds and what the
+  metrics above measure. Stage 2 is an `in_scope` check applying this guide to the posts
+  stage 1 kept, run during extraction (`python run.py in-scope`). Posts failing stage 2
+  are excluded from every analysis table but kept in the database, so a later ruling on
+  them is one UPDATE away rather than a lost post.
+- **Which model runs which stage:** stage 1 (relevance) and stage 2 (`in_scope` default)
+  run on Gemini. The judge, and the Module 3 pilot, ran on Groq
+  (`openai/gpt-oss-120b`) because Gemini's daily quota was exhausted on the day the
+  pilot was screened — pilot screening is sampling, not measurement, so the swap is
+  recorded rather than hidden. Consequence: the 50-row stage-2 validation also came
+  back on Groq, the judge's own model, so it would be the judge grading itself. Those
+  rows are marked `INVALID` in `in_scope_status` in `data/labels/relevance_check.csv`,
+  no stage-2 precision number is reported from them, and they are re-run on Gemini
+  (`python run.py in-scope --force`, ~3 calls) after the quota reset.
+- **Observed stage-2 pass rate:** on the 300-post pilot draw (seed 7, balanced by
+  source), 150 posts passed `in_scope` — 50% overall; by source appstore 36/71,
+  playstore 28/77, reddit 45/76, youtube 41/76. Pass rate is expected to sit near the
+  stage-1 precision range, not near 100%: stage 1 is deliberately broad.
+- **Recall limitation, reported as an interval:** the filter mainly misses short,
+  low-information posts — length is not evidence, so terse posts are the ones it drops
+  by mistake. The estimated count of wrongly dropped posts is therefore printed as a
+  95% confidence interval, not a point estimate: 12-13 sampled rows per source stand
+  for strata of thousands, the interval is wide, and that width is the honest form of
+  the number.
 - **Human labels are still possible:** `my_judgement` is untouched by the judge, so a
   hand-labelled run can be added later as a third opinion.
 - **Extraction validation (Module 4) uses the same shape:** about 50 posts, judged on

@@ -8,6 +8,12 @@ You will be given:
 3. A numbered list of posts as JSON.
 
 Rules:
+- in_scope is the FIRST field and the first decision. value is true only under the
+  rule given in the schema's in_scope field, which is the locked rubric in
+  docs/labelling_guide.md — base rule plus the pure-complaint exception. If this
+  instruction and that guide ever disagree, the guide wins. When value is false, set
+  every other field to its null or empty value: the post is excluded from analysis and
+  only its in_scope verdict and reason are kept (the row itself stays in the database).
 - Use only the post text. Never use outside knowledge or general assumptions.
 - Do not infer segments. If gender, life stage, city tier, price sensitivity,
   shopping frequency or category is not stated or clearly implied by the post,
@@ -33,6 +39,7 @@ Return ONLY valid JSON:
   "results": [
     {
       "id": <the integer id from the input>,
+      "in_scope": {"value": <true or false>, "reason": "<one line>"},
       "journey_stage": "<one of: {{journey_stages}}>",
       "saving_behaviour": {"text": "<why saved, or null>", "code": "<codebook code, or null>"},
       "codes": ["<codebook code>"],
