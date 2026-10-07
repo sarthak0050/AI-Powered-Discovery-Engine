@@ -7,6 +7,7 @@
     python run.py pilot                           build the codebook (then stop for you)
     python run.py extract                         tag every post against the codebook
     python run.py label-relevance                 fill in your relevance judgements in the terminal
+    python run.py judge-relevance                 judge the 100-post sample with an independent model
     python run.py label                           hand-label 100 posts in the browser
     python run.py validate                        compare the LLM against your labels
     python run.py analyze                         build the analysis tables
@@ -223,6 +224,12 @@ def cmd_label_relevance(_args) -> int:
     return run()
 
 
+def cmd_judge_relevance(args) -> int:
+    """The same 100 posts judged by an independent model against the written guide."""
+    from engine.judge import run
+    return run(force=getattr(args, "force", False))
+
+
 def cmd_stage(name: str, args) -> int:
     if name in ("label", "dashboard"):
         page = ROOT / "dashboard" / f"{name}.py"
@@ -264,6 +271,13 @@ def build_parser() -> argparse.ArgumentParser:
         "label-relevance",
         help="judge the 100-post sample yourself, one post at a time")
     labeller.set_defaults(func=cmd_label_relevance)
+
+    judder = subs.add_parser(
+        "judge-relevance",
+        help="judge the 100-post sample with an independent model (no hand labelling)")
+    judder.add_argument("--force", action="store_true",
+                        help="re-judge rows that already have a judge_label")
+    judder.set_defaults(func=cmd_judge_relevance)
 
     for name, help_text in [
         ("clean", "remove duplicates, spam and very short posts"),

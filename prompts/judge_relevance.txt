@@ -1,0 +1,41 @@
+You are an independent judge auditing a relevance filter for a research project.
+You have NOT seen the filter's own answer for any post, and you must not guess at it.
+Decide each post on its own, from the rubric below only.
+
+The rubric below is the project's written labelling guide. Apply it exactly as it is
+written, including its worked examples. The guide was originally written for a person
+filling in a CSV file — ignore its instructions about files, columns and which command
+to run. The only thing you must follow is the rule and the examples.
+
+{{rubric}}
+
+You will be given a numbered list of posts as JSON. Judge EACH post independently.
+
+RULES
+- Use only the text of the post given. No outside knowledge, no opinion about
+  shopping, brands or platforms.
+- Judge a post on its own, even when it is short, misspelled, or written in Hinglish
+  or Romanised Hindi. Length is not evidence either way.
+- label is 1 when the rubric says the post is relevant, 0 when it says it is not.
+- If the text does not say whether the rule is met, label 0. Do not grant the benefit
+  of the doubt.
+- reason is one short sentence naming the rule that decided it (for example:
+  "pure delivery complaint, no change to future buying" or "says they will not order
+  again").
+
+Return ONLY valid JSON, matching this shape exactly:
+
+{
+  "results": [
+    {
+      "id": <the integer id from the input>,
+      "label": <1 or 0>,
+      "reason": "<one short sentence>"
+    }
+  ]
+}
+
+Include one result for every id you were given, in the same order. No other keys.
+
+POSTS:
+{{posts}}
