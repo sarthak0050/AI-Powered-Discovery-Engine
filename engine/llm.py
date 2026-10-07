@@ -49,10 +49,12 @@ MAX_HONOURED_RETRY_DELAY = 30
 
 
 def _retry_delay_seconds(body: str) -> float | None:
-    """Pull retryDelay out of a Google RPC error body, in seconds.
+    """Pull the wait time out of a 429 body, in seconds. None when there is none.
 
-    Their errors carry details[].retryDelay as a string like "14689s". Returns None when
-    there is no usable delay, which the caller treats as "do not wait".
+    Google carries it as details[].retryDelay, "14689s", and as "retry in 12s".
+    Groq words it "Please try again in 1.815s" — a per-minute burst, not a daily
+    quota, and the difference matters: waiting 1.8s fixes it, while treating it as
+    a spent daily quota hands the batch away for nothing.
     """
     import re
     match = re.search(r'"retryDelay"\s*:\s*"([0-9.]+)s"', body or "")
@@ -61,6 +63,9 @@ def _retry_delay_seconds(body: str) -> float | None:
             return float(match.group(1))
         except ValueError:
             return None
+    match = re.search(r'try again in\s+([0-9.]+)\s*s', body or "", re.IGNORECASE)
+    if match:
+        return float(match.group(1))
     match = re.search(r'retry in ([0-9hms]+)', body or "", re.IGNORECASE)
     if match:
         total = 0.0
@@ -115,8 +120,15 @@ def _scrub(text) -> str:
 
 
 def _estimate_tokens(text: str) -> int:
-    """Rough token count for throttling: about 4 characters per token."""
-    return max(1, len(text) // 4)
+    """Rough token count for throttling: about 3 characters per token.
+
+    4 characters per token under-counted badly against Groq, which counts its own way:
+    a prompt of ~12,000 characters came back as 4,438 requested tokens while the
+    throttler believed it was 3,000, so a per-minute check that passed locally still
+    drew a 429 from the API. Over-estimating only costs a little waiting; under-
+    estimating costs a rejected call and a retry.
+    """
+    return max(1, len(text) // 3)
 
 
 def pydantic_to_gemini_schema(model: type[BaseModel]) -> dict:
@@ -547,17 +559,24 @@ class LLM:
                 last_error = _scrub(str(exc))
                 self._log_call(provider, model, 0, 0, f"http_{exc.status}", last_error, attempts)
                 if exc.status == 429:
-                    # Gemini tells us exactly how long to wait in the body. Honour it when
-                    # it is short. When it is hours, waiting is pointless and the batch
-                    # goes straight to the fallback rather than burning three retries.
+                    # Gemini tells us exactly how long to wait in the body. Honour it
+                    # when it is short — that is a burst limit and waiting fixes it.
+                    # When it is hours, waiting is pointless and the batch goes to the
+                    # fallback rather than burning three retries.
                     delay = _retry_delay_seconds(str(exc))
                     if delay is not None and 0 < delay <= MAX_HONOURED_RETRY_DELAY:
                         print(f"      429: waiting {delay:.0f}s as the API asked")
                         time.sleep(delay)
                         continue
-                    raise LLMError(
-                        f"{provider} daily quota is spent, retry in "
-                        f"{(delay / 3600):.1f}h. Handing this batch to the fallback.")
+                    if delay is not None:
+                        raise LLMError(
+                            f"{provider} daily quota is spent, retry in "
+                            f"{delay / 3600:.1f}h. Handing this batch to the fallback.")
+                    # No wait time in the body. Assuming a spent daily quota here used
+                    # to crash on a None division, and would be wrong anyway: back off
+                    # and retry like any other rate limit.
+                    self._backoff(attempts)
+                    continue
                 if exc.status in RETRY_STATUSES:
                     self._backoff(attempts)
                     continue

@@ -86,6 +86,43 @@ class TestOffline(unittest.TestCase):
         with self.assertRaises(llm_mod.QuotaExhausted):
             llm.call_json("x", None)
 
+    def test_429_with_no_stated_delay_backs_off_instead_of_crashing(self):
+        """Groq bursts must parse when they carry a wait, and never divide by None."""
+        from engine import llm as llm_mod
+        from engine.judge import JudgeBatch
+
+        # The body that actually arrived while judging: a per-minute burst with a
+        # second-and-a-half wait, worded nothing like Google's retryDelay.
+        self.assertAlmostEqual(
+            llm_mod._retry_delay_seconds(
+                "Rate limit reached for model `openai/gpt-oss-120b` on tokens per "
+                "minute (TPM): Limit 8000, Used 3804, Requested 4438. "
+                "Please try again in 1.815s."),
+            1.815)
+
+        llm = LLM(stage="judge")
+        llm.config = dict(llm.config, provider="groq", model="openai/gpt-oss-120b",
+                          per_stage_models={}, fallback_provider=None, max_retries=3)
+        llm._throttle = lambda *a, **k: None
+        llm._log_call = lambda *a, **k: None
+        llm._cache_get = lambda key: None
+        llm._cache_put = lambda *a, **k: None
+        llm._backoff = lambda attempt: None      # never actually sleep in a test
+
+        calls = {"n": 0}
+
+        def flaky(provider, model, prompt, schema):
+            calls["n"] += 1
+            if calls["n"] == 1:
+                # No wait time at all — used to raise TypeError: NoneType / int.
+                raise llm_mod._HttpFailure(429, "slow down")
+            return {"results": []}, 10, 5
+
+        llm._dispatch = flaky
+        parsed, stats = llm.call_json("x", JudgeBatch)
+        self.assertEqual(calls["n"], 2)
+        self.assertEqual(parsed.results, [])
+
     def test_daily_quota_counts_only_ok_calls_and_is_per_model(self):
         """429s are rejections, not usage, and each model has its own 500."""
         llm = LLM(stage="relevance")
