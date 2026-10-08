@@ -44,8 +44,8 @@ class RelevanceBatch(BaseModel):
 class TestOffline(unittest.TestCase):
     """No network. These catch most mistakes before an API call is wasted."""
 
-    def test_daily_quota_429_hands_batch_to_fallback(self):
-        """A 429 that asks us to wait hours must not burn retries or stop the run."""
+    def test_pinned_provider_stops_the_stage_when_unavailable(self):
+        """No fallback anywhere: a spent quota or failing provider stops the stage."""
         from engine import llm as llm_mod
 
         self.assertEqual(llm_mod.MAX_HONOURED_RETRY_DELAY, 30)
@@ -56,35 +56,33 @@ class TestOffline(unittest.TestCase):
         self.assertEqual(llm_mod._retry_delay_seconds("Please retry in 20s."), 20.0)
         self.assertIsNone(llm_mod._retry_delay_seconds("no delay in this body"))
 
-        # Build the chain explicitly rather than reading today's config: this test is
-        # about the gemini->groq handoff and must keep testing it even while the live
-        # config has relevance pointed at groq for the day.
+        # Relevance is pinned to gemini. With the daily allowance already spent,
+        # call_json must raise instead of silently handing the batch to another
+        # provider — there is no fallback to hand it to.
         llm = LLM(stage="relevance")
         llm.config = dict(llm.config, provider="gemini", model="gemini-3.5-flash-lite",
-                          per_stage_models={}, fallback_provider="groq",
-                          fallback_model="openai/gpt-oss-120b",
-                          fallback_on_daily_quota=True)
+                          per_stage_models={}, stage_providers={}, stage_models={})
+        llm._day = db.today()                 # stop _load_day re-reading the DB
         llm._day_by_model = {llm.model: 500}       # daily allowance already spent
+        llm._cache_get = lambda key: None          # a stray cached gemini "x" answer exists
+        with self.assertRaises(QuotaExhausted):
+            llm.call_json("x", RelevanceBatch)
 
-        def fake_call_one(provider, model, prompt, schema, input_id):
-            if provider == "gemini":
-                raise llm_mod.QuotaExhausted("gemini spent for today")
-            return {"results": []}, {"provider": provider, "model": model}
+        # The same stop, with a clear no-fallback message, when the pinned provider is
+        # simply failing rather than out of quota.
+        llm._day_by_model = {}
 
-        llm._call_one = fake_call_one
-        parsed, stats = llm.call_json("x", None)
-        # The primary being exhausted must not abort the stage.
-        self.assertEqual(stats["provider"], "groq")
+        def failing(provider, model, prompt, schema):
+            raise llm_mod._HttpFailure(503, "service unavailable")
 
-        llm.config["fallback_on_daily_quota"] = False
-        with self.assertRaises(llm_mod.QuotaExhausted):
-            llm.call_json("x", None)
-
-        # With no fallback left in the chain, an exhausted quota must stop the stage
-        # even when the flag is on, or the run would spin with nowhere to go.
-        llm.config = dict(llm.config, fallback_provider=None, fallback_on_daily_quota=True)
-        with self.assertRaises(llm_mod.QuotaExhausted):
-            llm.call_json("x", None)
+        llm._throttle = lambda *a, **k: None
+        llm._log_call = lambda *a, **k: None
+        llm._cache_get = lambda key: None
+        llm._backoff = lambda attempt: None
+        llm._dispatch = failing
+        with self.assertRaises(llm_mod.LLMError) as cm:
+            llm.call_json("x", RelevanceBatch)
+        self.assertIn("no automatic fallback", str(cm.exception))
 
     def test_429_with_no_stated_delay_backs_off_instead_of_crashing(self):
         """Groq bursts must parse when they carry a wait, and never divide by None."""

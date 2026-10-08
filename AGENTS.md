@@ -51,7 +51,7 @@ I am a product manager, not a developer. Therefore:
 | YouTube comments | YouTube Data API v3 | Free key from Google Cloud; daily quota, so cache search results |
 | Other sources (Quora, X, Instagram, blogs) | Manual import: I paste posts into `data/manual/*.csv` | Do not scrape these |
 | LLM (primary) | Google Gemini API free tier, a Flash or Flash-Lite model | Model name lives in config, not code |
-| LLM (fallback) | Groq free tier (e.g. `openai/gpt-oss-120b`) | Low daily token cap, so use only as a fallback |
+| LLM (stages pin their provider) | Gemini free tier for relevance/in_scope/extraction; Groq free tier (`openai/gpt-oss-120b`) for the judge and the Module 3 pilot | No automatic fallback: each stage names its provider in `config/llm.yaml` and stops with a clear message if it is unavailable |
 | LLM access layer | One small `llm.py` wrapper with a provider switch | So the provider and model can be changed in config |
 | Validation | `pydantic` | Validates every LLM JSON response |
 | Embeddings | `sentence-transformers`, a multilingual MiniLM model, run locally | Free; works offline |

@@ -107,7 +107,7 @@ def _text(row: dict) -> str:
 
 
 def _answered_label(configured: str, answered: dict[str, int]) -> str:
-    """Who actually answered — the configured model when it did, else the fallback."""
+    """Who actually answered — the configured model when it did, else the answerer."""
     if not answered:
         return configured
     if len(answered) == 1:

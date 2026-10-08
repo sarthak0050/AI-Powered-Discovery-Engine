@@ -44,7 +44,9 @@ GROQ_BASE = "https://api.groq.com/openai/v1/chat/completions"
 RETRY_STATUSES = {408, 425, 429, 500, 502, 503, 504}
 
 # A 429 that asks us to wait longer than this is a daily quota, not a burst. Waiting
-# hours inside a batch would stall the stage, so the batch goes to the fallback.
+# hours inside a batch would stall the stage, so the batch is given up and the stage
+# stops with a clear message; everything already written is kept and the run resumes
+# after the reset. There is no automatic fallback anywhere.
 MAX_HONOURED_RETRY_DELAY = 30
 
 
@@ -207,7 +209,15 @@ class LLM:
 
     @property
     def _provider(self) -> str:
-        return self.config.get("provider", "gemini")
+        """The provider pinned to this stage, else the config default.
+
+        Every stage that must not drift names its provider in config/llm.yaml
+        (stage_providers): relevance, in_scope and extraction are Gemini; the judge and
+        the Module 3 pilot coding are Groq. There is no fallback: an unavailable named
+        provider stops the stage with a clear message rather than silently switching.
+        """
+        named = self.config.get("stage_providers") or {}
+        return named.get(self.stage) or self.config.get("provider", "gemini")
 
     @property
     def _stage_key(self) -> str:
@@ -221,6 +231,9 @@ class LLM:
 
     @property
     def model(self) -> str:
+        named = self.config.get("stage_models") or {}     # a stage pinned to groq needs a groq model
+        if named.get(self.stage):
+            return named[self.stage]
         per_stage = self.config.get("per_stage_models") or {}
         return per_stage.get(self._stage_key) or self.config.get("model", "")
 
@@ -481,50 +494,35 @@ class LLM:
                   post_ids: list | None = None) -> tuple:
         """One logical call, validated against a Pydantic model.
 
-        Returns (parsed_model, stats_dict). Tries the primary provider first, then the
-        fallback. Raises QuotaExhausted when the day's limit is used up.
+        Returns (parsed_model, stats_dict). The stage's provider is pinned in config
+        (stage_providers) and there is NO automatic fallback: if that provider is
+        unavailable the stage stops with a clear message and resumes later. QuotaExhausted
+        is raised (pre-emptively) when the day's limit is spent; everything already
+        written is kept. Errors are recorded once per post so data/errors.csv can be
+        joined back onto the posts it is talking about.
 
-        post_ids are the real ids of the rows behind this call, one per row. Errors are
-        then recorded once per post, so data/errors.csv can be joined back onto the
-        posts it is talking about. input_id stays the cache key and is left alone.
+        post_ids are the real ids of the rows behind this call, one per row. input_id
+        stays the cache key and is left alone.
         """
-        chain = [(self._provider, self.model)]
-        fallback = self.config.get("fallback_provider")
-        if fallback and fallback != self._provider:
-            chain.append((fallback, self.config.get("fallback_model", "openai/gpt-oss-120b")))
-
-        errors = []
-        for provider, model in chain:
-            try:
-                return self._call_one(provider, model, prompt, schema, input_id)
-            except QuotaExhausted as exc:
-                # We already know this model's daily allowance is spent, before even
-                # asking the API. Re-raising would end the whole stage on the first
-                # batch. Hand the batch to the fallback instead and let it finish.
-                #
-                # "Is there anywhere left to fall back to" is decided by whether this is
-                # the last provider in the chain, not by the fallback_on_daily_quota
-                # flag. Keying it off the flag meant that turning the flag off only
-                # worked while a differently-named fallback was configured, so the
-                # switch silently did nothing and the stage stopped anyway.
-                if not self.config.get("fallback_on_daily_quota", True) or provider == chain[-1][0]:
-                    raise
-                errors.append(f"{provider}/{model}: {exc}")
-                continue
-            except LLMError as exc:
-                errors.append(f"{provider}: {exc}")
-        from engine import db
-        conn = db.connect()
-        message = " | ".join(errors)[:480]
-        if post_ids:
-            # One row per post. A batch of 20 that failed is 20 posts that still need
-            # judging, and a comma-joined list of ids in a single row cannot be joined
-            # onto anything downstream.
-            for pid in post_ids:
-                db.log_error(conn, self.stage, message, post_id=pid)
-        else:
-            db.log_error(conn, self.stage, message, post_id=input_id)
-        raise LLMError(f"{self.stage or 'llm'} call failed for all providers -> " + " | ".join(errors))
+        provider, model = self._provider, self.model
+        try:
+            return self._call_one(provider, model, prompt, schema, input_id)
+        except QuotaExhausted:
+            raise                                      # already says everything is saved
+        except LLMError as exc:
+            message = f"{provider}/{model}: {exc}"[:480]
+            from engine import db
+            conn = db.connect()
+            if post_ids:
+                for pid in post_ids:
+                    db.log_error(conn, self.stage, message, post_id=pid)
+            else:
+                db.log_error(conn, self.stage, message, post_id=input_id)
+            raise LLMError(
+                f"{self.stage or 'llm'} call failed for the pinned provider "
+                f"({message}). There is no automatic fallback — make that provider "
+                f"available again (free-tier quota resets daily) or point this stage at "
+                f"another provider in config/llm.yaml (stage_providers + stage_models).")
 
     def _call_one(self, provider, model, prompt, schema, input_id):
         """Retries one provider. Raises LLMError when this provider is exhausted."""
@@ -562,8 +560,9 @@ class LLM:
                 if exc.status == 429:
                     # Gemini tells us exactly how long to wait in the body. Honour it
                     # when it is short — that is a burst limit and waiting fixes it.
-                    # When it is hours, waiting is pointless and the batch goes to the
-                    # fallback rather than burning three retries.
+                    # When it is hours, waiting is pointless and the batch is given up:
+                    # this stage has no fallback, it stops here and resumes after the
+                    # reset instead of burning the remaining retries.
                     delay = _retry_delay_seconds(str(exc))
                     if delay is not None and 0 < delay <= MAX_HONOURED_RETRY_DELAY:
                         print(f"      429: waiting {delay:.0f}s as the API asked")
@@ -571,8 +570,9 @@ class LLM:
                         continue
                     if delay is not None:
                         raise LLMError(
-                            f"{provider} daily quota is spent, retry in "
-                            f"{delay / 3600:.1f}h. Handing this batch to the fallback.")
+                            f"daily quota is spent, retry in {delay / 3600:.1f}h. "
+                            f"This stage has no fallback — it stops here; everything "
+                            f"already written is saved.")
                     # No wait time in the body. Assuming a spent daily quota here used
                     # to crash on a None division, and would be wrong anyway: back off
                     # and retry like any other rate limit.

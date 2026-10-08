@@ -8,9 +8,9 @@ want to hand-label instead.
 
 The judge runs on Groq and only on Groq: the engine that produced the verdict being
 checked is Gemini, so a different model checking it is cross-model validation against
-a written rubric, rather than one model grading its own homework. fallback_provider is
-switched off for exactly this reason, and llm.call_json would otherwise quietly hand a
-failed batch back to Gemini.
+a written rubric, rather than one model grading its own homework. It is pinned in
+config/llm.yaml (stage_providers.judge) — there is no automatic fallback anywhere, and
+an unavailable provider stops the stage instead of silently switching models.
 
 Later, extraction validation uses the same shape: ~50 posts, judged on primary_code
 and barrier_type against config/codebook.yaml instead of this guide.
@@ -54,14 +54,13 @@ class JudgeBatch(BaseModel):
 
 
 def judge_llm() -> llm.LLM:
-    """Groq only, no fallback: the whole point is that this is not the engine's model."""
-    cfg = dict(llm.load_config())
-    cfg["provider"] = "groq"
-    cfg["model"] = cfg.get("fallback_model") or "openai/gpt-oss-120b"
-    cfg["per_stage_models"] = {}
-    cfg["fallback_provider"] = None
-    cfg["fallback_model"] = None
-    return llm.LLM(config=cfg, stage="judge")
+    """Groq only, no fallback: the whole point is that this is not the engine's model.
+
+    Pinned in config/llm.yaml — stage_providers.judge = groq, stage_models.judge =
+    openai/gpt-oss-120b — so the pin can be seen and edited in one place instead of
+    buried in code.
+    """
+    return llm.LLM(stage="judge")
 
 
 def read_rows() -> tuple[list[str], list[dict]]:

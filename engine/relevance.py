@@ -230,9 +230,9 @@ def call_json_batched(llm, template, items, schema, by_id=None):
                 render_prompt(template, {"posts": json.dumps(chunk, ensure_ascii=False)}),
                 schema, input_id=",".join(str(i["id"]) for i in chunk),
                 post_ids=real_ids or None)
-            # stats carries the provider that actually answered. Dropping it here meant
-            # judge() had to guess from the configured primary, so a batch handed to the
-            # fallback was recorded as the primary's name and judged_by was silently wrong.
+            # stats carries the provider that actually answered (there is no fallback
+            # now, but judged_by must still come from stats, never from the configured
+            # primary).
             yield index, chunk, parsed, stats
         except QuotaExhausted as exc:
             # Out of calls for today. Stop cleanly and keep everything judged so far.

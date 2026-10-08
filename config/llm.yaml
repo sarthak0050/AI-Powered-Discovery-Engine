@@ -1,10 +1,29 @@
 # LLM settings. Everything here is editable — no code changes needed.
 # Change provider or model by editing this file.
 
-provider: gemini           # gemini | groq
+provider: gemini           # gemini | groq — default provider for stages not named below
 model: gemini-3.5-flash   # best model that actually works on the free tier
-fallback_provider: groq   # used only if the primary fails
-fallback_model: openai/gpt-oss-120b
+
+# Every stage that must not drift names its provider here. There is NO automatic
+# fallback anywhere: if a named provider is unavailable the stage stops with a clear
+# message and resumes after the reset. Point a stage at another provider by editing
+# this map, never by hoping a fallback kicks in.
+stage_providers:
+  relevance: gemini        # the broad filter over the whole corpus
+  in_scope: gemini         # second-stage rubric check (see below: today on groq for the pilot)
+  extraction: gemini       # final tagging against the codebook
+  open_coding: groq        # Module 3 pilot open coding (Groq today; Gemini is quota
+                           #   exhausted — this is sampling, so the swap is recorded)
+  theme_naming: groq       # Module 3 codebook builder (same day, same reason)
+  judge: groq              # the independent reference judge — hard-pinned, never Gemini
+
+# Model for a stage that runs on a provider other than the default: Groq cannot run a
+# Gemini model, so the groq-pinned stages name a groq model here. Gemini stages get
+# their model from per_stage_models below.
+stage_models:
+  open_coding: openai/gpt-oss-120b
+  theme_naming: openai/gpt-oss-120b
+  judge: openai/gpt-oss-120b
 
 # A cheaper, faster model for the high-volume stages (relevance filtering).
 # Set per_stage_models.bulk to null to use the main model everywhere.
@@ -64,18 +83,10 @@ rate_limits:
     rpd: 900
     tpd: 180000            # tokens per day PER MODEL. Limit 200000, paced 10% below.
 
-# When the primary has spent its daily allowance, hand the batch to the fallback (true)
-# or stop the stage cleanly and leave the rest for the next day (false).
-#
-# False for relevance, so the corpus stays single-judge. A 100-post stratified re-judge
-# put groq at 93.1% agreement with gemini, and the six disagreements were all groq
-# dropping praise-only posts that gemini keeps. That is defensible, but it means the
-# corpus would quietly be ~72% gemini and ~28% groq. Groq is still configured above and
-# now has a correct tpd ceiling, so it can be used later if that tradeoff is accepted.
-fallback_on_daily_quota: false
-
-# When a daily limit is hit we stop cleanly and resume tomorrow rather than
-# hammering the endpoint.
+# There is no fallback provider anywhere. When a stage's pinned provider is
+# unavailable — including a spent daily allowance — the stage stops cleanly with a
+# clear message, everything already written is kept, and the same command resumes
+# later. This keeps the corpus single-judge for every stage.
 on_quota_exhausted: stop_and_resume_tomorrow
 
 batch:
@@ -86,7 +97,8 @@ batch:
   in_scope: 20            # posts per call for the stage-2 scope check (python run.py
                           # in-scope): 50 kept rows = 3 calls, the 300-post pilot = 15.
   extraction: 12          # posts per LLM call (section 7, Module 4)
-  open_coding: 10
+  open_coding: 10         # posts per call for Module 3 open coding (python run.py pilot)
+  theme_naming: 8         # clusters per call for naming the codebook (same command)
 
 cache:
   enabled: true           # every call cached by prompt hash + input id
