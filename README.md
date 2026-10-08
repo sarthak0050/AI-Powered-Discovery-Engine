@@ -96,7 +96,7 @@ calls you have used today. Run it any time something looks wrong.
 | `python run.py relevance` | Keep only posts about a fashion buying decision (batches of 20) |
 | `python run.py in-scope` | Second-stage scope check on the kept rows: the locked rubric in `docs/labelling_guide.md`, compared against the judge |
 | `python run.py in-scope --pilot` | Draw the 300 Module 3 posts and check them against the same rubric first |
-| `python run.py pilot` | Build the codebook from 300 posts. **Stops for your approval** |
+| `python run.py pilot` | Open-code the in-scope pilot pool, cluster the labels, name the themes and write `config/codebook.yaml`. **Stops for your approval** |
 | `python run.py extract` | Tag every post against the codebook you approved |
 | `python run.py label` | Open a page in your browser to hand-label ~100 posts |
 | `python run.py validate` | Compare the engine's tags to your labels |

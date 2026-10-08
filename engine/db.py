@@ -133,6 +133,16 @@ CREATE TABLE IF NOT EXISTS tagged_posts (
     tagged_at               TEXT
 );
 
+-- Module 3: open codes, one row per (post, code). Written by the pilot open-coding
+-- step; clustering reads them and the codebook is built from the clusters.
+CREATE TABLE IF NOT EXISTS open_codes (
+    post_id       TEXT NOT NULL REFERENCES tagged_posts(post_id),
+    code          TEXT NOT NULL
+);
+-- PK-free on purpose: _migrate splices each column line into ALTER TABLE, which cannot
+-- take a table-level PRIMARY KEY. Dedup is enforced at write time.
+CREATE UNIQUE INDEX IF NOT EXISTS open_codes_pk ON open_codes (post_id, code);
+
 -- Section 6: labels. Your hand labels. Same fields as tagged_posts.
 -- UNIQUE(post_id, labeller) so re-labelling a post overwrites rather than duplicates.
 CREATE TABLE IF NOT EXISTS labels (

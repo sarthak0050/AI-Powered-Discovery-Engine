@@ -314,6 +314,9 @@ def build_parser() -> argparse.ArgumentParser:
         if name == "clean":
             sub.add_argument("--limit", type=int,
                              help="only the first N raw posts, for a pilot run")
+        if name == "pilot":
+            sub.add_argument("--force", action="store_true",
+                             help="re-code posts that already have open codes")
         if name == "relevance":
             sub.add_argument("--limit", type=int,
                              help="only judge the first N posts, for a pilot run")
