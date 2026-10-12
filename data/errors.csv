@@ -139,3 +139,356 @@ relevance,"2041,2042,2043,2044,2045",batch 103: unsupported operand type(s) for 
 relevance,"2061,2062,2063,2064,2065",batch 104: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T20:26:43+00:00
 relevance,"1,2,3",test error,,2026-10-04T21:50:27+00:00
 relevance,"1,2,3,4,5",batch 1: unsupported operand type(s) for /: 'NoneType' and 'int',,2026-10-04T22:07:16+00:00
+in_scope,playstore:2d97562d-e37e-4445-8c2e-a1f7dcb834b6,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 503: {
+  ""error"": {
+    ""code"": 503,
+    ""message"": ""This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."",
+    ""status"": ""UNAVAILABLE""
+  }
+}
+",,2026-10-08T10:30:07+00:00
+in_scope,playstore:78748ca7-9391-48ea-9f84-69faba44ff83,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 503: {
+  ""error"": {
+    ""code"": 503,
+    ""message"": ""This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."",
+    ""status"": ""UNAVAILABLE""
+  }
+}
+",,2026-10-08T10:30:07+00:00
+in_scope,playstore:9b0dce9e-d97f-477a-9ed7-b66c58cda35e,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 503: {
+  ""error"": {
+    ""code"": 503,
+    ""message"": ""This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."",
+    ""status"": ""UNAVAILABLE""
+  }
+}
+",,2026-10-08T10:30:07+00:00
+in_scope,playstore:070e1cc9-a433-4095-a1c0-fb583e8655bd,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 503: {
+  ""error"": {
+    ""code"": 503,
+    ""message"": ""This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."",
+    ""status"": ""UNAVAILABLE""
+  }
+}
+",,2026-10-08T10:30:07+00:00
+in_scope,playstore:803bf735-661a-43ae-834e-64bc6407457e,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 503: {
+  ""error"": {
+    ""code"": 503,
+    ""message"": ""This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."",
+    ""status"": ""UNAVAILABLE""
+  }
+}
+",,2026-10-08T10:30:07+00:00
+in_scope,playstore:1c198912-0af1-4627-87a3-5fddf4135e25,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 503: {
+  ""error"": {
+    ""code"": 503,
+    ""message"": ""This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."",
+    ""status"": ""UNAVAILABLE""
+  }
+}
+",,2026-10-08T10:30:07+00:00
+in_scope,playstore:df9ab3c6-5654-49d2-b11f-f971f529643e,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 503: {
+  ""error"": {
+    ""code"": 503,
+    ""message"": ""This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."",
+    ""status"": ""UNAVAILABLE""
+  }
+}
+",,2026-10-08T10:30:07+00:00
+in_scope,playstore:f90c336d-31ee-41a4-a73c-21794a4403eb,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 503: {
+  ""error"": {
+    ""code"": 503,
+    ""message"": ""This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."",
+    ""status"": ""UNAVAILABLE""
+  }
+}
+",,2026-10-08T10:30:07+00:00
+in_scope,playstore:56eb6b35-11ec-452c-9cdf-2f128bac05dc,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 503: {
+  ""error"": {
+    ""code"": 503,
+    ""message"": ""This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."",
+    ""status"": ""UNAVAILABLE""
+  }
+}
+",,2026-10-08T10:30:07+00:00
+in_scope,playstore:e269fbbd-a15c-46c5-a030-5c89d790d547,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 503: {
+  ""error"": {
+    ""code"": 503,
+    ""message"": ""This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."",
+    ""status"": ""UNAVAILABLE""
+  }
+}
+",,2026-10-08T10:30:07+00:00
+in_scope,playstore:1d7a2943-b6f5-4967-9bfe-698c19e13344,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 503: {
+  ""error"": {
+    ""code"": 503,
+    ""message"": ""This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."",
+    ""status"": ""UNAVAILABLE""
+  }
+}
+",,2026-10-08T10:30:07+00:00
+in_scope,playstore:832cffa6-491b-4edd-95b8-e331db2a59d7,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 503: {
+  ""error"": {
+    ""code"": 503,
+    ""message"": ""This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."",
+    ""status"": ""UNAVAILABLE""
+  }
+}
+",,2026-10-08T10:30:07+00:00
+in_scope,playstore:756810ad-6048-4ae9-b427-1be5efdb86a0,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 503: {
+  ""error"": {
+    ""code"": 503,
+    ""message"": ""This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."",
+    ""status"": ""UNAVAILABLE""
+  }
+}
+",,2026-10-08T10:30:07+00:00
+in_scope,playstore:15474d78-6231-4d4e-913b-f4996d8b25e3,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 503: {
+  ""error"": {
+    ""code"": 503,
+    ""message"": ""This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."",
+    ""status"": ""UNAVAILABLE""
+  }
+}
+",,2026-10-08T10:30:07+00:00
+in_scope,playstore:5686add5-17af-4d3f-8773-2175b6d1d14a,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 503: {
+  ""error"": {
+    ""code"": 503,
+    ""message"": ""This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."",
+    ""status"": ""UNAVAILABLE""
+  }
+}
+",,2026-10-08T10:30:07+00:00
+in_scope,playstore:f6753f2b-585c-467a-93b1-fa403809ff9c,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 503: {
+  ""error"": {
+    ""code"": 503,
+    ""message"": ""This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."",
+    ""status"": ""UNAVAILABLE""
+  }
+}
+",,2026-10-08T10:30:07+00:00
+in_scope,playstore:09a65370-c676-46f4-aa1d-a81aa62b553f,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 503: {
+  ""error"": {
+    ""code"": 503,
+    ""message"": ""This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."",
+    ""status"": ""UNAVAILABLE""
+  }
+}
+",,2026-10-08T10:30:07+00:00
+in_scope,playstore:f86468dc-637f-46bc-be71-bbfce9758314,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 503: {
+  ""error"": {
+    ""code"": 503,
+    ""message"": ""This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."",
+    ""status"": ""UNAVAILABLE""
+  }
+}
+",,2026-10-08T10:30:07+00:00
+in_scope,playstore:94b0310d-f0be-4ad4-9645-9e2f2eca5cfc,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 503: {
+  ""error"": {
+    ""code"": 503,
+    ""message"": ""This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."",
+    ""status"": ""UNAVAILABLE""
+  }
+}
+",,2026-10-08T10:30:07+00:00
+in_scope,playstore:628b6f72-276c-4359-99d2-9e0cbb022612,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 503: {
+  ""error"": {
+    ""code"": 503,
+    ""message"": ""This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."",
+    ""status"": ""UNAVAILABLE""
+  }
+}
+",,2026-10-08T10:30:07+00:00
+in_scope,youtube:reply:Ugxx3-x3Ib1mh5YzJAh4AaABAg.AOJEnkv9AbiAOK4XKQl-Io,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:34:42+00:00
+in_scope,youtube:reply:Ugyyl6EZZLKTYfJRlwR4AaABAg.AKaHN4hWIUlAOQM53KvDoK,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:34:42+00:00
+in_scope,youtube:comment:Ugw5Chn8QX2mSlwNJjx4AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:34:42+00:00
+in_scope,youtube:comment:Ugzo6Kli5l-CtyZvSzB4AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:34:42+00:00
+in_scope,youtube:comment:UgwbxKWcMzv2SEXu1o14AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:34:42+00:00
+in_scope,youtube:reply:Ugy6xFGiEz-Fh6hVKJ14AaABAg.AOxluCZqvYYAP-YsWNk24o,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:34:42+00:00
+in_scope,youtube:reply:UgwbIak_J0xTZiP8qp54AaABAg.AOhNykOjaQ6AP1AroqhwcO,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:34:42+00:00
+in_scope,youtube:reply:UgwbIak_J0xTZiP8qp54AaABAg.AOhNykOjaQ6AP1DiZCHBg5,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:34:42+00:00
+in_scope,youtube:comment:UgxeHs84RlNRn-7OmQJ4AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:34:42+00:00
+in_scope,youtube:comment:Ugyt8lvh0mV-nYZ5xal4AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:34:42+00:00
+in_scope,youtube:comment:Ugx_wLhdtL-MtRo5Npp4AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:34:42+00:00
+in_scope,youtube:comment:UgzoXqKAST6LPEaCb0N4AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:34:42+00:00
+in_scope,youtube:comment:UgzVl90s9f1U09JdK9x4AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:34:42+00:00
+in_scope,youtube:reply:UgzVl90s9f1U09JdK9x4AaABAg.APfI64SAouPAPfj7kORmtn,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:34:42+00:00
+in_scope,youtube:comment:UgzXSL_eoz7Y2wuOQQh4AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:34:42+00:00
+in_scope,youtube:comment:UgzbMGML-hfmbnAqowd4AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:34:42+00:00
+in_scope,youtube:comment:Ugz7Rj2PFF2wTAHhJfN4AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:34:42+00:00
+in_scope,youtube:reply:Ugz7Rj2PFF2wTAHhJfN4AaABAg.APxI8ANwbQ9APxye5KCihQ,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:34:42+00:00
+in_scope,youtube:comment:UgydCTV_PzkYrjkp9F54AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:34:42+00:00
+in_scope,youtube:reply:UgydCTV_PzkYrjkp9F54AaABAg.AQ0ryBNRTawAQ103ZfJtRn,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:34:42+00:00
+in_scope,youtube:reply:Ugxx3-x3Ib1mh5YzJAh4AaABAg.AOJEnkv9AbiAOK4XKQl-Io,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:39:50+00:00
+in_scope,youtube:reply:Ugyyl6EZZLKTYfJRlwR4AaABAg.AKaHN4hWIUlAOQM53KvDoK,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:39:50+00:00
+in_scope,youtube:comment:Ugw5Chn8QX2mSlwNJjx4AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:39:50+00:00
+in_scope,youtube:comment:Ugzo6Kli5l-CtyZvSzB4AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:39:50+00:00
+in_scope,youtube:comment:UgwbxKWcMzv2SEXu1o14AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:39:50+00:00
+in_scope,youtube:reply:Ugy6xFGiEz-Fh6hVKJ14AaABAg.AOxluCZqvYYAP-YsWNk24o,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:39:50+00:00
+in_scope,youtube:reply:UgwbIak_J0xTZiP8qp54AaABAg.AOhNykOjaQ6AP1AroqhwcO,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:39:50+00:00
+in_scope,youtube:reply:UgwbIak_J0xTZiP8qp54AaABAg.AOhNykOjaQ6AP1DiZCHBg5,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:39:50+00:00
+in_scope,youtube:comment:UgxeHs84RlNRn-7OmQJ4AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:39:50+00:00
+in_scope,youtube:comment:Ugyt8lvh0mV-nYZ5xal4AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:39:50+00:00
+in_scope,youtube:comment:Ugx_wLhdtL-MtRo5Npp4AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:39:50+00:00
+in_scope,youtube:comment:UgzoXqKAST6LPEaCb0N4AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:39:50+00:00
+in_scope,youtube:comment:UgzVl90s9f1U09JdK9x4AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:39:50+00:00
+in_scope,youtube:reply:UgzVl90s9f1U09JdK9x4AaABAg.APfI64SAouPAPfj7kORmtn,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:39:50+00:00
+in_scope,youtube:comment:UgzXSL_eoz7Y2wuOQQh4AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:39:50+00:00
+in_scope,youtube:comment:UgzbMGML-hfmbnAqowd4AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:39:50+00:00
+in_scope,youtube:comment:Ugz7Rj2PFF2wTAHhJfN4AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:39:50+00:00
+in_scope,youtube:reply:Ugz7Rj2PFF2wTAHhJfN4AaABAg.APxI8ANwbQ9APxye5KCihQ,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:39:50+00:00
+in_scope,youtube:comment:UgydCTV_PzkYrjkp9F54AaABAg,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:39:50+00:00
+in_scope,youtube:reply:UgydCTV_PzkYrjkp9F54AaABAg.AQ0ryBNRTawAQ103ZfJtRn,"gemini/gemini-3.5-flash: 3 attempts, last error: HTTP 429: {
+  ""error"": {
+    ""code"": 429,
+    ""message"": ""You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex",,2026-10-08T10:39:50+00:00
+theme_naming,reddit:comment:m1zxosc,"gemini/gemini-3.5-flash-lite: 3 attempts, last error: response did not match the schema: 1 validation error for ThemeBatch
+clusters.4.label
+  String should have at most 40 characters [type=string_too_long, input_value='Complains about unhelpful customer support', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/string_too_long",,2026-10-08T10:54:08+00:00
+theme_naming,appstore:14611423739,"gemini/gemini-3.5-flash-lite: 3 attempts, last error: response did not match the schema: 1 validation error for ThemeBatch
+clusters.4.label
+  String should have at most 40 characters [type=string_too_long, input_value='Complains about unhelpful customer support', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/string_too_long",,2026-10-08T10:54:08+00:00
+theme_naming,appstore:14600938424,"gemini/gemini-3.5-flash-lite: 3 attempts, last error: response did not match the schema: 1 validation error for ThemeBatch
+clusters.4.label
+  String should have at most 40 characters [type=string_too_long, input_value='Complains about unhelpful customer support', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/string_too_long",,2026-10-08T10:54:08+00:00
+theme_naming,playstore:93432799-b8dc-48ad-bd8c-debbeb50b50d,"gemini/gemini-3.5-flash-lite: 3 attempts, last error: response did not match the schema: 1 validation error for ThemeBatch
+clusters.4.label
+  String should have at most 40 characters [type=string_too_long, input_value='Complains about unhelpful customer support', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/string_too_long",,2026-10-08T10:54:08+00:00
+theme_naming,appstore:14607833540,"gemini/gemini-3.5-flash-lite: 3 attempts, last error: response did not match the schema: 1 validation error for ThemeBatch
+clusters.4.label
+  String should have at most 40 characters [type=string_too_long, input_value='Complains about unhelpful customer support', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/string_too_long",,2026-10-08T10:54:08+00:00
+theme_naming,appstore:14599876739,"gemini/gemini-3.5-flash-lite: 3 attempts, last error: response did not match the schema: 1 validation error for ThemeBatch
+clusters.4.label
+  String should have at most 40 characters [type=string_too_long, input_value='Complains about unhelpful customer support', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/string_too_long",,2026-10-08T10:54:08+00:00
+theme_naming,appstore:14599876739,"gemini/gemini-3.5-flash-lite: 3 attempts, last error: response did not match the schema: 1 validation error for ThemeBatch
+clusters.4.label
+  String should have at most 40 characters [type=string_too_long, input_value='Complains about unhelpful customer support', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/string_too_long",,2026-10-08T10:54:08+00:00
+theme_naming,reddit:post:1idnt6g,"gemini/gemini-3.5-flash-lite: 3 attempts, last error: response did not match the schema: 1 validation error for ThemeBatch
+clusters.4.label
+  String should have at most 40 characters [type=string_too_long, input_value='Complains about unhelpful customer support', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/string_too_long",,2026-10-08T10:54:08+00:00
+relevance,,"gemini/gemini-3.5-flash-lite: 3 attempts, last error: HTTP 503: service unavailable",,2026-10-10T05:59:23+00:00

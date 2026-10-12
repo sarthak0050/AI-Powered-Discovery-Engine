@@ -361,6 +361,140 @@ def _write_verdict(conn, post_id: str, value: int, reason: str, model: str) -> N
     conn.commit()
 
 
+def _read_registry() -> list[dict]:
+    """The rows already drawn and screened for the pilot (pilot_sample.csv)."""
+    import csv
+    if not PILOT_CSV.exists():
+        return []
+    with open(PILOT_CSV, newline="", encoding="utf-8") as fh:
+        return list(csv.DictReader(fh))
+
+
+def _topup_draws(pass_counts: dict[str, int], rates: dict[str, float],
+                 cand_counts: dict[str, int], target_total: int) -> dict[str, int]:
+    """How many fresh candidates to draw per source to reach target_total in-scope.
+
+    Each source that can still grow asks for the same share of the missing passes
+    it already contributes, converted to draws with its own pass rate — so a
+    low-pass source like playstore is oversampled and keeps its share of the
+    codebook instead of being crowded out by Reddit's higher pass rate.
+    """
+    need = max(0, target_total - sum(pass_counts.values()))
+    if need <= 0:
+        return {}
+    usable = {s: cand_counts[s] for s in pass_counts if cand_counts.get(s, 0) > 0}
+    if not usable:
+        return {}
+    share_total = sum(pass_counts.get(s, 0) for s in usable) or 1
+    draws = {}
+    for source, available in usable.items():
+        expected = need * pass_counts.get(source, 0) / share_total
+        draws[source] = min(available, int(round(expected / rates.get(source, 0.5))))
+    return {s: n for s, n in draws.items() if n > 0}
+
+
+def run_topup(force: bool = False) -> int:
+    """Screen more posts so the pilot pool grows toward ~300 in-scope posts.
+
+    Reads the existing registry (150 in-scope posts), measures each source's pass
+    rate on it, then draws as many fresh candidates as each source needs to reach
+    the target — oversampling low-pass sources. New verdicts land in tagged_posts
+    and the new rows are appended to PILOT_CSV. Resumable: already-answered rows
+    are skipped.
+    """
+    registry = _read_registry()
+    if not registry:
+        print("\n   no pilot registry yet. Run the first tranche first:\n"
+              "       python run.py in-scope --pilot")
+        return 1
+    pass_counts = Counter(r["source"] for r in registry
+                          if str(r.get("in_scope") or "").strip() == "1")
+    drawn_counts = Counter(r["source"] for r in registry)
+    rates = {s: pass_counts[s] / drawn_counts[s] for s in drawn_counts if drawn_counts[s]}
+    print(f"\n== in-scope top-up: {sum(pass_counts.values())} in-scope now, "
+          f"target {PILOT_SIZE}")
+    for source in sorted(rates):
+        print(f"   {source:11} pass {pass_counts[source]:>3}/{drawn_counts[source]:>3} "
+              f"({rates[source]*100:.0f}%)")
+
+    conn = db.connect()
+    registered = {r["post_id"] for r in registry}
+    by_source: dict[str, list] = {}
+    for row in conn.execute(
+            "SELECT c.post_id, c.text_clean, r.text AS text_original, r.source, r.date "
+            "FROM clean_posts c JOIN raw_posts r ON r.post_id = c.post_id "
+            "WHERE c.is_relevant = 1 ORDER BY c.date ASC"):
+        d = dict(row)
+        if d["post_id"] not in registered:
+            by_source.setdefault(d["source"], []).append(d)
+    cand_counts = {s: len(rows) for s, rows in by_source.items()}
+    plan = _topup_draws(pass_counts, rates, cand_counts, PILOT_SIZE)
+    if not plan:
+        print("   no source has candidates left — the pool is already as big "
+              "as the corpus allows.")
+        conn.close()
+        return 1
+    for source, n in sorted(plan.items()):
+        print(f"   draw {n:>4} {source:11} (~{n * rates[source] / 20:.1f} calls at 20/batch)")
+    total = sum(plan.values())
+    print(f"   = {total} candidates, ~{(total + 19) // 20} calls")
+
+    drawn = [row for source in sorted(plan) for row in by_source[source][:plan[source]]]
+    existing = {r["post_id"] for r in conn.execute(
+        "SELECT post_id FROM tagged_posts WHERE in_scope IS NOT NULL")}
+    pending = [d for d in drawn if force or d["post_id"] not in existing]
+    if not pending:
+        print("   all drawn rows already have a verdict (use --force to re-check them)")
+    items = [{"id": i + 1, "text": _text(d), "post_id": d["post_id"]}
+             for i, d in enumerate(pending)]
+    new_rows: dict[str, dict] = {}
+
+    def on_batch(got, chunk, who):
+        for item in chunk:
+            row = pending[item["id"] - 1]
+            answer = got[item["id"]]
+            value = 1 if answer.in_scope.value else 0
+            _write_verdict(conn, row["post_id"], value, answer.in_scope.reason, who)
+            new_rows[row["post_id"]] = {
+                "post_id": row["post_id"], "source": row["source"], "date": row["date"],
+                "in_scope": value, "in_scope_reason": answer.in_scope.reason,
+                "in_scope_model": who,
+                "text": " ".join((row["text_original"] or "").split()),
+            }
+
+    done, model = run_check(items, on_batch)
+    db.log_run(conn, "in_scope", "pilot_topup", len(items), done, notes=model)
+    if done < len(items):
+        print(f"\n   {done} of {len(items)} checked. Re-run the same command to finish.")
+        conn.close()
+        return 1
+
+    # Rebuild the registry from tagged_posts, not from this run's slices: a crash or
+    # quota stop leaves finished verdicts in the database but the CSV only grows at
+    # completion, so a resumed run would silently undercount the pool.
+    export = [{
+        "post_id": r["post_id"], "source": r["source"], "date": r["date"],
+        "in_scope": r["in_scope"], "in_scope_reason": r["in_scope_reason"],
+        "in_scope_model": r["in_scope_model"], "text": " ".join((r["text"] or "").split()),
+    } for r in conn.execute(
+        "SELECT t.post_id, r.source, r.date, t.in_scope, t.in_scope_reason, "
+        "        t.model AS in_scope_model, r.text "
+        "FROM tagged_posts t JOIN raw_posts r ON r.post_id = t.post_id "
+        "WHERE t.in_scope IS NOT NULL ORDER BY t.post_id")]
+    db.export_csv(export, PILOT_CSV)
+
+    passed = sum(1 for r in export if str(r.get("in_scope") or "").strip() == "1")
+    print(f"\n   in scope now: {passed} of {len(export)} registry rows")
+    for source in sorted({r["source"] for r in export}):
+        group = [r for r in export if r["source"] == source]
+        ok = sum(1 for r in group if str(r.get("in_scope") or "").strip() == "1")
+        print(f"     {source:11} {ok}/{len(group)}")
+    print(f"\n   pilot pool = {passed} posts that pass the rubric")
+    print("   Next: python run.py pilot  (open coding on the posts that passed)")
+    conn.close()
+    return 0
+
+
 def run_pilot(force: bool = False) -> int:
     """Draw the 300 Module 3 posts and put them through the rubric before coding.
 
@@ -444,10 +578,14 @@ def main(argv: list[str] | None = None) -> int:
         description="apply the locked rubric as the second-stage scope check")
     ap.add_argument("--pilot", action="store_true",
                     help="draw the 300 Module 3 pilot posts and check them first")
+    ap.add_argument("--top-up", action="store_true",
+                    help="draw and check more posts to grow the pilot pool toward 300 in-scope")
     ap.add_argument("--force", action="store_true",
                     help="re-check rows that already have an in_scope verdict")
     args = ap.parse_args(argv)
     try:
+        if args.top_up:
+            return run_topup(force=args.force)
         return run_pilot(force=args.force) if args.pilot else run_sample(force=args.force)
     except KeyboardInterrupt:
         print("\n   stopped; everything already written is kept.")

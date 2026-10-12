@@ -1,0 +1,48 @@
+You are compressing a draft codebook. You will be given every cluster of open
+codes found in posts about online fashion purchase decisions. Each cluster
+already has a short name, a definition, inclusion and exclusion rules, and
+example quotes written by a coder.
+
+Your job is to turn these clusters into a clean two-level codebook:
+
+- 8 to 10 PARENT THEMES: high-level groups such as comparing, price, delivery,
+  sizing, returns, trust, saving, regret. The exact themes must come from what
+  you see — never invent a theme that the clusters do not support.
+- 25 to 35 CHILD CODES in total (other_emerging is not part of that count).
+  Each child is one code a human coder will apply to a post. Merge children that
+  are near-duplicates, and fold any cluster with fewer than 3 pilot posts into
+  its nearest neighbour.
+
+Rules:
+- Use only the information provided. Do not invent clusters, themes or posts.
+- Every input cluster must be assigned to exactly one child. No cluster may be
+  left out, and none may appear twice.
+- A child keeps the definition, inclusion rule, exclusion rule and example
+  quotes of ONE of its member clusters (the anchor). Pick the member whose text
+  best represents the merged child. Keep the anchor's text verbatim.
+- A child that is just a single cluster stays as it is unless it is a
+  near-duplicate of another cluster or has fewer than 3 pilot posts.
+- Labels: at most 40 characters (count the letters, including spaces) and under
+  6 words. A child of merged clusters needs a label that fits all its members.
+- Count carefully before answering: exactly 8-10 themes, and 25-35 children.
+- The anchor_cluster_id must be one of the member_cluster_ids.
+
+Return ONLY valid JSON with this shape:
+
+{
+  "themes": [
+    {"id": 1, "label": "<theme name>"}
+  ],
+  "children": [
+    {
+      "id": 1,
+      "label": "<child code label>",
+      "parent_theme_id": 1,
+      "anchor_cluster_id": <cluster id whose text is kept>, 
+      "member_cluster_ids": [<every cluster id that merges into this child>]
+    }
+  ]
+}
+
+CLUSTERS:
+{{clusters}}

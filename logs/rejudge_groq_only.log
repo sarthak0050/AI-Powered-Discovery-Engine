@@ -1,0 +1,67 @@
+
+== relevance
+   re-judging only the 206 posts judged by groq
+   206 posts to judge in batches of 20  (9404 unjudged in total)
+   batch    0   20 posts judged  (running: 0 relevant, 20 not)
+   batch   10    6 posts judged  (running: 32 relevant, 174 not)
+
+   32 relevant, 174 not relevant
+   relevant_posts now holds 24395 rows
+
+   relevance by source
+     source        judged  relevant    rate
+     playstore      16457      3365   20.4%
+     reddit          5287       990   18.7%
+     youtube         2650       501   18.9%
+     appstore           1         0    0.0%
+
+   mean confidence on kept posts: 0.93
+   kept posts below 0.6 confidence: 0 of 24395
+
+   10 random KEPT as relevant:
+     [reddit | 2026-08-23 | conf 0.98] Jeans for tall men Okay so I've been quietly suffering through this for way to
+        why: The writer discusses comparing jeans options and considering whether to bu
+     [youtube | 2026-03-20 | conf 0.70] Hey can u make video on fit top but not full sleeves pls
+        why: The user is requesting content about a specific clothing fit.
+     [playstore | 2026-06-30 | conf 0.95] worst delivery app . ordered shoe on Jun 3rd but still the product was not del
+        why: The user describes ordering shoes that have not been delivered yet.
+     [youtube | 2026-07-18 | conf 0.90] Jo aapne suit phn rakha h uski link bej do please 🙏
+        why: The user is looking to buy or find an outfit worn by someone.
+     [playstore | 2026-08-22 | conf 0.90] Very bad experience with Myntra. My order was cancelled by Myntra due to “unfo
+        why: Describes an order being cancelled by the platform.
+     [playstore | 2026-08-13 | conf 1.00] worst experience,I had ordered 11 items. After a few days, I got an 'out for d
+        why: The user describes ordering items and then cancelling them.
+     [playstore | 2026-07-19 | conf 0.80] myntra is very good app for online shopping and costumer service is also good.
+        why: The post mentions using easy returns and replacement policy after buying.
+     [playstore | 2026-07-19 | conf 0.98] I dont know who or what caused it, bur we had bought a pair of shoes which arr
+        why: Describes buying shoes and requesting an exchange.
+     [playstore | 2026-08-09 | conf 1.00] had the worst online shopping experience with myntra such a big shopping app a
+        why: The user describes ordering items and then deciding to cancel the order.
+     [playstore | 2026-09-04 | conf 0.95] In my last order, I have ordered 6 items and in the exchange of one single otp
+        why: Describes exchanging items and receiving refunds after purchase
+
+   10 random DROPPED as not relevant:
+     [playstore | 2026-08-24 | conf 1.00] Faoubls fabric
+        why: The post praises fabric quality without a decision process.
+     [playstore | 2026-07-08 | conf 1.00] one of the most trusted shopping app ☺️😊
+        why: The text provides general app praise with no decision described.
+     [playstore | 2026-08-23 | conf 0.90] order always gets delayed and the delivery system is not up to the mark
+        why: The text only complains about delivery delays, not a decision process.
+     [reddit | 2025-02-27 | conf 1.00] Option 1 : Change to Black formal shoes + black/red bag Option 2 : Black top +
+        why: The text provides outfit coordination ideas without describing shopping.
+     [reddit | 2025-07-26 | conf 0.85] Snitch for online and only for mens wear
+        why: The text recommends a brand for online men's wear without describing a sho
+     [playstore | 2026-07-01 | conf 0.99] best aap loved it
+        why: General praise for the app without any shopping decision described.
+     [youtube | 2026-04-02 | conf 1.00] Acha yesa b ho jayega kya 😮 let's try btw thnku 😊
+        EN: Ah, is it going to happen like this? Let's try, by the way, thank you.
+        why: General chatter with no shopping decision described.
+     [reddit | 2024-12-14 | conf 1.00] Sexyy
+        why: Single-word comment with no shopping decision described.
+     [playstore | 2026-07-20 | conf 0.90] very poor delivery service don't purchase any thing from this app.
+        why: complaint about delivery, no shopping decision
+     [playstore | 2026-09-04 | conf 0.95] it's awesome material
+        why: no decision described
+
+   100 posts written to data/labels/relevance_check.csv
+   Fill in the my_judgement column, then run: python run.py relevance

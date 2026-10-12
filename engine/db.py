@@ -143,6 +143,16 @@ CREATE TABLE IF NOT EXISTS open_codes (
 -- take a table-level PRIMARY KEY. Dedup is enforced at write time.
 CREATE UNIQUE INDEX IF NOT EXISTS open_codes_pk ON open_codes (post_id, code);
 
+-- Module 3: re-code tags, one row per (post, codebook code). Written when the
+-- consolidated codebook re-tags the pilot pool (codebook_recode) so the true
+-- other_emerging rate and per-code counts can be measured against the codebook the
+-- user will approve, not the raw open codes it was built from.
+CREATE TABLE IF NOT EXISTS pilot_tags (
+    post_id       TEXT NOT NULL REFERENCES tagged_posts(post_id),
+    code          TEXT NOT NULL
+);
+CREATE UNIQUE INDEX IF NOT EXISTS pilot_tags_pk ON pilot_tags (post_id, code);
+
 -- Section 6: labels. Your hand labels. Same fields as tagged_posts.
 -- UNIQUE(post_id, labeller) so re-labelling a post overwrites rather than duplicates.
 CREATE TABLE IF NOT EXISTS labels (

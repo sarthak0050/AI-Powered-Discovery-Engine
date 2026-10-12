@@ -234,7 +234,9 @@ def cmd_judge_relevance(args) -> int:
 
 def cmd_in_scope(args) -> int:
     """Stage 2: the locked rubric applied to what the relevance filter kept."""
-    from engine.inscope import run_pilot, run_sample
+    from engine.inscope import run_pilot, run_sample, run_topup
+    if getattr(args, "top_up", False):
+        return run_topup(force=getattr(args, "force", False))
     if getattr(args, "pilot", False):
         return run_pilot(force=getattr(args, "force", False))
     return run_sample(force=getattr(args, "force", False))
@@ -294,6 +296,8 @@ def build_parser() -> argparse.ArgumentParser:
         help="apply the locked rubric as the second-stage scope check (in_scope)")
     inscope.add_argument("--pilot", action="store_true",
                          help="draw the 300 Module 3 pilot posts and check them first")
+    inscope.add_argument("--top-up", action="store_true",
+                         help="draw and check more posts to grow the pilot pool toward 300 in-scope")
     inscope.add_argument("--force", action="store_true",
                          help="re-check rows that already have an in_scope verdict")
     inscope.set_defaults(func=cmd_in_scope)

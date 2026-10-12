@@ -1,0 +1,69 @@
+
+== relevance
+   1526 posts to judge in batches of 20  (1526 unjudged in total)
+   batch    0   20 posts judged  (running: 4 relevant, 16 not)
+   batch   25   20 posts judged  (running: 96 relevant, 424 not)
+   batch   50   20 posts judged  (running: 174 relevant, 846 not)
+   batch   75   20 posts judged  (running: 219 relevant, 1301 not)
+   batch   76    6 posts judged  (running: 221 relevant, 1305 not)
+
+   221 relevant, 1305 not relevant
+   relevant_posts now holds 33799 rows
+
+   relevance by source
+     source        judged  relevant    rate
+     playstore      22709      4659   20.5%
+     reddit          6655      1263   19.0%
+     youtube         4095       670   16.4%
+     appstore         340        71   20.9%
+
+   mean confidence on kept posts: 0.93
+   kept posts below 0.6 confidence: 0 of 33799
+
+   10 random KEPT as relevant:
+     [playstore | 2026-09-17 | conf 1.00] this is the worst app I've ever seen....whatever I order let it be cosmetic or
+        why: Describes the result of placing an order and receiving incorrect items.
+     [playstore | 2026-06-25 | conf 0.90] good product little tight
+        why: The post describes a purchased product being slightly tight.
+     [youtube | 2026-10-01 | conf 0.85] I really miss your flipkart haul... Myntra pr wahi same product costly hai.. A
+        why: The user is comparing prices between Flipkart and Myntra.
+     [playstore | 2026-09-25 | conf 1.00] Product quality bahut achhi hai. Look stylish hai aur fitting bhi perfect hai.
+        EN: The product quality is very good. The look is stylish and the fitting is a
+        why: Describes satisfaction with a purchased product's quality, fit, and price.
+     [playstore | 2026-07-29 | conf 1.00] The product i purchased is good in quality and and give best price than other 
+        why: The user describes purchasing a product and comparing its price and qualit
+     [reddit | 2026-01-01 | conf 1.00] Suggestions for a Sturdy Medium Hard-Case Trolley Bag (Under ₹3,500) in Ahmeda
+        why: Looking for suggestions and comparing options to buy a trolley bag.
+     [playstore | 2026-06-26 | conf 0.85] ⭐⭐⭐⭐⭐I've been using Myntra for quite some time and overall my experience has 
+        why: The post mentions using returns and refunds, which are part of the shoppin
+     [playstore | 2026-09-23 | conf 0.90] Delivers a wrong product. Then refuses to pick up the product because it is wr
+        why: The user describes receiving a wrong product and dealing with a return ref
+     [playstore | 2026-09-27 | conf 0.90] very convenient to order , nice clothes within budget and nice offers
+        why: The user describes the act of ordering clothes within budget and using off
+     [reddit | 2024-12-31 | conf 1.00] Got a good deal or no ? So few days back bought a pair of football shoes of ad
+        why: Describes buying football shoes and evaluating the purchase.
+
+   10 random DROPPED as not relevant:
+     [appstore | 2026-09-28 | conf 1.00] Good product and the service of the customer
+        why: The post praises product quality and customer service without describing a
+     [playstore | 2026-08-19 | conf 1.00] nice bag quality is very good 👍🏻
+        why: Product quality praise with no shopping decision described.
+     [playstore | 2026-09-24 | conf 1.00] why am i not getting myntra credit for ultimate glam clam?its been a month i u
+        why: Complaint about missing credits for uploading a photo and video, not a sho
+     [playstore | 2026-06-30 | conf 1.00] nice prodact
+        why: The text contains simple product praise without a decision process.
+     [playstore | 2026-08-15 | conf 0.90] nice one. offer some additional cash discount for the people who deal in only 
+        why: The post suggests payment discount terms without describing a specific dec
+     [reddit | 2024-12-28 | conf 1.00] OK Let me guess you went to Thaliand ( Bangkok and Krabi island)
+        why: The text discusses travel locations, not a fashion shopping decision.
+     [playstore | 2026-07-07 | conf 1.00] when offers start , it is incredible
+        why: The text mentions the existence of offers without describing any shopping 
+     [playstore | 2026-09-25 | conf 0.80] beautiful and colourfull clothes available only in myntra shopping app....good
+        why: General comment on the availability and pricing of clothes on an app.
+     [playstore | 2026-08-21 | conf 1.00] good!!
+        why: General positive feedback with no decision described.
+     [playstore | 2026-09-01 | conf 0.90] satisfied with service
+        why: General satisfaction with service is stated with no decision described.
+
+   100 posts written to data/labels/relevance_check.csv
+   Fill in the my_judgement column, then run: python run.py relevance

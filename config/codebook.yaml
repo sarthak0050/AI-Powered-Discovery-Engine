@@ -4,17 +4,718 @@
 # you edit it. Until then it holds only the one code that must always exist, so
 # that no post can be left untagged while the pilot is still running.
 
-version: 0
-generated_at: null
-approved_by_user: false      # the pipeline must not proceed past Milestone 3
-                             # until this is set to true by hand
-
+version: 2
+generated_at: '2026-10-10T06:10:00+00:00'
+approved_by_user: true
+pilot_pool: 369
+pilot_sources:
+  appstore: 36
+  playstore: 87
+  reddit: 107
+  youtube: 139
+parent_themes:
+- theme_id: product-discovery-and-recommendations
+  label: Product Discovery and Recommendations
+- theme_id: pricing-and-discounts
+  label: Pricing and Discounts
+- theme_id: quality-and-material-satisfaction
+  label: Quality and Material Satisfaction
+- theme_id: sizing-and-fit
+  label: Sizing and Fit
+- theme_id: delivery-and-logistics
+  label: Delivery and Logistics
+- theme_id: returns-exchanges-and-policies
+  label: Returns, Exchanges and Policies
+- theme_id: platform-trust-and-customer-support
+  label: Platform Trust and Customer Support
+- theme_id: shopping-experience-and-app-usability
+  label: Shopping Experience and App Usability
 codes:
-  - code: other_emerging
-    label: Other emerging theme
-    definition: >
-      Anything that does not fit any other code. Used sparingly: if this code
-      exceeds 10% of posts, the codebook is missing something and should be revised.
-    include_when: Nothing else clearly fits.
-    exclude_when: Another code applies.
-    example_quotes: []
+- code: product-and-outfit-link-requests
+  label: Product and Outfit Link Requests
+  parent_theme: product-discovery-and-recommendations
+  definition: This cluster captures comments asking for direct URLs or links to specific
+    items featured in posts. Users want to know where to buy the exact product shown.
+  include_when: The post explicitly asks for a link, URL, or place to buy a specific
+    product.
+  exclude_when: The post discusses brand recommendations without asking for a direct
+    purchase link.
+  example_quotes:
+  - Green suit link
+  - Linkkk plssssss
+- code: brand-and-store-recommendations
+  label: Brand and Store Recommendations
+  parent_theme: product-discovery-and-recommendations
+  definition: This cluster captures requests for brand advice as well as specific
+    brand recommendations or reviews given by users.
+  include_when: The post recommends a specific brand or asks for brand alternatives
+    and reviews.
+  exclude_when: The post requests a direct link to a specific clothing item instead
+    of brand-level guidance.
+  example_quotes:
+  - Buy a Birkenstock
+  - I think go for Levi's
+- code: color-and-style-preferences
+  label: Color and Style Preferences
+  parent_theme: product-discovery-and-recommendations
+  definition: This cluster covers mentions of product colors, including asking for
+    specific color links, preferences for bright colors, and noticing differences
+    between expected and received colors.
+  include_when: The post discusses color choices, requests specific color links, or
+    reports color discrepancies.
+  exclude_when: The post focuses on general sizing or overall app experience without
+    mentioning color.
+  example_quotes:
+  - Mam can u kindly attach link for the white colour top
+  - Bright colours and print, soft fall, just what i was looking for.
+- code: sharing-links-and-search-details
+  label: Sharing Links and Search Details
+  parent_theme: product-discovery-and-recommendations
+  definition: This cluster contains posts where users share specific product links,
+    purchase sources, or search details with others. It is centered around directing
+    others to a specific item.
+  include_when: The post shares a direct product link, purchase source, or search
+    terms for an item.
+  exclude_when: The post asks general questions about sizing or expresses a return
+    policy.
+  example_quotes:
+  - Yes purchas this link
+  - 'Search this in Myntra : Stylish Peach-Coloured Women V-Neck Puff Sleeves Fit
+    and Flare Maxi Dress MRP ₹2,199 Rating: 4.2 ⭐'
+- code: outfit-and-style-suggestions
+  label: Outfit and Style Suggestions
+  parent_theme: product-discovery-and-recommendations
+  definition: This cluster contains requests for clothing styling tips, outfit recommendations,
+    or specific garment combinations for upcoming events. It is driven by users asking
+    others for fashion advice.
+  include_when: The post asks for outfit suggestions, clothing pairings, or style
+    recommendations for an event.
+  exclude_when: The post reviews purchased items or evaluates product quality without
+    asking for fashion advice.
+  example_quotes:
+  - Suggestions are recommended
+  - i have one request if you suggest some farshi salwar suit set for this wedding
+    season
+- code: coupons-and-promotional-savings
+  label: Coupons and Promotional Savings
+  parent_theme: pricing-and-discounts
+  definition: This cluster groups posts discussing promotional offers, discounts,
+    cashback rewards, vouchers, and coupon applications during orders or replacements.
+  include_when: The post mentions discounts, coupons, reward cash, cashback, or promotional
+    vouchers.
+  exclude_when: The post discusses general payment methods or order placement without
+    mentioning promotional incentives.
+  example_quotes:
+  - I love this app bcz it gives myncash makes an order with good discount
+  -  @Mariyakhan_123replacement me 2 order kr skte to usme coupan apply hogi?
+- code: credit-and-wallet-usage
+  label: Credit and Wallet Usage
+  parent_theme: pricing-and-discounts
+  definition: This cluster includes inquiries and statements regarding store credits,
+    wallet usage, credit restrictions, and bank transfers of credits.
+  include_when: The post discusses using shopping app credits, wallet funds, or transferring
+    credits to a bank.
+  exclude_when: The post discusses general app experience or product returns without
+    mentioning credits.
+  example_quotes:
+  - '@ChandaniSingh-r9e ha bank me transfer nahi kr sakte . Myntra me h shopping me
+    utilise kar sakte'
+  - Diii kya hum yeh myntra credit apne bank me transfer nhi kr skte phir eska use
+    kaise karenge... myntra app pr hi shipp krke kya
+- code: platform-fee-avoidance
+  label: Platform Fee Avoidance
+  parent_theme: pricing-and-discounts
+  definition: This cluster includes posts that mention or complain about extra platform
+    fees added to orders, or conversely express satisfaction at successfully placing
+    an order without paying those fees.
+  include_when: Include when the post complains about, avoids, or celebrates placing
+    an order without a platform fee.
+  exclude_when: Exclude when the post discusses general delivery charges, shipping
+    costs, or discounts unrelated to platform fees.
+  example_quotes:
+  - Pichhle order pe platform fee to lgega hi n
+  - Thankyou ❤ i have placed my order without platform fee😊
+- code: considers-purchase-worthwhile
+  label: Considers Purchase Worthwhile
+  parent_theme: pricing-and-discounts
+  definition: This cluster groups posts where customers express satisfaction that
+    a purchase was worthwhile and obtained at a reasonable price.
+  include_when: Include when the post states that an item is worth buying or was acquired
+    at a reasonable price.
+  exclude_when: Exclude when the post complains about poor quality or defective items.
+  example_quotes:
+  - Worth buying this cord set
+  - Got tshirt at good and reasonable price..ucb quality best
+- code: high-item-prices
+  label: High Item Prices
+  parent_theme: pricing-and-discounts
+  definition: This cluster groups feedback where shoppers note that specific item
+    prices are too expensive or higher than those on alternative shopping platforms.
+  include_when: The post mentions that prices are high, expensive, or cost more than
+    other apps.
+  exclude_when: The user is asking a question about a specific product price or inquiring
+    about current costs.
+  example_quotes:
+  - discountable rates but the prices of the item is higher then other shoping platform
+  - I had a good experience with Myntra, but its prices are higher compared to other
+    apps.
+- code: price-inquiries-and-cost-questions
+  label: Price Inquiries and Cost Questions
+  parent_theme: pricing-and-discounts
+  definition: This cluster captures user questions and inquiries regarding the exact
+    current price of an item or specific brand pricing details.
+  include_when: The text asks a direct question about the price of a product.
+  exclude_when: The user is complaining generally about high prices or comparing costs
+    across platforms.
+  example_quotes:
+  - 'Is current price: 699 ?'
+  - Im thinking to buy a Guess t-shirt for 2000rs from myntra Luxe , is the LUXE packaging
+    different ?
+- code: purchasing-discounted-products
+  label: Purchasing Discounted Products
+  parent_theme: pricing-and-discounts
+  definition: This cluster involves users mentioning purchases made from a specific
+    retailer while taking advantage of promotional offers and discounts. It centers
+    on deal-seeking behavior and general platform transactions.
+  include_when: The post mentions buying items from an online retailer while highlighting
+    discounts or offers.
+  exclude_when: The post focuses on product authenticity or specific item quality
+    without mentioning promotions.
+  example_quotes:
+  - I am purchase from myntra
+  - Really good to buy some offers on a products from Myntra
+- code: product-quality-praise
+  label: Product Quality Praise
+  parent_theme: quality-and-material-satisfaction
+  definition: This cluster contains positive feedback praising the quality, appearance,
+    fit, or overall goodness of purchased products.
+  include_when: The post expresses satisfaction with the physical characteristics,
+    appearance, or quality of an item.
+  exclude_when: The post compliments delivery speed or platform features rather than
+    the item itself.
+  example_quotes:
+  - very nice good quality product I love it thanks mytra
+  - Myntra mahenge to chijen deta Hai per bahut Sundar deta hai
+- code: product-quality-inquiries
+  label: Product Quality Inquiries
+  parent_theme: quality-and-material-satisfaction
+  definition: This cluster captures posts where users ask questions or express uncertainty
+    regarding the quality and durability of fashion items. It focuses strictly on
+    inquiries about the material or overall build rather than sizing or shipping.
+  include_when: The user asks whether an item has good quality or inquires about how
+    a product holds up.
+  exclude_when: The post discusses sizing, fit, returns, or general store recommendations.
+  example_quotes:
+  - Quality kiska accha h plz batao
+  - Kesa hai?? Same match krta hai kya saare se? To me bi order kru isliye shadi hai
+- code: soft-fabric-praise-and-desire
+  label: Soft Fabric Praise and Desire
+  parent_theme: quality-and-material-satisfaction
+  definition: This cluster groups posts that either praise the softness of a clothing
+    fabric or express a desire to find and purchase soft garments. It centers on the
+    tactile quality of clothing materials.
+  include_when: Include when the post explicitly mentions soft fabric, stretchability,
+    or looking for soft material in clothing.
+  exclude_when: Exclude when the post discusses overall clothing quality, fit, or
+    color without mentioning the softness of the fabric.
+  example_quotes:
+  - Must buy , very soft and stretchable
+  - Bright colours and print, soft fall, just what i was looking for.
+- code: complaints-about-poor-quality
+  label: Complaints About Poor Quality
+  parent_theme: quality-and-material-satisfaction
+  definition: This cluster includes customer grievances regarding poor product quality,
+    items that do not match expectations, or receiving unusable merchandise.
+  include_when: Include when the post criticizes cheap quality, item mismatch, or
+    receiving items that cannot be worn.
+  exclude_when: Exclude when the post praises product quality or evaluates items as
+    reasonably priced.
+  example_quotes:
+  - Ham bhi order karte hai par same nhi aata hai didi esa aata hai ki vo pahne layak
+    hi nhi hota hai
+  - very very chep quality never ever shop again on myntra
+- code: accurate-product-representation
+  label: Accurate Product Representation
+  parent_theme: quality-and-material-satisfaction
+  definition: This cluster highlights customer satisfaction regarding items matching
+    their online descriptions and visual representations. It reflects positive experiences
+    where delivered goods look exactly as advertised.
+  include_when: The post states that received products look exactly like or match
+    their online pictures.
+  exclude_when: The post discusses user-submitted photo reviews rather than the accuracy
+    of the product itself.
+  example_quotes:
+  - achha app hai do teen order kiya sahi product araha hai
+  - kpde perfume jaisa dikhata h vaisa hi same aata h perfect h
+- code: size-availability-and-inquiries
+  label: Size Availability and Inquiries
+  parent_theme: sizing-and-fit
+  definition: This cluster captures comments and questions regarding product sizes,
+    availability, and incorrect sizing. It focuses on sizing struggles and stock availability
+    rather than general product quality.
+  include_when: The post asks about available sizes, requests sizing recommendations,
+    or mentions receiving the wrong size.
+  exclude_when: The post discusses general product quality or prices without mentioning
+    size.
+  example_quotes:
+  - Dear, 46 size available nahin hai
+  - Size kya hai bataiye na didi plzz🥺🥺
+- code: sizing-and-fit-evaluations
+  label: Sizing and Fit Evaluations
+  parent_theme: sizing-and-fit
+  definition: This cluster includes posts where users evaluate or ask questions about
+    clothing dimensions, tightness, length, and overall fit. It is specific to how
+    a garment fits the body.
+  include_when: The user asks about measurements, height compatibility, or mentions
+    that an item is tight or well-fitted.
+  exclude_when: The post talks about material quality, return processes, or searching
+    for products.
+  example_quotes:
+  - good product little tight
+  - Is this jeans fine for a height of 5'7?
+- code: fast-and-reliable-delivery
+  label: Fast and Reliable Delivery
+  parent_theme: delivery-and-logistics
+  definition: This cluster groups positive remarks about receiving orders quickly,
+    timely deliveries, and smooth shipping experiences.
+  include_when: The post links fast shipping, on-time delivery, or a smooth delivery
+    process to a purchase — as a reason to buy, or as part of an order the poster is
+    actively choosing, placing or tracking.
+  exclude_when: Delivery praise with no purchase context; the post focuses on product
+    quality or customer support.
+  example_quotes:
+  - I am ordering first time on Myntra so beautiful this item and on time delivered
+    great
+  - Myntra is a very good platform for shopping, good offers, good quality, delivery
+    is also very fast, there is no problem in returning it, thank you Myntra
+- code: reports-false-delivery-status
+  label: Reports False Delivery Status
+  parent_theme: delivery-and-logistics
+  definition: This cluster groups reports of fraudulent or false delivery statuses
+    where an app marks a prepaid order as delivered without actual receipt.
+  include_when: The poster ties a false delivery status to a purchase decision — money
+    lost on an order, or it made them distrust the platform or stop buying from it.
+  exclude_when: A delivery status report with no stated effect on buying; standard
+    returns or general customer service complaints.
+  example_quotes:
+  - it's doesn't delivered but in app shows its delivered it's scam i lost my money
+  - there deliver partner usually mark the order as delivered, when we do online payment
+    without contacting us
+- code: order-cancellations-and-refunds
+  label: Order Cancellations and Refunds
+  parent_theme: delivery-and-logistics
+  definition: This cluster covers instances where users experience order cancellations
+    by the platform or encounter issues related to getting refunds after a cancelled
+    purchase.
+  include_when: The cancellation or refund issue is discussed as a reason the poster
+    will not order again, will delay, will switch, or will add checks next time — the
+    complaint changes a future buying decision.
+  exclude_when: A standalone refund or cancellation complaint with no link to a future
+    buying decision; shipping speed or general delivery.
+  example_quotes:
+  - sb se ghatiya app ho gya ab joki products deliver ni krta ab br br cancel ho jaate
+    kuch dinoo mai ab kbi ni lungii products sb se ghaitya
+  - the worst app they are lier maine dress order ki thi next day cancel krdi Or online
+    payment ki thi 10 din baad payment aajani chahiye but abhi tk payment nhi hai
+- code: product-returns-and-warnings
+  label: Product Returns and Warnings
+  parent_theme: returns-exchanges-and-policies
+  definition: This cluster includes discussions about returning items due to issues,
+    advising others to return products, or warning about return policies and consequences.
+  include_when: The return or warning is part of deciding whether to buy — e.g. worried
+    about return limits or rules before ordering, or warning others in a buying context.
+  exclude_when: Pure return-procedure advice or a return-process complaint with no
+    buying-decision link; positive product quality without a return.
+  example_quotes:
+  - Don't fall for this things, simply return it
+  - Agar product me kuch issues hai to h return karo . Otherwise agar aapne 5 product
+    purchase kia hai and 2 return kia hai tab to it’s fine but agar 5 return kr diye
+    then problem hoga and post approve nahi hoga and credit nahi milega
+- code: return-and-replacement-rules
+  label: Return and Replacement Rules
+  parent_theme: returns-exchanges-and-policies
+  definition: This cluster groups posts where users ask about or describe the return,
+    replacement, or cancellation policies of online purchases. It centers entirely
+    on post-purchase logistical rules.
+  include_when: The user asks if they can return, replace, or cancel an order after
+    buying.
+  exclude_when: The post focuses on sizing issues, product quality, or general platform
+    trust without mentioning returns.
+  example_quotes:
+  - Replace krne k bad use cancel nhe krna?
+  - Hey after buying can i return it ? And just give the review ?
+- code: customer-support-and-care-issues
+  label: Customer Support and Care Issues
+  parent_theme: platform-trust-and-customer-support
+  definition: This cluster captures negative feedback, complaints, and experiences
+    regarding unhelpful, rude, or unresponsive customer care and support services.
+  include_when: The support failure is tied to a purchase the poster depends on (an
+    order, exchange or return) or drove them to stop buying, switch, or distrust the
+    platform.
+  exclude_when: A standalone service-quality complaint with no buying-decision link;
+    praise of delivery speed or general platform performance.
+  example_quotes:
+  - My last 8-10 orders cancelled without any reason Pathetic app Don’t use
+  - The worst shopping app right now is Myntra. Even when an exchange is eligible,
+    they don't resolve the issue despite calling customer care multiple times. I'm
+    deleting the app and will never shop from Myntra again
+- code: app-deletion-and-quitting
+  label: App Deletion and Quitting
+  parent_theme: platform-trust-and-customer-support
+  definition: This cluster captures expressions of frustration resulting in users
+    abandoning, deleting, or deciding to permanently stop using a shopping app.
+  include_when: The post states an intention to delete the app, quit online shopping,
+    or stop making purchases.
+  exclude_when: The post expresses general satisfaction or merely asks a sizing question.
+  example_quotes:
+  - sb se ghatiya app ho gya ab joki products deliver ni krta ab br br cancel ho jaate
+    kuch dinoo mai ab kbi ni lungii products sb se ghaitya
+  - doesn't have my size , I checked my size clothes and they only have limited designs
+    with expensive tags . no thank you , I'll not stay somewhere where I'm not welcomed
+    . deleting this app
+- code: platform-trust-and-creator-reliance
+  label: Platform Trust and Creator Reliance
+  parent_theme: platform-trust-and-customer-support
+  definition: This cluster groups posts where users express trust in a specific online
+    platform's longevity and services, or rely on influencer recommendations for buying
+    clothes. It is about confidence in sources.
+  include_when: The user explicitly mentions trusting a platform, relying on long-term
+    usage, or trusting creator outfit recommendations.
+  exclude_when: The post asks direct product questions about sizing, quality, or returns
+    without mentioning trust.
+  example_quotes:
+  - "You are amazing. I actually buy clothes that you recommend. Thank you for finding\
+    \ the best outfits\x02\x05"
+  - I have been using Myntra since 10 years or more. overall good experience with
+    ordering and return/exchange. trusted platform
+- code: authenticity-and-seller-doubts
+  label: Authenticity and Seller Doubts
+  parent_theme: platform-trust-and-customer-support
+  definition: This cluster encompasses user concerns, questions, and doubts regarding
+    whether a received product or third-party seller is genuine or counterfeit. It
+    relates directly to brand trust and product originality.
+  include_when: The post questions if a specific seller or product is original, legit,
+    or a dupe.
+  exclude_when: The post praises product quality or accurate descriptions without
+    questioning authenticity.
+  example_quotes:
+  - ₹2,700 price gap on Myntra — is Flashstar Commerce legit, or should I stick with
+    Adidas India?
+  - Now I'm not sure if the item is original or a dupe.
+- code: platform-and-store-comparisons
+  label: Platform and Store Comparisons
+  parent_theme: shopping-experience-and-app-usability
+  definition: This cluster contains posts comparing prices, quality, or preferences
+    between different shopping apps, platforms, or sellers. Users weigh their options
+    across alternative services.
+  include_when: The post evaluates or contrasts multiple shopping apps, platforms,
+    or online versus store options.
+  exclude_when: The post focuses solely on product quality or customer service of
+    a single platform.
+  example_quotes:
+  - official app se order kare ya Myntra
+  - Meesho one looks good more than myntra
+- code: payment-methods-and-orders
+  label: Payment Methods and Orders
+  parent_theme: shopping-experience-and-app-usability
+  definition: This cluster involves questions or statements regarding payment requirements,
+    prepaid orders, cash on delivery workarounds, and first-time orders.
+  include_when: The post inquires about payment methods, prepaid vs COD terms, or
+    specific order placing steps.
+  exclude_when: The post focuses purely on applying promotional coupons or discounts.
+  example_quotes:
+  - Can it worked in prepaid order?2 ‰
+  - Place first fake order COD and then 2nd order prepaid
+- code: general-shopping-satisfaction
+  label: General Shopping Satisfaction
+  parent_theme: shopping-experience-and-app-usability
+  definition: This cluster covers overall positive feedback about the shopping experience,
+    app usability, variety, and using shopping as a form of relaxation, plus stated
+    intent to buy the same product again or keep shopping the platform.
+  include_when: The post reports a great overall shopping experience, satisfaction with
+    the app, or intent to repurchase the same item or keep shopping the platform.
+  exclude_when: The post focuses strictly on a specific product's physical quality
+    or a single return issue.
+  example_quotes:
+  - I had a great shopping experience on myntra app
+  - had a greatttt shopping experience with myntra. Many variety and good delivery
+    experience
+- code: wishlisting-and-past-regrets
+  label: Wishlisting and Past Regrets
+  parent_theme: shopping-experience-and-app-usability
+  definition: This cluster covers interactions with saving items to a wishlist feature
+    or expressing regret over missing out on seeing an item earlier. It deals with
+    bookmarking or discovering items over time.
+  include_when: The user asks how to add items to a wishlist or regrets not seeing
+    a product sooner.
+  exclude_when: The post is a general product search or an inquiry about sizing and
+    quality.
+  example_quotes:
+  - Myntra me whitliste kaise hote hai
+  - "I wishaime yeh phle dekh liya hota kitne paise Bach jate\x02 But thanks"
+- code: product-search-and-app-usability
+  label: Product Search and App Usability
+  parent_theme: shopping-experience-and-app-usability
+  definition: This cluster captures user experiences regarding platform software navigation,
+    finding specific categories, or struggling with prolonged product searches. It
+    centers on the usability of the shopping interface.
+  include_when: The user discusses the ease of selecting categories, app software
+    quality, or difficulties in finding specific items.
+  exclude_when: The post focuses on trust in a platform, store recommendations, or
+    return policies.
+  example_quotes:
+  - "Same. I have been looking for cute women's boots for a year now\x02 does anybody\
+    \ know"
+  - i like this app for shopping.. software is good . easy to select all categories.
+    compare with other I always prefer this .
+- code: mixed-online-and-local-shopping
+  label: Mixed Online and Local Shopping
+  parent_theme: shopping-experience-and-app-usability
+  definition: This cluster represents posts where users combine items sourced from
+    online e-commerce platforms and local physical shops into their outfits. It highlights
+    purchasing behavior across multiple channels.
+  include_when: The user mentions wearing or buying items from a mix of online platforms
+    and local physical shops.
+  exclude_when: The post focuses entirely on a single online platform experience or
+    store recommendation.
+  example_quotes:
+  - Suits you perfectly. I have a very similar one which I got from Myntra as well
+  - Date night outfit Top from Myntra, shorts made out of old Levis jeans, shoes from
+    Local shop
+- code: other_emerging
+  label: Other emerging theme
+  parent_theme: null
+  definition: 'Posts that fit no named code. Used sparingly: if it exceeds 10% of
+    posts the codebook is missing something.'
+  include_when: Nothing else clearly fits.
+  exclude_when: Another code applies.
+  example_quotes: []
+merge_map:
+- from: requests-product-links
+  to: product-and-outfit-link-requests
+  reason: merged
+  posts: 33
+- from: outfit-link-requests
+  to: product-and-outfit-link-requests
+  reason: merged
+  posts: 3
+- from: compares-shopping-platforms
+  to: platform-and-store-comparisons
+  reason: merged
+  posts: 16
+- from: compares-alternative-products
+  to: platform-and-store-comparisons
+  reason: merged
+  posts: 3
+- from: promotions-and-coupons
+  to: coupons-and-promotional-savings
+  reason: merged
+  posts: 14
+- from: appreciating-frequent-discounts
+  to: coupons-and-promotional-savings
+  reason: merged
+  posts: 3
+- from: benefits-from-sales-discounts
+  to: coupons-and-promotional-savings
+  reason: merged
+  posts: 3
+- from: payment-inquiries-and-orders
+  to: payment-methods-and-orders
+  reason: renamed
+  posts: 9
+- from: customer-support-issues
+  to: customer-support-and-care-issues
+  reason: merged
+  posts: 9
+- from: encounters-exchange-restrictions
+  to: customer-support-and-care-issues
+  reason: merged
+  posts: 3
+- from: praises-product-quality
+  to: product-quality-praise
+  reason: merged
+  posts: 9
+- from: positive-product-quality
+  to: product-quality-praise
+  reason: merged
+  posts: 6
+- from: fabric-quality-and-comfort
+  to: product-quality-praise
+  reason: merged
+  posts: 3
+- from: fast-and-smooth-delivery
+  to: fast-and-reliable-delivery
+  reason: merged
+  posts: 8
+- from: praise-for-fast-and-on-time-delivery
+  to: fast-and-reliable-delivery
+  reason: merged
+  posts: 3
+- from: brand-recommendations
+  to: brand-and-store-recommendations
+  reason: merged
+  posts: 7
+- from: store-and-shop-recommendations
+  to: brand-and-store-recommendations
+  reason: merged
+  posts: 4
+- from: footwear-investment-recommendation
+  to: brand-and-store-recommendations
+  reason: merged
+  posts: 4
+- from: size-and-fit-inquiries
+  to: size-availability-and-inquiries
+  reason: merged
+  posts: 7
+- from: critiques-garment-sizing-and-length
+  to: size-availability-and-inquiries
+  reason: merged
+  posts: 3
+- from: out-of-stock-items-or-sizes
+  to: size-availability-and-inquiries
+  reason: merged
+  posts: 3
+- from: color-preferences-and-discrepancies
+  to: color-and-style-preferences
+  reason: merged
+  posts: 7
+- from: denim-wash-and-upcycling
+  to: color-and-style-preferences
+  reason: merged
+  posts: 3
+- from: sharing-links-and-search-details
+  to: sharing-links-and-search-details
+  reason: kept
+  posts: 6
+- from: product-returns-and-warnings
+  to: product-returns-and-warnings
+  reason: merged
+  posts: 5
+- from: fear-of-return-account-bans
+  to: product-returns-and-warnings
+  reason: merged
+  posts: 3
+- from: general-shopping-satisfaction
+  to: general-shopping-satisfaction
+  reason: merged
+  posts: 5
+- from: plans-for-repeat-purchases
+  to: general-shopping-satisfaction
+  reason: merged
+  posts: 3
+- from: app-deletion-and-quitting
+  to: app-deletion-and-quitting
+  reason: merged
+  posts: 4
+- from: switches-to-offline-shopping
+  to: app-deletion-and-quitting
+  reason: merged
+  posts: 3
+- from: credit-and-wallet-usage
+  to: credit-and-wallet-usage
+  reason: kept
+  posts: 4
+- from: product-quality-inquiries
+  to: product-quality-inquiries
+  reason: merged
+  posts: 4
+- from: price-to-quality-ratio
+  to: product-quality-inquiries
+  reason: merged
+  posts: 3
+- from: evaluates-clothing-quality
+  to: product-quality-inquiries
+  reason: merged
+  posts: 3
+- from: return-and-replacement-questions
+  to: return-and-replacement-rules
+  reason: merged
+  posts: 4
+- from: return-process-and-experience
+  to: return-and-replacement-rules
+  reason: merged
+  posts: 3
+- from: sizing-and-fit-evaluations
+  to: sizing-and-fit-evaluations
+  reason: merged
+  posts: 4
+- from: positive-fit-and-suitability
+  to: sizing-and-fit-evaluations
+  reason: merged
+  posts: 3
+- from: ordering-multiple-sizes-or-items
+  to: sizing-and-fit-evaluations
+  reason: merged
+  posts: 3
+- from: height-based-sizing-queries
+  to: sizing-and-fit-evaluations
+  reason: merged
+  posts: 3
+- from: wishlisting-and-past-regrets
+  to: wishlisting-and-past-regrets
+  reason: kept
+  posts: 4
+- from: product-search-and-app-usability
+  to: product-search-and-app-usability
+  reason: kept
+  posts: 4
+- from: platform-trust-and-creator-reliance
+  to: platform-trust-and-creator-reliance
+  reason: merged
+  posts: 4
+- from: reliance-on-photo-reviews
+  to: platform-trust-and-creator-reliance
+  reason: merged
+  posts: 3
+- from: mixed-online-and-local-shopping
+  to: mixed-online-and-local-shopping
+  reason: kept
+  posts: 4
+- from: soft-fabric-praise-and-desire
+  to: soft-fabric-praise-and-desire
+  reason: kept
+  posts: 3
+- from: platform-fee-avoidance
+  to: platform-fee-avoidance
+  reason: kept
+  posts: 3
+- from: complains-about-poor-quality
+  to: complaints-about-poor-quality
+  reason: renamed
+  posts: 3
+- from: considers-purchase-worthwhile
+  to: considers-purchase-worthwhile
+  reason: kept
+  posts: 3
+- from: reports-false-delivery-status
+  to: reports-false-delivery-status
+  reason: kept
+  posts: 3
+- from: order-cancellations-and-refund-issues
+  to: order-cancellations-and-refunds
+  reason: renamed
+  posts: 3
+- from: high-item-prices
+  to: high-item-prices
+  reason: kept
+  posts: 3
+- from: price-inquiries-and-cost-questions
+  to: price-inquiries-and-cost-questions
+  reason: kept
+  posts: 3
+- from: purchasing-discounted-products
+  to: purchasing-discounted-products
+  reason: kept
+  posts: 3
+- from: authenticity-and-seller-doubts
+  to: authenticity-and-seller-doubts
+  reason: kept
+  posts: 3
+- from: accurate-product-representation
+  to: accurate-product-representation
+  reason: kept
+  posts: 3
+- from: outfit-and-style-suggestions
+  to: outfit-and-style-suggestions
+  reason: kept
+  posts: 3

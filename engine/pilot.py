@@ -4,8 +4,15 @@ Draws nothing itself: the pilot pool is whatever `python run.py in-scope --pilot
 drew and screened, and only the posts that pass the locked rubric are coded. Open
 coding invents short free-text labels (`prompts/open_coding.txt`), embeddings +
 HDBSCAN group the labels into clusters, an LLM names each cluster and writes its
-inclusion/exclusion rules (`prompts/theme_naming.txt`), and the result is a draft
-`config/codebook.yaml` plus `data/exports/codebook_review.csv` for you to edit.
+inclusion/exclusion rules (`prompts/theme_naming.txt`), and an LLM consolidates
+the named clusters into a two-level codebook of parent themes and child codes
+(`prompts/codebook_consolidate.txt`). The pilot pool is then re-tagged against the
+consolidated codebook (`prompts/codebook_recode.txt`) so the true other_emerging
+rate and per-code / per-source counts measure the codebook you will approve.
+
+The result is a draft `config/codebook.yaml` (version 2, with parent_themes and a
+merge_map saying which old code became which new code) plus
+`data/exports/codebook_review.csv` and `data/exports/codebook_counts.csv`.
 
 Built bottom-up and problem-agnostic: no theme, barrier or category is assumed in
 this file or in the prompts. `other_emerging` always exists so no post can be
@@ -28,15 +35,32 @@ from engine import db, llm
 
 PROMPT = db.ROOT / "prompts" / "open_coding.txt"
 NAMING_PROMPT = db.ROOT / "prompts" / "theme_naming.txt"
+CONSOLIDATION_PROMPT = db.ROOT / "prompts" / "codebook_consolidate.txt"
+RECODE_PROMPT = db.ROOT / "prompts" / "codebook_recode.txt"
 PILOT_CSV = db.ROOT / "data" / "exports" / "pilot_sample.csv"
 CODES_CSV = db.ROOT / "data" / "exports" / "open_codes.csv"
 CODEBOOK_YAML = db.ROOT / "config" / "codebook.yaml"
 REVIEW_CSV = db.ROOT / "data" / "exports" / "codebook_review.csv"
+COUNTS_CSV = db.ROOT / "data" / "exports" / "codebook_counts.csv"
+MERGE_CSV = db.ROOT / "data" / "exports" / "merge_map.csv"
+TAGS_CSV = db.ROOT / "data" / "exports" / "pilot_tags.csv"
 
 EMBED_MODEL = "paraphrase-multilingual-MiniLM-L12-v2"
 MAX_CODES = 3            # the prompt asks for 1-3 codes per post
 MIN_CLUSTER_POSTS = 3    # a cluster must show in at least this many posts
 MAX_EXAMPLES = 2
+MIN_THEMES, MAX_THEMES = 8, 10
+MIN_CHILDREN, MAX_CHILDREN = 25, 35
+
+_embed_client = None     # lazy singleton, reused by consolidation + folding
+
+
+def _embed():
+    global _embed_client
+    if _embed_client is None:
+        from sentence_transformers import SentenceTransformer
+        _embed_client = SentenceTransformer(EMBED_MODEL)
+    return _embed_client
 
 
 class CodeItem(BaseModel):
@@ -59,6 +83,24 @@ class ThemeItem(BaseModel):
 
 class ThemeBatch(BaseModel):
     clusters: list[ThemeItem]
+
+
+class ThemePlan(BaseModel):
+    id: int
+    label: str = Field(min_length=1, max_length=60)
+
+
+class ChildPlan(BaseModel):
+    id: int
+    label: str = Field(min_length=1, max_length=40)
+    parent_theme_id: int
+    anchor_cluster_id: int
+    member_cluster_ids: list[int]
+
+
+class ConsolidationPlan(BaseModel):
+    themes: list[ThemePlan]
+    children: list[ChildPlan]
 
 
 def _pilot_pool() -> list[dict]:
@@ -272,92 +314,414 @@ def _slugs(labels: dict[int, str]) -> dict[int, str]:
     return out
 
 
-def _write_codebook(clusters: list[dict], named: dict[int, ThemeItem],
-                    pool: list[dict]) -> int:
-    import yaml
+def _label_sims(model, label: str, labels: list[str]) -> list[float]:
+    """Cosine similarity of one label against a list, higher is closer."""
+    import numpy as np
+    vecs = model.encode([label] + labels, show_progress_bar=False, batch_size=64)
+    q = vecs[0]
+    q = q / (np.linalg.norm(q) + 1e-9)
+    rest = vecs[1:]
+    norms = np.linalg.norm(rest, axis=1)
+    norms[norms == 0] = 1e-9
+    rest = rest / norms[:, None]
+    return (rest @ q).tolist()
+
+
+def _normalize_plan(clusters: list[dict], named: dict[int, ThemeItem],
+                    plan: ConsolidationPlan) -> list[dict]:
+    """Make the LLM's merge plan structurally sound and cover every cluster.
+
+    The model is asked for 8-10 themes and 25-35 children and to cover every
+    cluster once, but it can drift. This layer enforces it deterministically:
+    drops junk, de-duplicates members, folds unassigned clusters into their nearest
+    child (by label embedding), folds children with fewer than three pilot posts
+    into their nearest child, and caps the total at 35. It never invents codes.
+    """
+    known = {c["cluster_id"] for c in clusters if c["cluster_id"] in named}
+    posts_of = {c["cluster_id"]: len(c["post_ids"]) for c in clusters}
+    label_of = {cid: named[cid].label for cid in known}
+    theme_ids = {t.id for t in plan.themes}
+
+    kids: list[dict] = []
+    for ch in plan.children:
+        if ch.parent_theme_id not in theme_ids:
+            print(f"   plan: child {ch.id} points at an unknown theme; dropped")
+            continue
+        members = [m for m in ch.member_cluster_ids if m in known]
+        if not members:
+            print(f"   plan: child {ch.id} covers no known cluster; dropped")
+            continue
+        kids.append({
+            "id": ch.id, "label": ch.label, "parent_theme_id": ch.parent_theme_id,
+            "anchor": ch.anchor_cluster_id if ch.anchor_cluster_id in members else members[0],
+            "members": members,
+        })
+
+    assigned: dict[int, int] = {}
+    deduped: list[dict] = []
+    for kid in kids:
+        keep = [m for m in kid["members"] if m not in assigned]
+        if not keep:
+            print(f"   plan: child {kid['id']} only re-lists other children's clusters; dropped")
+            continue
+        for m in keep:
+            assigned[m] = len(deduped)
+        kid["members"] = keep
+        if kid["anchor"] not in keep:
+            kid["anchor"] = keep[0]
+        deduped.append(kid)
+
+    if not plan.themes:
+        print("   plan: no themes returned; forcing a single theme")
+        deduped = [dict(kid, parent_theme_id=1) for kid in deduped]
+        plan.themes = [ThemePlan(id=1, label="All themes")]
+
+    orphans = sorted(known - set(assigned))
+    if orphans:
+        model = _embed()
+        print(f"   plan: {len(orphans)} clusters were left out — folding them into the "
+              f"nearest child by label similarity")
+        for cid in orphans:
+            sims = _label_sims(model, label_of[cid], [k["label"] for k in deduped])
+            if sims:
+                best = int(max(range(len(sims)), key=lambda i: sims[i]))
+                deduped[best]["members"].append(cid)
+                assigned[cid] = best
+            elif plan.themes:
+                deduped.append({"id": cid + 100000, "label": label_of[cid],
+                                "parent_theme_id": plan.themes[0].id,
+                                "anchor": cid, "members": [cid]})
+
+    if len(deduped) > 1:
+        model = _embed()
+        _fold_kids(deduped, model, posts_of)
+
+    if len(deduped) < MIN_CHILDREN:
+        print(f"   warning: only {len(deduped)} children after consolidation "
+              f"(target {MIN_CHILDREN}-{MAX_CHILDREN}) — re-run to retry the plan.")
+    for i, kid in enumerate(deduped):
+        kid["id"] = i + 1
+    return deduped
+
+
+def _posts_of(kid: dict, posts_of: dict) -> int:
+    return sum(posts_of[m] for m in kid["members"])
+
+
+def _fold_kids(deduped: list[dict], model, posts_of: dict) -> None:
+    """Fold small and surplus children into their nearest neighbour (in place)."""
+
+    def _nearest_other(i: int) -> int | None:
+        sims = _label_sims(model, deduped[i]["label"], [k["label"] for k in deduped])
+        best, best_score = None, -2.0
+        for j, score in enumerate(sims):
+            if j != i and score > best_score:
+                best, best_score = j, score
+        return best
+
+    def _fields(i: int) -> int:
+        return sum(posts_of[m] for m in deduped[i]["members"])
+
+    changed = True
+    while changed:
+        changed = False
+        # Fold children with fewer than MIN_CLUSTER_POSTS posts into the nearest child.
+        for j in list(range(len(deduped))):
+            if len(deduped) <= 1:
+                return
+            if _fields(j) >= MIN_CLUSTER_POSTS:
+                continue
+            target = _nearest_other(j)
+            if target is None:
+                continue
+            deduped[target]["members"] += deduped.pop(j)["members"]
+            changed = True
+            break
+        # Cap at MAX_CHILDREN by folding the smallest child into its nearest neighbour.
+        if len(deduped) > MAX_CHILDREN:
+            small = min(range(len(deduped)), key=lambda i: _fields(i))
+            target = _nearest_other(small)
+            if target is not None:
+                deduped[target]["members"] += deduped.pop(small)["members"]
+                changed = True
+
+
+def _consolidate(clusters: list[dict], named: dict[int, ThemeItem]) -> ConsolidationPlan | None:
+    """One LLM call groups the named clusters into themes + child codes."""
+    from engine.llm import LLMError, QuotaExhausted
+    template = CONSOLIDATION_PROMPT.read_text(encoding="utf-8")
+    client = llm.LLM(stage="codebook_consolidate")
+    who = f"{client._provider}/{client.model}"
     labelled = [c for c in clusters if c["cluster_id"] in named]
-    missing = [c for c in clusters if c["cluster_id"] not in named]
-    if missing:
-        print(f"   {len(missing)} clusters not named yet — re-run to finish.")
-        return 1
+    print(f"== consolidating {len(labelled)} named clusters on {who} (one call)")
 
-    source_counts = Counter(p["source"] for p in pool)
-    source_of = {p["post_id"]: p["source"] for p in pool}
-    slug_of = _slugs({c["cluster_id"]: named[c["cluster_id"]].label for c in labelled})
-
-    codes = []
-    covered_posts: set[str] = set()
-    review_rows = []
+    group = []
     for c in sorted(labelled, key=lambda c: -len(c["post_ids"])):
         theme = named[c["cluster_id"]]
-        slug = slug_of[c["cluster_id"]]
-        codes.append({
-            "code": slug,
-            "label": theme.label,
-            "definition": theme.definition,
-            "include_when": theme.include_when,
-            "exclude_when": theme.exclude_when,
+        group.append({
+            "cluster_id": c["cluster_id"], "label": theme.label,
+            "definition": theme.definition, "include_when": theme.include_when,
+            "exclude_when": theme.exclude_when, "posts": len(c["post_ids"]),
             "example_quotes": theme.example_quotes[:2],
         })
-        covered_posts |= set(c["post_ids"])
-        sources = Counter(source_of.get(pid, "?") for pid in c["post_ids"])
-        review_rows.append({
-            "code_id": slug, "label": theme.label,
-            "definition": theme.definition,
-            "include_when": theme.include_when, "exclude_when": theme.exclude_when,
-            "example_quotes": " || ".join(theme.example_quotes[:2]),
-            "posts": len(c["post_ids"]),
-            "top_sources": ", ".join(f"{s} ({n})" for s, n in sources.most_common(3)),
-        })
+    prompt = llm.render_prompt(template, {"clusters": json.dumps(group, ensure_ascii=False)})
+    ids = ",".join(str(c["cluster_id"]) for c in labelled)
+    try:
+        plan, stats = client.call_json(prompt, ConsolidationPlan, input_id=ids,
+                                       post_ids=[c["post_ids"][0] for c in labelled])
+    except (LLMError, QuotaExhausted) as exc:
+        print(f"   stopped: {exc}\n   re-run the same command to continue.")
+        return None
+    print(f"   plan from the model: {len(plan.themes)} themes, {len(plan.children)} children")
+    return plan
+
+
+def _build_codebook_v2(clusters: list[dict], named: dict[int, ThemeItem],
+                       plan: ConsolidationPlan, pool: list[dict]) -> dict:
+    """Normalise the plan and write config/codebook.yaml (version 2)."""
+    import yaml
+    kids = _normalize_plan(clusters, named, plan)
+    if not kids:
+        print("   consolidation returned no usable children — re-run after the quota "
+              "resets, or inspect prompts/codebook_consolidate.txt")
+        return {}
+
+    source_counts = Counter(p["source"] for p in pool)
+    posts_of_cluster = {c["cluster_id"]: len(c["post_ids"]) for c in clusters}
+    slug_of_cluster = _slugs(
+        {c["cluster_id"]: named[c["cluster_id"]].label for c in clusters
+         if c["cluster_id"] in named})
+    theme_ids_in_use = {kid["parent_theme_id"] for kid in kids}
+    themes = [t for t in plan.themes if t.id in theme_ids_in_use]
+    theme_slug = _slugs({t.id: t.label for t in themes})
+    child_slug = _slugs({kid["id"]: kid["label"] for kid in kids})
+
+    used_themes: dict[int, list[dict]] = defaultdict(list)
+    for kid in sorted(kids, key=lambda k: -_posts_of(k, posts_of_cluster)):
+        used_themes[kid["parent_theme_id"]].append(kid)
+
+    codes = []
+    for theme in themes:
+        for kid in used_themes.get(theme.id, []):
+            anchor = named[kid["anchor"]]
+            codes.append({
+                "code": child_slug[kid["id"]],
+                "label": kid["label"],
+                "parent_theme": theme_slug[theme.id],
+                "definition": anchor.definition,
+                "include_when": anchor.include_when,
+                "exclude_when": anchor.exclude_when,
+                "example_quotes": anchor.example_quotes[:2],
+            })
 
     codes.append({
         "code": "other_emerging",
         "label": "Other emerging theme",
+        "parent_theme": None,
         "definition": (
-            "Posts (or codes the clusterer could not group) that fit no named code. "
-            "Used sparingly: if it exceeds 10% of posts the codebook is missing something."),
+            "Posts that fit no named code. Used sparingly: if it exceeds 10% of posts "
+            "the codebook is missing something."),
         "include_when": "Nothing else clearly fits.",
         "exclude_when": "Another code applies.",
         "example_quotes": [],
     })
-    review_rows.append({
-        "code_id": "other_emerging", "label": "Other emerging theme",
-        "definition": codes[-1]["definition"],
-        "include_when": "Nothing else clearly fits.",
-        "exclude_when": "Another code applies.",
-        "example_quotes": "",
-        "posts": len(pool) - len(covered_posts),
-        "top_sources": ", ".join(f"{s} ({n})" for s, n in source_counts.most_common(3)),
-    })
+
+    merge_rows = []
+    for kid in kids:
+        to = child_slug[kid["id"]]
+        for mid in kid["members"]:
+            old = slug_of_cluster[mid]
+            if len(kid["members"]) == 1 and old == to:
+                reason = "kept"
+            elif len(kid["members"]) == 1:
+                reason = "renamed"
+            else:
+                reason = "merged"
+            merge_rows.append({
+                "from": old, "to": to, "reason": reason,
+                "posts": posts_of_cluster[mid],
+            })
 
     doc = {
-        "version": 1,
+        "version": 2,
         "generated_at": db.utc_now(),
         "approved_by_user": False,
-        "pilot_pool": len([p for p in pool]),
+        "pilot_pool": len(pool),
         "pilot_sources": dict(source_counts),
+        "parent_themes": [{"theme_id": theme_slug[t.id], "label": t.label}
+                          for t in themes],
         "codes": codes,
+        "merge_map": merge_rows,
     }
-    head = ((CODEBOOK_YAML.read_text(encoding="utf-8").split("codes:")[0]
-             if CODEBOOK_YAML.exists() else "")
-            or "# GENERATED IN MILESTONE 3 — DO NOT HAND-WRITE.\n#\n"
-            "# Produced by the pilot run, then you edit it. Set approved_by_user to\n"
-            "# true only when you are happy with every code.\n\n")
+    head = "\n".join(line for line in CODEBOOK_YAML.read_text(encoding="utf-8")
+                     .splitlines() if line.lstrip().startswith("#"))
+    if not head.strip():
+        head = ("# GENERATED IN MILESTONE 3 — DO NOT HAND-WRITE.\n#\n"
+                "# Produced by the pilot run, then you edit it. Set approved_by_user to\n"
+                "# true only when you are happy with every code.\n\n")
+    else:
+        head = head.rstrip() + "\n\n"
     CODEBOOK_YAML.write_text(head + yaml.safe_dump(doc, sort_keys=False,
                                                    allow_unicode=True),
                              encoding="utf-8")
-    db.export_csv(review_rows, REVIEW_CSV)
+
+    covered: set[str] = set()
+    clusters_by_id = {c["cluster_id"]: c for c in clusters}
+    for kid in kids:
+        for mid in kid["members"]:
+            covered |= set(clusters_by_id[mid]["post_ids"])
+
+    print(f"\n   consolidated codebook: {len(themes)} parent themes, "
+          f"{len(codes) - 1} child codes (+ other_emerging)")
+    print(f"   merge map: {len(merge_rows)} old code -> new code rows")
+    print(f"   posts covered by a named child: {len(covered)} of {len(pool)} "
+          f"({100 * len(covered) // len(pool)}%) before re-coding")
+    print(f"   written to {CODEBOOK_YAML.relative_to(db.ROOT)}")
+    return doc
+
+
+def _recode(pool: list[dict], doc: dict, force: bool) -> dict | None:
+    """Re-tag the pilot pool against the consolidated codebook (resumable).
+
+    Returns counts keyed by code, plus the true other_emerging share.
+    """
+    from engine.llm import LLMError, QuotaExhausted
+    template = RECODE_PROMPT.read_text(encoding="utf-8")
+    client = llm.LLM(stage="codebook_recode")
+    batch_size = int((client.config.get("batch") or {}).get("codebook_recode", 20)) or 20
+    who = f"{client._provider}/{client.model}"
+    known = {c["code"] for c in doc["codes"]}
+    listing = [{
+        "code": c["code"], "label": c["label"], "definition": c["definition"],
+        "include_when": c.get("include_when", ""), "exclude_when": c.get("exclude_when", ""),
+    } for c in doc["codes"] if c["code"] != "other_emerging"]
+    print(f"== re-coding {len(pool)} pilot posts against {len(listing)} child codes "
+          f"on {who}   batches of {batch_size}")
 
     conn = db.connect()
-    db.log_run(conn, "pilot", "codebook", len(pool), len(codes))
+    if force:
+        conn.execute("DELETE FROM pilot_tags")
+        conn.commit()
+    existing = {r["post_id"] for r in conn.execute("SELECT post_id FROM pilot_tags")}
+    pending = [p for p in pool if force or p["post_id"] not in existing]
+    print(f"   {len(pending)} to tag, {len(pool) - len(pending)} already tagged")
+
+    done = 0
+    tagged_total = 0
+    for start in range(0, len(pending), batch_size):
+        chunk = pending[start:start + batch_size]
+        payload = [{"id": i + 1, "text": (p["text_original"] or "")[:1200]}
+                   for i, p in enumerate(chunk)]
+        prompt = llm.render_prompt(template, {
+            "codes": json.dumps(listing, ensure_ascii=False),
+            "posts": json.dumps(payload, ensure_ascii=False)})
+        ids = ",".join(str(p["post_id"]) for p in chunk)
+        try:
+            parsed, stats = client.call_json(
+                prompt, CodeBatch, input_id=ids,
+                post_ids=[p["post_id"] for p in chunk])
+        except (LLMError, QuotaExhausted) as exc:
+            print(f"   stopped: {exc}")
+            print(f"   {done} batch(es) written. Re-run the same command to continue.")
+            conn.close()
+            return None
+        real = {i + 1: chunk[i] for i in range(len(chunk))}
+        written = 0
+        for item in parsed.results:
+            post = real.get(item.id)
+            if not post:
+                continue
+            valid = [str(code) for code in item.codes if code in known]
+            if not valid:
+                valid = ["other_emerging"]
+            for code in valid[:4]:
+                conn.execute(
+                    "INSERT INTO pilot_tags (post_id, code) "
+                    "SELECT ?, ? WHERE NOT EXISTS "
+                    "(SELECT 1 FROM pilot_tags WHERE post_id = ? AND code = ?)",
+                    (post["post_id"], code, post["post_id"], code))
+                written += 1
+        conn.commit()
+        done += 1
+        tagged_total += len(chunk)
+        print(f"   batch {done}: {len(chunk)} posts tagged   ({tagged_total}/{len(pending)})")
+        sys.stdout.flush()
+
+    db.log_run(conn, "pilot", "codebook_recode", len(pending), tagged_total,
+               notes=f"{who} ({len(existing)} already tagged)")
+    rows = [dict(r) for r in conn.execute("SELECT post_id, code FROM pilot_tags "
+                                          "ORDER BY post_id, code")]
+    conn.close()
+    db.export_csv(rows, TAGS_CSV)
+    print(f"   {len(rows)} tags written to {TAGS_CSV.relative_to(db.ROOT)}")
+
+    source_of = {p["post_id"]: p["source"] for p in pool}
+    code_posts: dict[str, set] = defaultdict(set)
+    for row in rows:
+        code_posts[row["code"]].add(row["post_id"])
+    by_code = {}
+    for entry in doc["codes"]:
+        ps = code_posts.get(entry["code"], set())
+        by_code[entry["code"]] = {
+            "posts": len(ps),
+            "sources": Counter(source_of.get(pid, "?") for pid in ps),
+        }
+    other = code_posts.get("other_emerging", set())
+    return {"by_code": by_code, "other_posts": len(other),
+            "other_rate": len(other) / len(pool) if pool else 0.0}
+
+
+def _finish_outputs(doc: dict, counts: dict, pool: list[dict]) -> int:
+    """Write the review CSV (parent theme, then count), counts CSV and merge map."""
+    sources = dict(Counter(p["source"] for p in pool))
+    source_cols = [s for s, _ in sorted(sources.items(), key=lambda kv: -kv[1])]
+    theme_order = {t["theme_id"]: i for i, t in enumerate(doc["parent_themes"])}
+    by_code = counts["by_code"]
+
+    def rank(entry):
+        parent = entry.get("parent_theme")
+        return (theme_order.get(parent, 99),
+                -by_code.get(entry["code"], {}).get("posts", 0),
+                entry["label"].lower())
+
+    ordered = sorted(doc["codes"], key=rank)
+    parents_by_id = {t["theme_id"]: t["label"] for t in doc["parent_themes"]}
+
+    review_rows = []
+    count_rows = []
+    for entry in ordered:
+        name = entry["code"]
+        info = by_code.get(name, {"posts": 0, "sources": Counter()})
+        parent = parents_by_id.get(entry.get("parent_theme"), "")
+        review_rows.append({
+            "code_id": name, "parent_theme": parent, "label": entry["label"],
+            "definition": entry["definition"],
+            "include_when": entry.get("include_when", ""),
+            "exclude_when": entry.get("exclude_when", ""),
+            "example_quotes": " || ".join(entry.get("example_quotes") or []),
+            "posts": info["posts"],
+            "top_sources": ", ".join(f"{s} ({n})" for s, n in info["sources"].most_common(3)),
+        })
+        row = {"code": name, "label": entry["label"], "parent_theme": parent,
+               "posts": info["posts"]}
+        for s in source_cols:
+            row[s] = info["sources"].get(s, 0)
+        count_rows.append(row)
+
+    db.export_csv(review_rows, REVIEW_CSV)
+    db.export_csv(count_rows, COUNTS_CSV)
+    db.export_csv(doc["merge_map"], MERGE_CSV)
+
+    conn = db.connect()
+    db.log_run(conn, "pilot", "codebook", len(pool), len(doc["codes"]))
     conn.close()
 
-    print(f"\n   codebook: {len(codes)} codes "
-          f"({len(codes) - 1} named + other_emerging)")
-    print(f"   posts covered by a named cluster: {len(covered_posts)} of {len(pool)} "
-          f"({100 * len(covered_posts) // len(pool)}%)")
-    print(f"   draft written to {CODEBOOK_YAML.relative_to(db.ROOT)} and "
-          f"{REVIEW_CSV.relative_to(db.ROOT)}")
+    print(f"\n   review CSV ({REVIEW_CSV.relative_to(db.ROOT)}): sorted by parent "
+          f"theme, then by count")
+    print(f"   per-code + per-source counts: {COUNTS_CSV.relative_to(db.ROOT)}")
+    print(f"   merge map: {MERGE_CSV.relative_to(db.ROOT)}")
+    print(f"   other_emerging: {counts['other_posts']} of {len(pool)} posts "
+          f"({100 * counts['other_rate']:.1f}%) — target under 10%")
     print("   REVIEW AND APPROVE config/codebook.yaml (approved_by_user: true)\n"
           "   The pipeline stops here until you do.")
     return 0
@@ -383,7 +747,16 @@ def run(args=None) -> int:
     named = _theme_apply(clusters)
     if not named:
         return 1
-    return _write_codebook(clusters, named, pool)
+    plan = _consolidate(clusters, named)
+    if plan is None:
+        return 1
+    doc = _build_codebook_v2(clusters, named, plan, pool)
+    if not doc:
+        return 1
+    counts = _recode(pool, doc, force)
+    if counts is None:
+        return 1
+    return _finish_outputs(doc, counts, pool)
 
 
 def main(argv: list[str] | None = None) -> int:

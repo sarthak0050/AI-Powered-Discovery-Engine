@@ -235,6 +235,8 @@ class LLM:
         if named.get(self.stage):
             return named[self.stage]
         per_stage = self.config.get("per_stage_models") or {}
+        if per_stage.get(self.stage):          # a per-stage model beats the shared key
+            return per_stage[self.stage]
         return per_stage.get(self._stage_key) or self.config.get("model", "")
 
     def describe(self) -> str:
@@ -359,6 +361,19 @@ class LLM:
     def _limits(self, provider: str) -> dict:
         return (self.config.get("rate_limits") or {}).get(provider, DEFAULT_LIMITS)
 
+    def _rpd_limit(self, provider: str, model: str) -> int:
+        """The daily request limit for a specific model name.
+
+        The free tier caps per model per day, and the models are not equal: Gemini's
+        own 429 body reports `limit: 20` for gemini-3.5-flash (quotaId
+        GenerateRequestsPerDayPerProjectPerModel) but `limit: 500` for flash-lite.
+        Config carries those per-model figures; the provider-wide figure is only the
+        fallback when a model has not been measured.
+        """
+        limits = self._limits(provider)
+        by_model = limits.get("rpd_by_model") or {}
+        return int(by_model.get(model, limits.get("rpd", 0)))
+
     # ---------- rate limiting ----------
 
     def _recent_tokens(self, provider: str) -> int:
@@ -382,10 +397,12 @@ class LLM:
         tpd = int(limits.get("tpd", 0))     # tokens per DAY
 
         # The free tier limit is per model per day, not per provider, so the count that
-        # matters is this model's. gemini-3.5-flash and -flash-lite have separate 500s.
-        # Zero, not the provider-wide total, for a model with no calls yet. The limit is
-        # per model, so a model that has never run still has its full allowance.
+        # matters is this model's. gemini-3.5-flash-lite and gemini-3.5-flash have
+        # SEPARATE allowances, and they are not equal (flash is 20/day, flash-lite
+        # 500/day — both read out of the API's own 429 bodies). Zero, not the
+        # provider-wide total, for a model with no calls yet.
         used = self._day_by_model.get(model_name, 0)
+        rpd = self._rpd_limit(provider, model_name)
         if rpd and used >= rpd:
             raise QuotaExhausted(
                 f"Daily request quota reached for {provider}/{model_name}: "

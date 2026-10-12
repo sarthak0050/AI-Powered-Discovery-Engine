@@ -1,0 +1,36 @@
+code,label,parent_theme,posts,youtube,reddit,playstore,appstore
+product-and-outfit-link-requests,Product and Outfit Link Requests,Product Discovery and Recommendations,49,33,16,0,0
+brand-and-store-recommendations,Brand and Store Recommendations,Product Discovery and Recommendations,44,6,37,0,1
+color-and-style-preferences,Color and Style Preferences,Product Discovery and Recommendations,25,11,10,1,3
+outfit-and-style-suggestions,Outfit and Style Suggestions,Product Discovery and Recommendations,25,4,21,0,0
+sharing-links-and-search-details,Sharing Links and Search Details,Product Discovery and Recommendations,16,4,12,0,0
+considers-purchase-worthwhile,Considers Purchase Worthwhile,Pricing and Discounts,21,3,4,9,5
+coupons-and-promotional-savings,Coupons and Promotional Savings,Pricing and Discounts,19,5,4,8,2
+purchasing-discounted-products,Purchasing Discounted Products,Pricing and Discounts,17,2,7,5,3
+high-item-prices,High Item Prices,Pricing and Discounts,13,3,3,6,1
+credit-and-wallet-usage,Credit and Wallet Usage,Pricing and Discounts,11,9,0,2,0
+platform-fee-avoidance,Platform Fee Avoidance,Pricing and Discounts,7,4,0,2,1
+price-inquiries-and-cost-questions,Price Inquiries and Cost Questions,Pricing and Discounts,2,2,0,0,0
+product-quality-praise,Product Quality Praise,Quality and Material Satisfaction,41,1,3,27,10
+complaints-about-poor-quality,Complaints About Poor Quality,Quality and Material Satisfaction,14,5,4,4,1
+product-quality-inquiries,Product Quality Inquiries,Quality and Material Satisfaction,12,5,7,0,0
+soft-fabric-praise-and-desire,Soft Fabric Praise and Desire,Quality and Material Satisfaction,11,0,3,3,5
+accurate-product-representation,Accurate Product Representation,Quality and Material Satisfaction,8,0,1,4,3
+sizing-and-fit-evaluations,Sizing and Fit Evaluations,Sizing and Fit,34,9,16,2,7
+size-availability-and-inquiries,Size Availability and Inquiries,Sizing and Fit,12,4,6,2,0
+fast-and-reliable-delivery,Fast and Reliable Delivery,Delivery and Logistics,21,1,1,15,4
+order-cancellations-and-refunds,Order Cancellations and Refunds,Delivery and Logistics,15,3,2,9,1
+reports-false-delivery-status,Reports False Delivery Status,Delivery and Logistics,4,1,0,3,0
+product-returns-and-warnings,Product Returns and Warnings,"Returns, Exchanges and Policies",32,18,5,6,3
+return-and-replacement-rules,Return and Replacement Rules,"Returns, Exchanges and Policies",18,15,0,2,1
+app-deletion-and-quitting,App Deletion and Quitting,Platform Trust and Customer Support,17,1,1,12,3
+platform-trust-and-creator-reliance,Platform Trust and Creator Reliance,Platform Trust and Customer Support,15,3,0,8,4
+authenticity-and-seller-doubts,Authenticity and Seller Doubts,Platform Trust and Customer Support,12,2,7,2,1
+customer-support-and-care-issues,Customer Support and Care Issues,Platform Trust and Customer Support,12,1,1,9,1
+general-shopping-satisfaction,General Shopping Satisfaction,Shopping Experience and App Usability,28,0,0,22,6
+platform-and-store-comparisons,Platform and Store Comparisons,Shopping Experience and App Usability,20,7,6,6,1
+payment-methods-and-orders,Payment Methods and Orders,Shopping Experience and App Usability,16,11,0,3,2
+product-search-and-app-usability,Product Search and App Usability,Shopping Experience and App Usability,13,3,3,6,1
+mixed-online-and-local-shopping,Mixed Online and Local Shopping,Shopping Experience and App Usability,9,1,7,0,1
+wishlisting-and-past-regrets,Wishlisting and Past Regrets,Shopping Experience and App Usability,3,2,1,0,0
+other_emerging,Other emerging theme,,2,0,2,0,0

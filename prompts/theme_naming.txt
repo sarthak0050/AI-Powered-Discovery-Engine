@@ -10,8 +10,10 @@ Rules:
 - Use only the information given. Do not invent themes to fill gaps.
 - Do not assume a brand problem, a user segment or a category that the examples do
   not show.
-- The name must be short enough to be a dropdown option (under 6 words) and must
-  describe the shared behaviour, not a solution.
+- The name must be short enough to be a dropdown option: at most 40 characters
+  (count the letters, including spaces) and under 6 words, and must describe the
+  shared behaviour, not a solution.
+- Count carefully: 40 characters is the hard limit. A longer name is rejected.
 - The inclusion and exclusion rules must be mutually distinguishable from other
   clusters. If you cannot tell two clusters apart, say so in the definition.
 - Pick example quotes verbatim from the excerpts provided.

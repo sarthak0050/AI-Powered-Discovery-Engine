@@ -1,0 +1,82 @@
+
+== relevance
+   9404 posts to judge in batches of 20  (9404 unjudged in total)
+   batch    0   20 posts judged  (running: 3 relevant, 17 not)
+   batch   25   20 posts judged  (running: 100 relevant, 420 not)
+   batch   50   20 posts judged  (running: 194 relevant, 826 not)
+   batch   75   20 posts judged  (running: 289 relevant, 1231 not)
+   batch  100   20 posts judged  (running: 387 relevant, 1633 not)
+   batch  125   20 posts judged  (running: 493 relevant, 2027 not)
+   batch  150   20 posts judged  (running: 579 relevant, 2441 not)
+   batch  175   20 posts judged  (running: 672 relevant, 2848 not)
+   batch  200   20 posts judged  (running: 767 relevant, 3253 not)
+   batch  225   20 posts judged  (running: 870 relevant, 3650 not)
+   batch  250   20 posts judged  (running: 968 relevant, 4050 not)
+   batch  275   20 posts judged  (running: 1078 relevant, 4440 not)
+   batch  300   20 posts judged  (running: 1206 relevant, 4812 not)
+   batch  325   20 posts judged  (running: 1322 relevant, 5196 not)
+   batch  350   20 posts judged  (running: 1426 relevant, 5592 not)
+   batch  375   20 posts judged  (running: 1533 relevant, 5985 not)
+
+   1586 relevant, 6292 not relevant
+   relevant_posts now holds 32273 rows
+
+   relevance by source
+     source        judged  relevant    rate
+     playstore      22045      4561   20.7%
+     reddit          6471      1234   19.1%
+     youtube         3555       606   17.0%
+     appstore         202        41   20.3%
+
+   mean confidence on kept posts: 0.93
+   kept posts below 0.6 confidence: 0 of 32273
+
+   10 random KEPT as relevant:
+     [reddit | 2026-09-06 | conf 0.98] Help me find these vibrant neon jackets Was fascinated by the vibrant neon jac
+        why: Seeking alternatives and planning to buy neon jacket
+     [playstore | 2026-09-09 | conf 0.95] one product ordered another product sent without pricetag and the product is n
+        why: Describing receiving a wrong product and an unreplaceable item.
+     [playstore | 2026-07-25 | conf 0.90] Myntra was fine before but now a days it has become pathetic.. these people ca
+        why: Describes an automatic order cancellation and a lost shipment issue.
+     [playstore | 2026-08-09 | conf 1.00] pehle order liya.....fir 4 aug 2026 lo delivery dikha rha tha par deliver hua 
+        EN: First I placed an order... then delivery was showing for Aug 4 2026, but i
+        why: The text describes placing an order that was subsequently delayed and canc
+     [playstore | 2026-09-19 | conf 0.95] Very disappointed with Myntra. I placed 6 orders and 5 have already been cance
+        why: The user placed orders, experienced cancellations, and decided not to orde
+     [playstore | 2026-08-22 | conf 1.00] very bad experience... they don't exchange a hrx product
+        why: Describes an attempt to exchange a purchased product.
+     [playstore | 2026-08-12 | conf 0.90] byanchod shoping app sabse kharab service jab v buy karu toh issue ajatahey pa
+        why: Describes trying to buy and experiencing payment issues.
+     [playstore | 2026-08-21 | conf 0.90] "Myntra is my absolute go-to app for fashion and lifestyle shopping! The user 
+        why: The text mentions processing refunds.
+     [playstore | 2026-07-17 | conf 1.00] Very disappointed with Myntra's service. This has happened 4–5 times now: my o
+        why: The user describes ordering items that were canceled and deciding to choos
+     [reddit | 2026-03-10 | conf 0.85] You can check out Intune, they got some genz collection recently, so you can f
+        why: The post suggests options and locations to search for and buy clothing ite
+
+   10 random DROPPED as not relevant:
+     [playstore | 2026-08-17 | conf 0.90] it's a very amazing and great shopping experience from myntra
+        why: General praise for a shopping experience without detailing a specific deci
+     [reddit | 2024-12-12 | conf 0.90] How is this fit for an interview with the Former High Commissioner of India? S
+        why: Describing past purchases already made with no decision process detailed.
+     [reddit | 2024-12-15 | conf 0.90] Usko bol phir tu leke de itna hai toh yaa card 😄
+        EN: Tell her to buy it for you if she has so much or use a card
+        why: Casual banter about buying something for someone else, no actual purchase 
+     [playstore | 2026-09-27 | conf 1.00] it has nice quality and best app for shopping, also has so many coupons and di
+        why: The text discusses general app praise, quality, and coupons without descri
+     [playstore | 2026-07-06 | conf 1.00] nice easy
+        why: Too brief and does not describe a shopping decision.
+     [playstore | 2026-07-04 | conf 0.90] nice app the product are genuinely nice as per the pictures
+        why: General praise for products matching pictures with no decision described.
+     [playstore | 2026-07-23 | conf 0.99] spin game achaa hai but mera aab band ho gya chalta hi nhi hai 🤧
+        EN: The spin game was good but now it has stopped working and it doesn't run a
+        why: No shopping decision described.
+     [playstore | 2026-07-16 | conf 0.85] best platform to buy clothing 👌
+        why: General recommendation of the platform for buying clothing.
+     [playstore | 2026-07-08 | conf 1.00] it's such a good experience
+        why: General statement of a good experience with no shopping decision described
+     [playstore | 2026-07-07 | conf 1.00] It has become money grabbing platform, don't use it.
+        why: General negative opinion about the platform with no decision described.
+
+   100 posts written to data/labels/relevance_check.csv
+   Fill in the my_judgement column, then run: python run.py relevance

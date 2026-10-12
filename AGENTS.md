@@ -51,7 +51,7 @@ I am a product manager, not a developer. Therefore:
 | YouTube comments | YouTube Data API v3 | Free key from Google Cloud; daily quota, so cache search results |
 | Other sources (Quora, X, Instagram, blogs) | Manual import: I paste posts into `data/manual/*.csv` | Do not scrape these |
 | LLM (primary) | Google Gemini API free tier, a Flash or Flash-Lite model | Model name lives in config, not code |
-| LLM (stages pin their provider) | Gemini free tier for relevance/in_scope/extraction; Groq free tier (`openai/gpt-oss-120b`) for the judge and the Module 3 pilot | No automatic fallback: each stage names its provider in `config/llm.yaml` and stops with a clear message if it is unavailable |
+| LLM (stages pin their provider) | Gemini free tier for relevance/in_scope/extraction + the Module 3 pilot; Groq free tier (`openai/gpt-oss-120b`) for the judge | No automatic fallback: each stage names its provider in `config/llm.yaml` and stops with a clear message if it is unavailable. Methodology note (2026-10-08): the first 150 pilot posts were screened by Groq (sampling only); the top-up and the open coding / theme naming that followed ran on Gemini. Extraction, codebook consolidation and the pilot re-code all run on **flash-lite**, not flash: flash's free limit is 20 requests/day, so any high-volume stage would exhaust it in a few batches (extraction is ~334 calls at batch 20). |
 | LLM access layer | One small `llm.py` wrapper with a provider switch | So the provider and model can be changed in config |
 | Validation | `pydantic` | Validates every LLM JSON response |
 | Embeddings | `sentence-transformers`, a multilingual MiniLM model, run locally | Free; works offline |
@@ -151,7 +151,7 @@ discovery-engine/
 - **Done when** I've approved the codebook. Do not proceed without my approval.
 
 ### Module 4 — Extraction + validation
-- Tag every relevant post against `schema.yaml` and `codebook.yaml`, using `prompts/extraction.txt`, in batches of 10–15 posts per call.
+- Tag every relevant post against `schema.yaml` and `codebook.yaml`, using `prompts/extraction.txt`, in batches of 20 posts per call (`batch.extraction` in `llm.yaml`) — 20 was chosen so the whole corpus (~334 calls) fits one flash-lite daily allowance, and the full extraction runs on flash-lite.
 - Validate every response with Pydantic. `evidence_quote` must be a verbatim substring of the post; reject and retry otherwise.
 - Build a simple Streamlit **labelling page** (`dashboard/label.py`) that shows me one post at a time with dropdowns, so I can hand-label 100 posts. It saves to `data/labels/human_labels.csv`.
 - `validate.py` compares the LLM against my labels and reports per-field agreement (and Cohen's kappa for `primary_code`) plus a confusion table of the most-confused codes.

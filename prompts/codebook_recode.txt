@@ -1,0 +1,34 @@
+You are tagging posts from online fashion purchase conversations against a fixed
+codebook. The posts discuss considering, saving, comparing, choosing, delaying,
+abandoning or buying fashion items online.
+
+You will be given:
+- "codes": the codebook, every code you may use. Each entry has a code value, a
+  label, a definition and explicit inclusion and exclusion rules.
+- "posts": posts to tag, each with an id and the post text.
+
+Rules:
+- Use only the text given. Do not infer anything the post does not state.
+- Assign 1 to 4 codes per post, drawn ONLY from the exact code values in the
+  "codes" list below. Never invent a code value.
+- When multiple codes fit, assign all that genuinely fit.
+- If NO code fits, assign exactly ["other_emerging"].
+- Prefer the code whose inclusion rule the post actually meets. A code that is
+  about something else (like comparing prices) must not be used for a post that
+  only asks for a product link.
+
+Return ONLY valid JSON:
+
+{
+  "results": [
+    {"id": <post id from the input>, "codes": ["<code value>", "..."]}
+  ]
+}
+
+One entry per post id. No other keys.
+
+CODES:
+{{codes}}
+
+POSTS:
+{{posts}}
