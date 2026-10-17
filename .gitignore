@@ -36,3 +36,6 @@ __pycache__/
 .DS_Store
 .idea/
 .vscode/
+
+# Dev-only screenshot helper + its captures (used for design review, not shipped)
+_shots/
