@@ -14,6 +14,7 @@
     python run.py validate                        compare the LLM against your labels
     python run.py analyze                         build the analysis tables
     python run.py score                           score the opportunity areas
+    python run.py quality                         measure the engine's own quality
     python run.py dashboard                       open the dashboard
     python run.py doctor                          check keys and sources
 
@@ -41,6 +42,7 @@ STAGES = {
     "clean": "Milestone 2", "relevance": "Milestone 2", "pilot": "Milestone 3",
     "extract": "Milestone 4", "label": "Milestone 4", "validate": "Milestone 4",
     "analyze": "Milestone 5", "score": "Milestone 6", "dashboard": "Milestone 5",
+    "quality": "Engine quality",
 }
 
 
@@ -232,6 +234,12 @@ def cmd_judge_relevance(args) -> int:
     return run(force=getattr(args, "force", False))
 
 
+def cmd_judge_extract(args) -> int:
+    """~50 posts judged by Groq on primary_code and barrier_type (Module 4)."""
+    from engine.judge_extract import run
+    return run(force=getattr(args, "force", False))
+
+
 def cmd_in_scope(args) -> int:
     """Stage 2: the locked rubric applied to what the relevance filter kept."""
     from engine.inscope import run_pilot, run_sample, run_topup
@@ -291,6 +299,13 @@ def build_parser() -> argparse.ArgumentParser:
                         help="re-judge rows that already have a judge_label")
     judder.set_defaults(func=cmd_judge_relevance)
 
+    extract_judder = subs.add_parser(
+        "judge-extract",
+        help="an independent Groq judge retags ~50 posts on primary_code + barrier_type")
+    extract_judder.add_argument("--force", action="store_true",
+                                help="re-judge rows that already have a judge verdict")
+    extract_judder.set_defaults(func=cmd_judge_extract)
+
     inscope = subs.add_parser(
         "in-scope",
         help="apply the locked rubric as the second-stage scope check (in_scope)")
@@ -311,6 +326,7 @@ def build_parser() -> argparse.ArgumentParser:
         ("validate", "compare the LLM against your labels"),
         ("analyze", "build the analysis tables"),
         ("score", "score the opportunity areas"),
+        ("quality", "measure the engine's own quality"),
         ("dashboard", "open the dashboard"),
     ]:
         sub = subs.add_parser(name, help=help_text)
@@ -318,9 +334,19 @@ def build_parser() -> argparse.ArgumentParser:
         if name == "clean":
             sub.add_argument("--limit", type=int,
                              help="only the first N raw posts, for a pilot run")
+        if name == "extract":
+            sub.add_argument("--limit", type=int,
+                             help="only the first N relevant posts, for a pilot run")
+            sub.add_argument("--force", action="store_true",
+                             help="re-tag rows already marked done")
+            sub.add_argument("--sample", type=int, default=10,
+                             help="how many tagged rows to show (default 10)")
         if name == "pilot":
             sub.add_argument("--force", action="store_true",
                              help="re-code posts that already have open codes")
+        if name == "analyze":
+            sub.add_argument("--limit", type=int,
+                             help="analyse only the first N in-scope posts (smoke test)")
         if name == "relevance":
             sub.add_argument("--limit", type=int,
                              help="only judge the first N posts, for a pilot run")

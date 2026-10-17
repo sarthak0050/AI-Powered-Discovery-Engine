@@ -1,0 +1,22 @@
+metric,value,target,status,method,n
+relevance_precision_poststratified,61.8%,>=85%,below,"cross-model, written rubric, not human; judge_label in data/labels/relevance_check.csv",100
+relevance_recall_poststratified,38.5%,>=85%,below,"cross-model, written rubric, not human; judge_label in data/labels/relevance_check.csv",100
+relevance_precision_raw,70%,>=85%,below,"cross-model, written rubric, not human; judge_label in data/labels/relevance_check.csv",100
+in_scope_cross_model_agreement,61.6%,-,info,"pilot screen vs extraction in_scope, joined on post_id; data/exports/pilot_sample.csv",619
+extraction_vs_human_primary_code,72% (kappa 0.70),>=80%,below,data/labels/human_labels.csv vs tagged_posts; agreement + Cohen's kappa,100
+extraction_vs_human_barrier_type,87% (kappa 0.81),>=80%,pass,data/labels/human_labels.csv vs tagged_posts; agreement + Cohen's kappa,100
+extraction_vs_judge_primary_code,66% (kappa 0.62),>=80%,below,data/labels/extraction_judge.csv; agreement + Cohen's kappa,50
+extraction_vs_judge_barrier_type,86% (kappa 0.77),>=80%,pass,data/labels/extraction_judge.csv; agreement + Cohen's kappa,50
+other_emerging_rate,0.5%,<10%,pass,"tagged_posts, in_scope=1 & extract_status='done'",6440
+low_confidence_share,0.0%,<15%,pass,"tagged_posts, in_scope=1 & extract_status='done'; confidence < 0.5",6440
+stated_vs_underlying_divergence,2.2%,-,info,"tagged_posts, in_scope=1 & extract_status='done'; underlying_reason populated (schema sets it only when it differs from stated_reason)",6440
+coverage_playstore_decision_subset,838,>=100 posts,pass,tagged_posts x raw_posts; pre-purchase decision subset (journey_stage only),1998
+coverage_reddit_decision_subset,710,>=100 posts,pass,tagged_posts x raw_posts; pre-purchase decision subset (journey_stage only),1998
+coverage_youtube_decision_subset,441,>=100 posts,pass,tagged_posts x raw_posts; pre-purchase decision subset (journey_stage only),1998
+coverage_appstore_decision_subset,9,>=100 posts,below,tagged_posts x raw_posts; pre-purchase decision subset (journey_stage only),1998
+llm_calls_total,3366,-,info,"llm_call_log; breakdown: gemini/gemini-3.5-flash-lite 2988; groq/openai/gpt-oss-120b 293; gemini/gemini-3.5-flash 85; statuses: ok 2582, http_429 665, invalid_json 67, network 26, http_503 24, http_400 2",3366
+llm_error_rate,23.3%,-,info,"llm_call_log, status <> 'ok' (mostly http_429 rate limits); ok 2582, http_429 665, invalid_json 67, network 26, http_503 24, http_400 2",3366
+llm_retry_rate,13.2%,-,info,"llm_call_log, attempts > 1 (invalid JSON / transient error retried)",3366
+llm_calls_gemini_gemini-3.5-flash-lite,2988,-,info,"llm_call_log, grouped by provider/model",3366
+llm_calls_groq_openai/gpt-oss-120b,293,-,info,"llm_call_log, grouped by provider/model",3366
+llm_calls_gemini_gemini-3.5-flash,85,-,info,"llm_call_log, grouped by provider/model",3366
