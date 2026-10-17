@@ -98,14 +98,43 @@ calls you have used today. Run it any time something looks wrong.
 | `python run.py in-scope --pilot` | Draw the 300 Module 3 posts and check them against the same rubric first |
 | `python run.py pilot` | Open-code the in-scope pilot pool, cluster the labels, name the themes and write `config/codebook.yaml`. **Stops for your approval** |
 | `python run.py extract` | Tag every post against the codebook you approved |
+| `python run.py judge-extract` | An independent Groq judge retags ~50 posts on `primary_code` + `barrier_type`, for cross-model validation |
 | `python run.py label` | Open a page in your browser to hand-label ~100 posts |
 | `python run.py validate` | Compare the engine's tags to your labels |
-| `python run.py analyze` | Build the analysis tables |
-| `python run.py score` | Score the opportunity areas |
-| `python run.py dashboard` | Open the dashboard |
+| `python run.py analyze` | Build the analysis tables in `data/exports/` (each as the full table plus a `_decision` pre-purchase subset) |
+| `python run.py score` | Synthesise and score the opportunity areas as **two tracks** (pre-purchase, and trust & retention); writes the scorecards, `evidence_pack.md` and `methodology.md` |
+| `python run.py quality` | Measure the engine's own quality (relevance, tagging, coverage, LLM usage) into `data/exports/engine_quality.csv` |
+| `python run.py dashboard` | Open the dashboard (5 tabs) in your browser |
 
 Stages are built one milestone at a time. If you run one that is not built yet, it
 says so and changes nothing.
+
+### The two tracks (Module 6)
+
+The corpus splits by journey stage into two decision contexts that pull in opposite
+directions, so they are synthed and scored separately:
+
+- **Track A — Pre-purchase decision:** `journey_stage` in browsing, saved_or_wishlisted,
+  in_cart, comparing, postponed, abandoned. A buying decision is still in play, so all
+  four scoring factors apply, including proximity to purchase.
+- **Track B — Trust & retention:** `journey_stage` in purchased, returned. The decision
+  is over, so proximity is dropped and the other weights are renormalised.
+
+Track A is then split once more for reading: **A1 (item-level friction)** is the
+pre-purchase posts that do **not** cite a past bad experience, and **A2 (trust-driven
+hesitation)** is those that do (the "bridge" set). The bridge signal concentrates in the
+`abandoned` stage, so A1 lets the item-level signal be read without it. Posts are
+multi-coded, so opportunity shares overlap and do not sum to 100%.
+
+### The dashboard
+
+`python run.py dashboard` opens five tabs, all reading only `data/exports/` (no database
+or API calls): **Overview** (funnel + journey breakdown), **Pre-purchase opportunities**
+(the A1 scorecard with confidence-interval bars and per-factor breakdown, plus the
+external sources people check), **Trust & retention** (the Track B scorecard and the
+bridge-by-stage chart, with the circularity note), **Evidence explorer** (filter posts by
+opportunity, code, stage or source and see the quote and link), and **Engine quality**
+(the quality report with pass/below badges).
 
 ### Hand-copying posts from Quora, X, Instagram or blogs
 
@@ -180,6 +209,21 @@ data/labels/       files for you to review and label
 data/errors.csv    anything the model got wrong, so you can see it
 logs/run_log.csv   rows in and rows out at every stage
 ```
+
+The tables you will actually read live in `data/exports/`:
+
+| File | What it holds |
+|---|---|
+| `opportunity_scorecard_prepurchase.csv` | Track A scorecard (all four factors), ranked |
+| `opportunity_scorecard_prepurchase_a1.csv` | The A1 scorecard — pre-purchase without the bridge set |
+| `opportunity_scorecard_trust.csv` | Track B scorecard (proximity dropped), ranked |
+| `stage_breakdown.csv` | Posts and top opportunities per pre-purchase journey stage |
+| `bridge_by_stage.csv` | Share of posts citing a past bad experience, abandoned vs the rest |
+| `a2_top_codes.csv` | The codes behind A2 (trust-driven hesitation) |
+| `evidence_pack.md` | Per opportunity: score breakdown, segments, sources, quotes with links |
+| `methodology.md` | How each number was produced, and its caveats |
+| `spot_check.csv`, `bridge_check.csv` | Quotes for you to sanity-check, with links |
+| `engine_quality.csv` | One row per quality metric (metric, value, target, status, method, n) |
 
 You can delete `data/` at any time and re-run: every LLM answer is cached, so a
 re-run costs you nothing.
