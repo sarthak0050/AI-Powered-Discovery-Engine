@@ -85,9 +85,34 @@ def _fmt_pct(value) -> str:
         return "—"
 
 
+def _howto(text: str) -> None:
+    st.markdown(
+        "<div style='background:#eef3fb;border-left:4px solid #3f6bb0;"
+        "border-radius:6px;padding:10px 14px;margin:2px 0 14px;font-size:14px;"
+        "line-height:1.5;color:#2a3444'><b>How to read this</b><br>" + text + "</div>",
+        unsafe_allow_html=True)
+
+
 # --------------------------------------------------------------------------- tab 1
 
 def tab_overview() -> None:
+    _howto(
+        "This tab shows how big the corpus is and where pre-purchase friction sits by "
+        "journey stage. Read the funnel top-to-bottom as successive quality gates, and "
+        "the bars as how pre-purchase posts spread across stages. Key takeaway: "
+        "pre-purchase talk is dominated by early browsing, while abandonment is the "
+        "largest late stage — that is what the opportunity scores on the next tabs are "
+        "built from.")
+    st.markdown(
+        "This dashboard is the output of an engine that reads public conversations about "
+        "shopping for clothes online (Myntra) and turns them into counted, "
+        "evidence-backed insight — every number traces back to a real post. It is not a "
+        "sentiment tool or a review summary: themes were discovered from the data, then "
+        "approved, then counted. The funnel below shows how the pool narrows at each "
+        "quality gate — raw deduplicated posts, then relevant, then in scope, then the "
+        "pre-purchase set (Track A), and finally the A1 item-level posts — so you can see "
+        "how many posts actually stand behind each finding.")
+
     clean = load("clean_posts.csv")
     tagged = load("tagged_posts.csv")
     bridge = load("bridge_check.csv")
@@ -202,6 +227,12 @@ def _factor_chart(df: pd.DataFrame, title: str) -> None:
 
 
 def tab_prepurchase() -> None:
+    _howto(
+        "This tab shows the item-level frictions people hit before buying (the A1 set), "
+        "ranked by a weighted score. Read the bars as each opportunity's share of A1 "
+        "posts with its 95% confidence interval, and the stacked chart as the four "
+        "factors that make up the score. Key takeaway: the leaders are the frictions "
+        "that are both common and straightforward to fix.")
     a1 = _num(load("opportunity_scorecard_prepurchase_a1.csv"),
               ["posts", "share_track_pct", "freq_ci95_low_pct", "freq_ci95_high_pct",
                "n_sources", "total_score", *FACTOR_LABELS])
@@ -249,6 +280,13 @@ def tab_prepurchase() -> None:
 # --------------------------------------------------------------------------- tab 3
 
 def tab_trust() -> None:
+    _howto(
+        "This tab shows the frictions behind returns and lost repeat purchases (Track B), "
+        "and how often pre-purchase posts cite a past bad experience. Read the scorecard "
+        "like the A1 one, then the grouped bars as the share of each stage's posts that "
+        "reference a past bad experience. Key takeaway: trust problems cluster in the "
+        "abandoned stage, but that link is not proof of cause — which is why the A1 tab "
+        "sets those posts aside.")
     tb = _num(load("opportunity_scorecard_trust.csv"),
               ["posts", "share_track_pct", "freq_ci95_low_pct", "freq_ci95_high_pct",
                "n_sources", "total_score", *FACTOR_LABELS])
@@ -308,6 +346,11 @@ def tab_trust() -> None:
 # --------------------------------------------------------------------------- tab 4
 
 def tab_evidence() -> None:
+    _howto(
+        "This tab shows the actual posts behind every number, so you can read them "
+        "yourself. Filter by opportunity, code, journey stage or source, and click a link "
+        "to open the original post. Key takeaway: every finding here is traceable to real "
+        "quotes — spot-check any of them before acting on it.")
     tagged = load("tagged_posts.csv")
     posts = load("relevant_posts.csv")
     if tagged.empty or posts.empty:
@@ -368,6 +411,12 @@ BADGE = {
 
 
 def tab_quality() -> None:
+    _howto(
+        "This tab reports how well the engine itself performed — relevance, tagging "
+        "agreement with human labels and an independent judge, coverage, and LLM usage. "
+        "Read the badges: PASS meets the target, BELOW misses it, INFO is context. Key "
+        "takeaway: tagging agreement is strong and coverage is broad, with App Store "
+        "volume the one thin spot.")
     q = load("engine_quality.csv")
     if q.empty:
         _missing("engine_quality.csv")
