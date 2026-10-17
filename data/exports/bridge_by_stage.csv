@@ -1,0 +1,3 @@
+group,posts,code_n,code_pct,code_ci_low,code_ci_high,keyword_n,keyword_pct,keyword_ci_low,keyword_ci_high,union_n,union_pct,union_ci_low,union_ci_high
+abandoned,618,509,82.4,79.2,85.2,508,82.2,79.0,85.0,564,91.3,88.8,93.2
+other_prepurchase,1380,102,7.4,6.1,8.9,205,14.9,13.1,16.8,236,17.1,15.2,19.2

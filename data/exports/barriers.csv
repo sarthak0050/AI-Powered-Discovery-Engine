@@ -1,0 +1,12 @@
+barrier_type,posts,pct_of_relevant_posts,posts_with_underlying_reason,notes
+none,3010,46.74,0.0,
+trust,1744,27.08,108.0,
+informational,686,10.65,5.0,
+functional,465,7.22,18.0,
+financial,290,4.5,10.0,
+confidence,95,1.48,2.0,
+decision_comparison,55,0.85,0.0,
+social,49,0.76,0.0,
+occasion_timing,40,0.62,1.0,
+other,6,0.09,0.0,
+stated_vs_underlying_differs,144,2.24,,"underlying_reason present = the deeper driver diverges from the stated reason; only one barrier_type is captured, so this shows how often the LLM judged the stated reason to hide a different driver"

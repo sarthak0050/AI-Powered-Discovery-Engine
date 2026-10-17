@@ -1,0 +1,424 @@
+group,label
+source,all
+source,playstore
+source,reddit
+source,youtube
+segment,seg_price_sensitivity:high
+segment,seg_gender:female
+segment,seg_category:dress
+segment,seg_category:jeans
+segment,seg_gender:male
+segment,seg_category:top
+segment,seg_category:shoes
+segment,seg_category:footwear
+segment,seg_price_sensitivity:medium
+segment,seg_shopping_frequency:frequent
+segment,seg_category:saree
+segment,seg_category:shirt
+segment,seg_category:clothing
+segment,seg_category:clothes
+segment,seg_category:pants
+segment,seg_category:heels
+segment,seg_category:dresses
+segment,seg_category:denim
+source,appstore
+segment,seg_category:ethnic wear
+segment,seg_category:sneakers
+segment,seg_category:tshirts
+segment,seg_city_tier:tier-1
+segment,seg_price_sensitivity:low
+segment,seg_category:Jeans
+segment,seg_category:apparel
+segment,seg_category:t-shirt
+segment,seg_category:tops
+segment,seg_gender:women
+segment,seg_shopping_frequency:first-time
+segment,seg_category:tshirt
+segment,seg_life_stage:college student
+segment,seg_price_sensitivity:affordable
+segment,seg_shopping_frequency:daily
+segment,seg_category:kurta
+segment,seg_category:kurta set
+segment,seg_category:t shirt
+segment,seg_category:topwear
+segment,seg_category:watch
+segment,seg_life_stage:student
+segment,seg_shopping_frequency:first time
+segment,seg_shopping_frequency:high
+segment,seg_category:jackets
+segment,seg_category:jewelry
+segment,seg_category:kurti
+segment,seg_category:suit
+segment,seg_category:t-shirts
+segment,seg_gender:men
+segment,seg_category:accessories
+segment,seg_category:activewear
+segment,seg_category:boots
+segment,seg_category:earrings
+segment,seg_category:lehenga
+segment,seg_category:sarees
+segment,seg_category:socks
+segment,seg_category:trousers
+segment,seg_life_stage:married
+segment,seg_city_tier:Tier 1
+segment,seg_price_sensitivity:cheap
+segment,seg_category:T-shirts
+segment,seg_category:belt
+segment,seg_category:blouse
+segment,seg_category:jacket
+segment,seg_category:jewellery
+segment,seg_category:sandals
+segment,seg_category:shoe
+segment,seg_category:shorts
+segment,seg_category:skirt
+segment,seg_category:trouser
+segment,seg_life_stage:college
+segment,seg_life_stage:mother
+segment,seg_life_stage:postpartum
+segment,seg_life_stage:postpartum mother
+segment,seg_city_tier:Delhi
+segment,seg_city_tier:Hyderabad
+segment,seg_city_tier:tier_2
+segment,seg_price_sensitivity:affordable price
+segment,seg_price_sensitivity:cheaper
+segment,seg_price_sensitivity:price sensitive
+segment,seg_price_sensitivity:price_sensitive
+segment,seg_shopping_frequency:first_time
+segment,seg_shopping_frequency:low
+segment,seg_shopping_frequency:regular
+segment,seg_shopping_frequency:regularly
+segment,seg_category:Handbags
+segment,seg_category:backpack
+segment,seg_category:bag
+segment,seg_category:bags
+segment,seg_category:birthday outfit
+segment,seg_category:bootcut jeans
+segment,seg_category:bottomwear
+segment,seg_category:cargoes
+segment,seg_category:electronics
+segment,seg_category:ethnic clothes
+segment,seg_category:fragrance
+segment,seg_category:gown
+segment,seg_category:kurta sets
+segment,seg_category:lipstick
+segment,seg_category:makeup
+segment,seg_category:mens apparel
+segment,seg_category:pant
+segment,seg_category:sari
+segment,seg_category:shirts
+segment,seg_category:short kurti
+segment,seg_category:sneaker
+segment,seg_category:suits
+segment,seg_category:sunglasses
+segment,seg_category:t shirts
+segment,seg_category:tote bag
+segment,seg_category:trench coat
+segment,seg_category:vacation outfits
+segment,seg_category:winter wear
+segment,seg_life_stage:17F
+segment,seg_life_stage:17M
+segment,seg_life_stage:21–35
+segment,seg_life_stage:30s
+segment,seg_life_stage:30th birthday
+segment,seg_life_stage:college going
+segment,seg_life_stage:college_student
+segment,seg_life_stage:early 30s
+segment,seg_life_stage:groom's sister
+segment,seg_life_stage:infant
+segment,seg_life_stage:maternity
+segment,seg_life_stage:mature
+segment,seg_life_stage:newly married
+segment,seg_life_stage:parent
+segment,seg_life_stage:unemployed
+segment,seg_life_stage:working professional
+segment,seg_life_stage:young adult
+segment,seg_life_stage:young_adult
+segment,seg_city_tier:Ahmedabad
+segment,seg_city_tier:Bangalore
+segment,seg_city_tier:Chennai
+segment,seg_city_tier:Delhi / Jaipur mentioned
+segment,seg_city_tier:India
+segment,seg_city_tier:NCR
+segment,seg_city_tier:Tamilnadu
+segment,seg_city_tier:Tier 2
+segment,seg_city_tier:Tier 2/3 mentioned
+segment,seg_city_tier:metro city
+segment,seg_city_tier:mumbai
+segment,seg_city_tier:small town
+segment,seg_city_tier:tier 1
+segment,seg_city_tier:tier 2
+segment,seg_city_tier:tier_1
+segment,seg_price_sensitivity:1k
+segment,seg_price_sensitivity:2200
+segment,seg_price_sensitivity:499
+segment,seg_price_sensitivity:500-1500
+segment,seg_price_sensitivity:500rs
+segment,seg_price_sensitivity:599
+segment,"seg_price_sensitivity:Budget: under ₹3,500"
+segment,seg_price_sensitivity:affordable prices
+segment,seg_price_sensitivity:budget
+segment,seg_price_sensitivity:budget around 400-600
+segment,seg_price_sensitivity:budget under 3k
+segment,seg_price_sensitivity:budget-friendly
+segment,seg_price_sensitivity:budget_friendly
+segment,seg_price_sensitivity:expensive items
+segment,seg_price_sensitivity:high price
+segment,seg_price_sensitivity:less price
+segment,seg_price_sensitivity:low-price
+segment,seg_price_sensitivity:lower costs
+segment,seg_price_sensitivity:medium-high
+segment,seg_price_sensitivity:mid-range
+segment,seg_price_sensitivity:price-sensitive
+segment,seg_price_sensitivity:promotions-driven
+segment,seg_price_sensitivity:quite cheap
+segment,seg_price_sensitivity:reasonable
+segment,seg_price_sensitivity:reasonable rate
+segment,seg_price_sensitivity:sale only
+segment,seg_price_sensitivity:student-budget
+segment,seg_price_sensitivity:surprisingly low prices
+segment,seg_price_sensitivity:under 10k
+segment,seg_price_sensitivity:under 2k
+segment,seg_price_sensitivity:under 3k
+segment,seg_price_sensitivity:under 400
+segment,seg_price_sensitivity:under 500
+segment,seg_price_sensitivity:under Rs 500
+segment,seg_price_sensitivity:under budget
+segment,"seg_price_sensitivity:under ₹5,000"
+segment,seg_price_sensitivity:under ₹600-700
+segment,seg_price_sensitivity:upto 3k
+segment,seg_price_sensitivity:value-seeking
+segment,seg_shopping_frequency:1 st order
+segment,seg_shopping_frequency:4 orders in 1 month
+segment,seg_shopping_frequency:active shopper
+segment,seg_shopping_frequency:always
+segment,seg_shopping_frequency:every month
+segment,seg_shopping_frequency:first experience
+segment,seg_shopping_frequency:first item
+segment,seg_shopping_frequency:first order
+segment,seg_shopping_frequency:first time user
+segment,seg_shopping_frequency:frequent issues over 2-3 months
+segment,seg_shopping_frequency:heavy user and regular buyer
+segment,seg_shopping_frequency:infrequent
+segment,seg_shopping_frequency:long-term
+segment,seg_shopping_frequency:long-term customer
+segment,seg_shopping_frequency:many years
+segment,seg_shopping_frequency:more than 10 years
+segment,seg_shopping_frequency:multiple items
+segment,seg_shopping_frequency:occasional
+segment,seg_shopping_frequency:regular customer
+segment,seg_shopping_frequency:repeat
+segment,seg_category:Clothes
+segment,seg_category:Dress
+segment,seg_category:Ghagra Choli
+segment,seg_category:High rise denim jumpsuit
+segment,seg_category:Jorts
+segment,seg_category:Kaftan Dress
+segment,seg_category:Kurta & Salwar sets
+segment,"seg_category:Kurti sets, Long tops, maxi dresses"
+segment,seg_category:Maxi Dress
+segment,seg_category:Men shirts
+segment,seg_category:Pant
+segment,seg_category:Sarees
+segment,seg_category:Shoes
+segment,seg_category:Suits and Blazzers
+segment,seg_category:Summer trousers or set
+segment,seg_category:T shirt
+segment,seg_category:T shirts
+segment,seg_category:T-shirts and trousers
+segment,seg_category:Top
+segment,seg_category:Trolley Bag
+segment,seg_category:Tshirts
+segment,seg_category:Tshirts or Shirts
+segment,"seg_category:Western tops and dresses, jeans"
+segment,"seg_category:Western wear, Traditional wear"
+segment,seg_category:anarkalis and patiala suits
+segment,seg_category:apparels
+segment,seg_category:backpacks
+segment,seg_category:basic clothes
+segment,seg_category:basics
+segment,seg_category:basics and trendy pieces
+segment,seg_category:bathrobe
+segment,seg_category:beauty and apparel
+segment,seg_category:bedsheets
+segment,seg_category:birthday dresses
+segment,seg_category:blazer
+segment,seg_category:blazer/jacket
+segment,seg_category:body wash
+segment,seg_category:bottle of oil
+segment,seg_category:bottoms
+segment,"seg_category:bottoms, blazer, kurti"
+segment,seg_category:bow tie
+segment,seg_category:boxers & socks
+segment,seg_category:bracelet
+segment,seg_category:cap
+segment,seg_category:capsule wardrobe
+segment,seg_category:cardigans
+segment,seg_category:cargo pants
+segment,seg_category:cargo pants and joggers
+segment,"seg_category:casual daily wear, streetwear/oversized fits, Indo-western fusion, semi-formal pieces"
+segment,seg_category:casual shirt
+segment,seg_category:casual wear
+segment,seg_category:chain
+segment,seg_category:chaniya choli
+segment,seg_category:clothes and shoes
+segment,"seg_category:clothes, shoes and fashion"
+segment,"seg_category:clothes, shoes and watch"
+segment,seg_category:clothes/accessories/sneakers
+segment,seg_category:cloths
+segment,seg_category:co ord set
+segment,seg_category:co ords
+segment,seg_category:co-ordset
+segment,seg_category:coat
+segment,seg_category:coord
+segment,seg_category:coord set
+segment,seg_category:cord-set
+segment,seg_category:cosmetics
+segment,seg_category:cotton ones
+segment,seg_category:cotton tops
+segment,seg_category:cowl neck top
+segment,seg_category:crocs
+segment,seg_category:daily wear clothes
+segment,seg_category:day to day clothes
+segment,seg_category:denim jacket
+segment,seg_category:denim jackets
+segment,seg_category:denims
+segment,"seg_category:dress, beauty products"
+segment,seg_category:ear buds
+segment,seg_category:ear mufflers
+segment,seg_category:earrings/jewelry
+segment,seg_category:electric kettle
+segment,seg_category:ethnic dresses
+segment,seg_category:ethnic festive wear kurta sets
+segment,seg_category:ethnic_wear
+segment,seg_category:ethnicwear
+segment,seg_category:fabric
+segment,seg_category:face wash or serum
+segment,seg_category:fashion
+segment,seg_category:fashion and lifestyle products
+segment,seg_category:fashion clothes
+segment,seg_category:fits
+segment,seg_category:flip flop
+segment,"seg_category:footwear, dress"
+segment,seg_category:formal clothes
+segment,seg_category:formal shoes
+segment,seg_category:frock
+segment,"seg_category:fusion, ethnic wear, everyday wear"
+segment,seg_category:garments
+segment,seg_category:geyser
+segment,seg_category:gold coin
+segment,seg_category:grooming essentials
+segment,seg_category:hair care
+segment,seg_category:handbag
+segment,seg_category:handbags
+segment,seg_category:helmet
+segment,seg_category:hoodie
+segment,seg_category:hoodies
+segment,seg_category:inner wears
+segment,seg_category:jacket or a hoodie
+segment,seg_category:jaipur kurta sets
+segment,seg_category:jeans and pants
+segment,seg_category:jersey t-shirt
+segment,seg_category:joggers
+segment,seg_category:jorts
+segment,seg_category:kammal (earrings)
+segment,seg_category:kapde
+segment,seg_category:kitten heels
+segment,seg_category:kurta set / western top
+segment,seg_category:kurtas
+segment,"seg_category:kurtas, T shirts"
+segment,"seg_category:kurtas, co-ord sets, festive suits"
+segment,seg_category:kurthas
+segment,seg_category:kurti set
+segment,seg_category:kurtis
+segment,seg_category:leather coat
+segment,seg_category:leggings
+segment,seg_category:linen
+segment,seg_category:loungewear
+segment,seg_category:luxury brands
+segment,seg_category:makeup products
+segment,seg_category:mary jane shoes
+segment,seg_category:mask
+segment,seg_category:maternity kurta sets
+segment,seg_category:maxi dress
+segment,seg_category:men fashion clothing
+segment,seg_category:men's apparel
+segment,seg_category:men's kurtas
+segment,seg_category:messenger bag
+segment,seg_category:midi dresses
+segment,seg_category:minimizers
+segment,"seg_category:moisturizer, shampoo, bangle"
+segment,seg_category:nail extensions
+segment,seg_category:neckband
+segment,seg_category:nighty
+segment,seg_category:office wear
+segment,seg_category:oil
+segment,seg_category:orthopedic shoes
+segment,seg_category:outfit
+segment,seg_category:overcoat
+segment,"seg_category:oversized tshirts, cargo jeans, shirts"
+segment,seg_category:palazzo outfit
+segment,"seg_category:pants, tshirts"
+segment,seg_category:party wear
+segment,seg_category:party wear suit
+segment,seg_category:peplum top
+segment,seg_category:plain shirts
+segment,seg_category:plain tees
+segment,seg_category:plus-size clothing
+segment,seg_category:prom dresses
+segment,seg_category:rings
+segment,seg_category:salwar suit
+segment,seg_category:sandal
+segment,seg_category:saree and jewellery
+segment,seg_category:saree jewellery
+segment,seg_category:scarf
+segment,seg_category:shapewear
+segment,seg_category:sharara sets
+segment,seg_category:shirts and jeans
+segment,"seg_category:shirts, tops, trousers, formal/workwear"
+segment,seg_category:shoes and sandals
+segment,seg_category:silver chain
+segment,seg_category:skincare
+segment,seg_category:skincare/beauty
+segment,seg_category:slides
+segment,seg_category:slipper
+segment,seg_category:stockings
+segment,seg_category:straight fit
+segment,seg_category:straight fit jeans
+segment,"seg_category:suit, blazer, Jodhpuri"
+segment,seg_category:suits and co-ords
+segment,seg_category:suits and short kurti
+segment,seg_category:summer Full sleeve top
+segment,seg_category:sweater
+segment,seg_category:sweaters and jackets
+segment,seg_category:sweatshirt
+segment,seg_category:swim dress
+segment,"seg_category:swimwear, comfort wear, clothes"
+segment,seg_category:t-shirts and pants
+segment,seg_category:tee
+segment,seg_category:tees
+segment,seg_category:tees and tops
+segment,seg_category:teeshirt
+segment,seg_category:three-piece sets
+segment,seg_category:thrift stores
+segment,"seg_category:top, pants, bag, belt"
+segment,seg_category:tops and dresses
+segment,"seg_category:tops, dresses, co-ords, bikinis"
+segment,seg_category:tops/dresses
+segment,seg_category:track pant
+segment,seg_category:trackpant
+segment,seg_category:traditional clothes
+segment,seg_category:trousers and jeans
+segment,seg_category:tshirts and tops
+segment,seg_category:vest
+segment,seg_category:waistcoat and trousers
+segment,seg_category:waistcoat/ vest
+segment,seg_category:watch and perfume
+segment,seg_category:watches
+segment,seg_category:wedding clothes
+segment,seg_category:western clothes
+segment,seg_category:white dress
+segment,seg_category:winter clothes
+segment,seg_category:winterwear
+segment,seg_category:women apparels
+segment,seg_category:work clothes
+segment,seg_category:zipper jacket

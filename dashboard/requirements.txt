@@ -1,0 +1,9 @@
+# Streamlit Community Cloud installs dependencies from the file that sits next to
+# the entrypoint file (this one) before falling back to the repository root. Keeping
+# the dashboard's dependencies here means the hosted app installs only what it needs,
+# not the engine's heavier local-only packages (sentence-transformers, hdbscan, ...).
+# The app reads only data/exports/*.csv — no database, no API keys, no LLM calls.
+
+pandas==3.0.3
+streamlit==1.62.0
+plotly==7.1.0

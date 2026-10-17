@@ -1,0 +1,426 @@
+group,label,posts,flagged_low_confidence
+meta,rows_with_evidence_quote,1998,
+meta,groups_flagged_low_confidence,417,
+segment,seg_price_sensitivity:high,144,False
+segment,seg_gender:female,101,False
+segment,seg_category:dress,74,True
+segment,seg_category:jeans,72,True
+segment,seg_gender:male,69,True
+segment,seg_category:top,41,True
+segment,seg_category:shoes,38,True
+segment,seg_category:footwear,37,True
+segment,seg_price_sensitivity:medium,36,True
+segment,seg_shopping_frequency:frequent,24,True
+segment,seg_category:saree,24,True
+segment,seg_category:shirt,20,True
+segment,seg_category:clothing,17,True
+segment,seg_category:clothes,16,True
+segment,seg_category:pants,16,True
+segment,seg_category:heels,12,True
+segment,seg_category:dresses,11,True
+segment,seg_category:denim,10,True
+segment,seg_category:ethnic wear,9,True
+segment,seg_category:sneakers,9,True
+segment,seg_category:tshirts,9,True
+segment,seg_city_tier:tier-1,8,True
+segment,seg_price_sensitivity:low,8,True
+segment,seg_category:Jeans,8,True
+segment,seg_category:apparel,8,True
+segment,seg_category:t-shirt,8,True
+segment,seg_category:tops,8,True
+segment,seg_gender:women,7,True
+segment,seg_shopping_frequency:first-time,7,True
+segment,seg_category:tshirt,7,True
+segment,seg_life_stage:college student,6,True
+segment,seg_price_sensitivity:affordable,6,True
+segment,seg_shopping_frequency:daily,6,True
+segment,seg_category:kurta,6,True
+segment,seg_category:kurta set,6,True
+segment,seg_category:t shirt,6,True
+segment,seg_category:topwear,6,True
+segment,seg_category:watch,6,True
+segment,seg_life_stage:student,5,True
+segment,seg_shopping_frequency:first time,5,True
+segment,seg_shopping_frequency:high,5,True
+segment,seg_category:jackets,5,True
+segment,seg_category:jewelry,5,True
+segment,seg_category:kurti,5,True
+segment,seg_category:suit,5,True
+segment,seg_category:t-shirts,5,True
+segment,seg_gender:men,4,True
+segment,seg_category:accessories,4,True
+segment,seg_category:activewear,4,True
+segment,seg_category:boots,4,True
+segment,seg_category:earrings,4,True
+segment,seg_category:lehenga,4,True
+segment,seg_category:sarees,4,True
+segment,seg_category:socks,4,True
+segment,seg_category:trousers,4,True
+segment,seg_life_stage:married,3,True
+segment,seg_city_tier:Tier 1,3,True
+segment,seg_price_sensitivity:cheap,3,True
+segment,seg_category:T-shirts,3,True
+segment,seg_category:belt,3,True
+segment,seg_category:blouse,3,True
+segment,seg_category:jacket,3,True
+segment,seg_category:jewellery,3,True
+segment,seg_category:sandals,3,True
+segment,seg_category:shoe,3,True
+segment,seg_category:shorts,3,True
+segment,seg_category:skirt,3,True
+segment,seg_category:trouser,3,True
+segment,seg_life_stage:college,2,True
+segment,seg_life_stage:mother,2,True
+segment,seg_life_stage:postpartum,2,True
+segment,seg_life_stage:postpartum mother,2,True
+segment,seg_city_tier:Delhi,2,True
+segment,seg_city_tier:Hyderabad,2,True
+segment,seg_city_tier:tier_2,2,True
+segment,seg_price_sensitivity:affordable price,2,True
+segment,seg_price_sensitivity:cheaper,2,True
+segment,seg_price_sensitivity:price sensitive,2,True
+segment,seg_price_sensitivity:price_sensitive,2,True
+segment,seg_shopping_frequency:first_time,2,True
+segment,seg_shopping_frequency:low,2,True
+segment,seg_shopping_frequency:regular,2,True
+segment,seg_shopping_frequency:regularly,2,True
+segment,seg_category:Handbags,2,True
+segment,seg_category:backpack,2,True
+segment,seg_category:bag,2,True
+segment,seg_category:bags,2,True
+segment,seg_category:birthday outfit,2,True
+segment,seg_category:bootcut jeans,2,True
+segment,seg_category:bottomwear,2,True
+segment,seg_category:cargoes,2,True
+segment,seg_category:electronics,2,True
+segment,seg_category:ethnic clothes,2,True
+segment,seg_category:fragrance,2,True
+segment,seg_category:gown,2,True
+segment,seg_category:kurta sets,2,True
+segment,seg_category:lipstick,2,True
+segment,seg_category:makeup,2,True
+segment,seg_category:mens apparel,2,True
+segment,seg_category:pant,2,True
+segment,seg_category:sari,2,True
+segment,seg_category:shirts,2,True
+segment,seg_category:short kurti,2,True
+segment,seg_category:sneaker,2,True
+segment,seg_category:suits,2,True
+segment,seg_category:sunglasses,2,True
+segment,seg_category:t shirts,2,True
+segment,seg_category:tote bag,2,True
+segment,seg_category:trench coat,2,True
+segment,seg_category:vacation outfits,2,True
+segment,seg_category:winter wear,2,True
+segment,seg_life_stage:17F,1,True
+segment,seg_life_stage:17M,1,True
+segment,seg_life_stage:21–35,1,True
+segment,seg_life_stage:30s,1,True
+segment,seg_life_stage:30th birthday,1,True
+segment,seg_life_stage:college going,1,True
+segment,seg_life_stage:college_student,1,True
+segment,seg_life_stage:early 30s,1,True
+segment,seg_life_stage:groom's sister,1,True
+segment,seg_life_stage:infant,1,True
+segment,seg_life_stage:maternity,1,True
+segment,seg_life_stage:mature,1,True
+segment,seg_life_stage:newly married,1,True
+segment,seg_life_stage:parent,1,True
+segment,seg_life_stage:unemployed,1,True
+segment,seg_life_stage:working professional,1,True
+segment,seg_life_stage:young adult,1,True
+segment,seg_life_stage:young_adult,1,True
+segment,seg_city_tier:Ahmedabad,1,True
+segment,seg_city_tier:Bangalore,1,True
+segment,seg_city_tier:Chennai,1,True
+segment,seg_city_tier:Delhi / Jaipur mentioned,1,True
+segment,seg_city_tier:India,1,True
+segment,seg_city_tier:NCR,1,True
+segment,seg_city_tier:Tamilnadu,1,True
+segment,seg_city_tier:Tier 2,1,True
+segment,seg_city_tier:Tier 2/3 mentioned,1,True
+segment,seg_city_tier:metro city,1,True
+segment,seg_city_tier:mumbai,1,True
+segment,seg_city_tier:small town,1,True
+segment,seg_city_tier:tier 1,1,True
+segment,seg_city_tier:tier 2,1,True
+segment,seg_city_tier:tier_1,1,True
+segment,seg_price_sensitivity:1k,1,True
+segment,seg_price_sensitivity:2200,1,True
+segment,seg_price_sensitivity:499,1,True
+segment,seg_price_sensitivity:500-1500,1,True
+segment,seg_price_sensitivity:500rs,1,True
+segment,seg_price_sensitivity:599,1,True
+segment,"seg_price_sensitivity:Budget: under ₹3,500",1,True
+segment,seg_price_sensitivity:affordable prices,1,True
+segment,seg_price_sensitivity:budget,1,True
+segment,seg_price_sensitivity:budget around 400-600,1,True
+segment,seg_price_sensitivity:budget under 3k,1,True
+segment,seg_price_sensitivity:budget-friendly,1,True
+segment,seg_price_sensitivity:budget_friendly,1,True
+segment,seg_price_sensitivity:expensive items,1,True
+segment,seg_price_sensitivity:high price,1,True
+segment,seg_price_sensitivity:less price,1,True
+segment,seg_price_sensitivity:low-price,1,True
+segment,seg_price_sensitivity:lower costs,1,True
+segment,seg_price_sensitivity:medium-high,1,True
+segment,seg_price_sensitivity:mid-range,1,True
+segment,seg_price_sensitivity:price-sensitive,1,True
+segment,seg_price_sensitivity:promotions-driven,1,True
+segment,seg_price_sensitivity:quite cheap,1,True
+segment,seg_price_sensitivity:reasonable,1,True
+segment,seg_price_sensitivity:reasonable rate,1,True
+segment,seg_price_sensitivity:sale only,1,True
+segment,seg_price_sensitivity:student-budget,1,True
+segment,seg_price_sensitivity:surprisingly low prices,1,True
+segment,seg_price_sensitivity:under 10k,1,True
+segment,seg_price_sensitivity:under 2k,1,True
+segment,seg_price_sensitivity:under 3k,1,True
+segment,seg_price_sensitivity:under 400,1,True
+segment,seg_price_sensitivity:under 500,1,True
+segment,seg_price_sensitivity:under Rs 500,1,True
+segment,seg_price_sensitivity:under budget,1,True
+segment,"seg_price_sensitivity:under ₹5,000",1,True
+segment,seg_price_sensitivity:under ₹600-700,1,True
+segment,seg_price_sensitivity:upto 3k,1,True
+segment,seg_price_sensitivity:value-seeking,1,True
+segment,seg_shopping_frequency:1 st order,1,True
+segment,seg_shopping_frequency:4 orders in 1 month,1,True
+segment,seg_shopping_frequency:active shopper,1,True
+segment,seg_shopping_frequency:always,1,True
+segment,seg_shopping_frequency:every month,1,True
+segment,seg_shopping_frequency:first experience,1,True
+segment,seg_shopping_frequency:first item,1,True
+segment,seg_shopping_frequency:first order,1,True
+segment,seg_shopping_frequency:first time user,1,True
+segment,seg_shopping_frequency:frequent issues over 2-3 months,1,True
+segment,seg_shopping_frequency:heavy user and regular buyer,1,True
+segment,seg_shopping_frequency:infrequent,1,True
+segment,seg_shopping_frequency:long-term,1,True
+segment,seg_shopping_frequency:long-term customer,1,True
+segment,seg_shopping_frequency:many years,1,True
+segment,seg_shopping_frequency:more than 10 years,1,True
+segment,seg_shopping_frequency:multiple items,1,True
+segment,seg_shopping_frequency:occasional,1,True
+segment,seg_shopping_frequency:regular customer,1,True
+segment,seg_shopping_frequency:repeat,1,True
+segment,seg_category:Clothes,1,True
+segment,seg_category:Dress,1,True
+segment,seg_category:Ghagra Choli,1,True
+segment,seg_category:High rise denim jumpsuit,1,True
+segment,seg_category:Jorts,1,True
+segment,seg_category:Kaftan Dress,1,True
+segment,seg_category:Kurta & Salwar sets,1,True
+segment,"seg_category:Kurti sets, Long tops, maxi dresses",1,True
+segment,seg_category:Maxi Dress,1,True
+segment,seg_category:Men shirts,1,True
+segment,seg_category:Pant,1,True
+segment,seg_category:Sarees,1,True
+segment,seg_category:Shoes,1,True
+segment,seg_category:Suits and Blazzers,1,True
+segment,seg_category:Summer trousers or set,1,True
+segment,seg_category:T shirt,1,True
+segment,seg_category:T shirts,1,True
+segment,seg_category:T-shirts and trousers,1,True
+segment,seg_category:Top,1,True
+segment,seg_category:Trolley Bag,1,True
+segment,seg_category:Tshirts,1,True
+segment,seg_category:Tshirts or Shirts,1,True
+segment,"seg_category:Western tops and dresses, jeans",1,True
+segment,"seg_category:Western wear, Traditional wear",1,True
+segment,seg_category:anarkalis and patiala suits,1,True
+segment,seg_category:apparels,1,True
+segment,seg_category:backpacks,1,True
+segment,seg_category:basic clothes,1,True
+segment,seg_category:basics,1,True
+segment,seg_category:basics and trendy pieces,1,True
+segment,seg_category:bathrobe,1,True
+segment,seg_category:beauty and apparel,1,True
+segment,seg_category:bedsheets,1,True
+segment,seg_category:birthday dresses,1,True
+segment,seg_category:blazer,1,True
+segment,seg_category:blazer/jacket,1,True
+segment,seg_category:body wash,1,True
+segment,seg_category:bottle of oil,1,True
+segment,seg_category:bottoms,1,True
+segment,"seg_category:bottoms, blazer, kurti",1,True
+segment,seg_category:bow tie,1,True
+segment,seg_category:boxers & socks,1,True
+segment,seg_category:bracelet,1,True
+segment,seg_category:cap,1,True
+segment,seg_category:capsule wardrobe,1,True
+segment,seg_category:cardigans,1,True
+segment,seg_category:cargo pants,1,True
+segment,seg_category:cargo pants and joggers,1,True
+segment,"seg_category:casual daily wear, streetwear/oversized fits, Indo-western fusion, semi-formal pieces",1,True
+segment,seg_category:casual shirt,1,True
+segment,seg_category:casual wear,1,True
+segment,seg_category:chain,1,True
+segment,seg_category:chaniya choli,1,True
+segment,seg_category:clothes and shoes,1,True
+segment,"seg_category:clothes, shoes and fashion",1,True
+segment,"seg_category:clothes, shoes and watch",1,True
+segment,seg_category:clothes/accessories/sneakers,1,True
+segment,seg_category:cloths,1,True
+segment,seg_category:co ord set,1,True
+segment,seg_category:co ords,1,True
+segment,seg_category:co-ordset,1,True
+segment,seg_category:coat,1,True
+segment,seg_category:coord,1,True
+segment,seg_category:coord set,1,True
+segment,seg_category:cord-set,1,True
+segment,seg_category:cosmetics,1,True
+segment,seg_category:cotton ones,1,True
+segment,seg_category:cotton tops,1,True
+segment,seg_category:cowl neck top,1,True
+segment,seg_category:crocs,1,True
+segment,seg_category:daily wear clothes,1,True
+segment,seg_category:day to day clothes,1,True
+segment,seg_category:denim jacket,1,True
+segment,seg_category:denim jackets,1,True
+segment,seg_category:denims,1,True
+segment,"seg_category:dress, beauty products",1,True
+segment,seg_category:ear buds,1,True
+segment,seg_category:ear mufflers,1,True
+segment,seg_category:earrings/jewelry,1,True
+segment,seg_category:electric kettle,1,True
+segment,seg_category:ethnic dresses,1,True
+segment,seg_category:ethnic festive wear kurta sets,1,True
+segment,seg_category:ethnic_wear,1,True
+segment,seg_category:ethnicwear,1,True
+segment,seg_category:fabric,1,True
+segment,seg_category:face wash or serum,1,True
+segment,seg_category:fashion,1,True
+segment,seg_category:fashion and lifestyle products,1,True
+segment,seg_category:fashion clothes,1,True
+segment,seg_category:fits,1,True
+segment,seg_category:flip flop,1,True
+segment,"seg_category:footwear, dress",1,True
+segment,seg_category:formal clothes,1,True
+segment,seg_category:formal shoes,1,True
+segment,seg_category:frock,1,True
+segment,"seg_category:fusion, ethnic wear, everyday wear",1,True
+segment,seg_category:garments,1,True
+segment,seg_category:geyser,1,True
+segment,seg_category:gold coin,1,True
+segment,seg_category:grooming essentials,1,True
+segment,seg_category:hair care,1,True
+segment,seg_category:handbag,1,True
+segment,seg_category:handbags,1,True
+segment,seg_category:helmet,1,True
+segment,seg_category:hoodie,1,True
+segment,seg_category:hoodies,1,True
+segment,seg_category:inner wears,1,True
+segment,seg_category:jacket or a hoodie,1,True
+segment,seg_category:jaipur kurta sets,1,True
+segment,seg_category:jeans and pants,1,True
+segment,seg_category:jersey t-shirt,1,True
+segment,seg_category:joggers,1,True
+segment,seg_category:jorts,1,True
+segment,seg_category:kammal (earrings),1,True
+segment,seg_category:kapde,1,True
+segment,seg_category:kitten heels,1,True
+segment,seg_category:kurta set / western top,1,True
+segment,seg_category:kurtas,1,True
+segment,"seg_category:kurtas, T shirts",1,True
+segment,"seg_category:kurtas, co-ord sets, festive suits",1,True
+segment,seg_category:kurthas,1,True
+segment,seg_category:kurti set,1,True
+segment,seg_category:kurtis,1,True
+segment,seg_category:leather coat,1,True
+segment,seg_category:leggings,1,True
+segment,seg_category:linen,1,True
+segment,seg_category:loungewear,1,True
+segment,seg_category:luxury brands,1,True
+segment,seg_category:makeup products,1,True
+segment,seg_category:mary jane shoes,1,True
+segment,seg_category:mask,1,True
+segment,seg_category:maternity kurta sets,1,True
+segment,seg_category:maxi dress,1,True
+segment,seg_category:men fashion clothing,1,True
+segment,seg_category:men's apparel,1,True
+segment,seg_category:men's kurtas,1,True
+segment,seg_category:messenger bag,1,True
+segment,seg_category:midi dresses,1,True
+segment,seg_category:minimizers,1,True
+segment,"seg_category:moisturizer, shampoo, bangle",1,True
+segment,seg_category:nail extensions,1,True
+segment,seg_category:neckband,1,True
+segment,seg_category:nighty,1,True
+segment,seg_category:office wear,1,True
+segment,seg_category:oil,1,True
+segment,seg_category:orthopedic shoes,1,True
+segment,seg_category:outfit,1,True
+segment,seg_category:overcoat,1,True
+segment,"seg_category:oversized tshirts, cargo jeans, shirts",1,True
+segment,seg_category:palazzo outfit,1,True
+segment,"seg_category:pants, tshirts",1,True
+segment,seg_category:party wear,1,True
+segment,seg_category:party wear suit,1,True
+segment,seg_category:peplum top,1,True
+segment,seg_category:plain shirts,1,True
+segment,seg_category:plain tees,1,True
+segment,seg_category:plus-size clothing,1,True
+segment,seg_category:prom dresses,1,True
+segment,seg_category:rings,1,True
+segment,seg_category:salwar suit,1,True
+segment,seg_category:sandal,1,True
+segment,seg_category:saree and jewellery,1,True
+segment,seg_category:saree jewellery,1,True
+segment,seg_category:scarf,1,True
+segment,seg_category:shapewear,1,True
+segment,seg_category:sharara sets,1,True
+segment,seg_category:shirts and jeans,1,True
+segment,"seg_category:shirts, tops, trousers, formal/workwear",1,True
+segment,seg_category:shoes and sandals,1,True
+segment,seg_category:silver chain,1,True
+segment,seg_category:skincare,1,True
+segment,seg_category:skincare/beauty,1,True
+segment,seg_category:slides,1,True
+segment,seg_category:slipper,1,True
+segment,seg_category:stockings,1,True
+segment,seg_category:straight fit,1,True
+segment,seg_category:straight fit jeans,1,True
+segment,"seg_category:suit, blazer, Jodhpuri",1,True
+segment,seg_category:suits and co-ords,1,True
+segment,seg_category:suits and short kurti,1,True
+segment,seg_category:summer Full sleeve top,1,True
+segment,seg_category:sweater,1,True
+segment,seg_category:sweaters and jackets,1,True
+segment,seg_category:sweatshirt,1,True
+segment,seg_category:swim dress,1,True
+segment,"seg_category:swimwear, comfort wear, clothes",1,True
+segment,seg_category:t-shirts and pants,1,True
+segment,seg_category:tee,1,True
+segment,seg_category:tees,1,True
+segment,seg_category:tees and tops,1,True
+segment,seg_category:teeshirt,1,True
+segment,seg_category:three-piece sets,1,True
+segment,seg_category:thrift stores,1,True
+segment,"seg_category:top, pants, bag, belt",1,True
+segment,seg_category:tops and dresses,1,True
+segment,"seg_category:tops, dresses, co-ords, bikinis",1,True
+segment,seg_category:tops/dresses,1,True
+segment,seg_category:track pant,1,True
+segment,seg_category:trackpant,1,True
+segment,seg_category:traditional clothes,1,True
+segment,seg_category:trousers and jeans,1,True
+segment,seg_category:tshirts and tops,1,True
+segment,seg_category:vest,1,True
+segment,seg_category:waistcoat and trousers,1,True
+segment,seg_category:waistcoat/ vest,1,True
+segment,seg_category:watch and perfume,1,True
+segment,seg_category:watches,1,True
+segment,seg_category:wedding clothes,1,True
+segment,seg_category:western clothes,1,True
+segment,seg_category:white dress,1,True
+segment,seg_category:winter clothes,1,True
+segment,seg_category:winterwear,1,True
+segment,seg_category:women apparels,1,True
+segment,seg_category:work clothes,1,True
+segment,seg_category:zipper jacket,1,True
+source,all,1998,False
+source,playstore,838,False
+source,reddit,710,False
+source,youtube,441,False
+source,appstore,9,True
