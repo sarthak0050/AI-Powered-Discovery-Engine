@@ -78,6 +78,13 @@ def _missing(name: str) -> None:
                f"`python run.py quality`).")
 
 
+def _fmt_pct(value) -> str:
+    try:
+        return f"{float(value):.1f}%"
+    except (TypeError, ValueError):
+        return "—"
+
+
 # --------------------------------------------------------------------------- tab 1
 
 def tab_overview() -> None:
@@ -96,18 +103,40 @@ def tab_overview() -> None:
     n_pre = int(prepurchase.sum())
     n_a1 = max(0, n_pre - len(bridge))
 
-    st.subheader("Funnel — from collected posts to item-level pre-purchase friction")
+    st.subheader("Corpus at a glance")
+    cards = [
+        ("Raw collected", n_raw, "kept after near-duplicate / spam removal"),
+        ("Relevant", n_relevant, "about a fashion buying decision"),
+        ("In scope", n_scope, "pass the locked rubric"),
+        ("Pre-purchase", n_pre, "Track A journey stages"),
+        ("A1 (item-level)", n_a1, "pre-purchase without the bridge set"),
+    ]
+    cols = st.columns(len(cards))
+    prev = None
+    for col, (label, value, note) in zip(cols, cards):
+        with col:
+            delta = None if not prev else f"{value / prev * 100:.0f}% of prior"
+            st.metric(label, f"{value:,}", delta=delta, delta_color="off", help=note)
+        prev = value
+
+    st.divider()
+
+    st.subheader("Funnel — raw posts to item-level pre-purchase friction")
     stages = ["Raw (deduplicated)", "Relevant", "In scope", "Pre-purchase", "A1 (item-level)"]
     counts = [n_raw, n_relevant, n_scope, n_pre, n_a1]
     fig = go.Figure(go.Funnel(
-        y=stages, x=counts,
-        textposition="inside", textinfo="value+percent initial",
-        marker={"color": ["#c9d6e8", "#9fb8d8", "#6f93c7", "#3f6bb0", "#1f4a8f"]}))
-    fig.update_layout(margin=dict(l=10, r=10, t=10, b=10), height=360)
+        y=stages, x=counts, textposition="inside", textinfo="value+percent initial",
+        marker={"color": ["#cdd9ea", "#a3bcdc", "#7295c9", "#4270b4", "#1f4a8f"]},
+        connector={"line": {"color": "#c3ccd8"}},
+        hovertemplate="%{y}<br>%{x:,} posts · %{percentInitial:.1%} of raw<extra></extra>"))
+    fig.update_layout(margin=dict(l=10, r=10, t=10, b=10), height=360,
+                      plot_bgcolor="rgba(0,0,0,0)")
     st.plotly_chart(fig, width="stretch")
     st.caption("Raw = posts after near-duplicate/spam removal (the pool that entered the "
                "relevance filter). A1 = pre-purchase posts that do not cite a past "
                "bad experience (the bridge set is subtracted).")
+
+    st.divider()
 
     st.subheader("Journey-stage breakdown (pre-purchase, Track A)")
     sb = _num(load("stage_breakdown.csv"),
@@ -115,21 +144,32 @@ def tab_overview() -> None:
     if sb.empty:
         _missing("stage_breakdown.csv")
         return
+    order = {s: i for i, s in enumerate(DECISION_STAGES)}
+    sb["_order"] = sb["journey_stage"].map(order).fillna(len(order))
+    sb = sb.sort_values("_order")
 
-    left, right = st.columns([1, 1])
+    left, right = st.columns([1, 1], gap="large")
     with left:
-        fig = px.bar(sb.sort_values("posts"), x="posts", y="journey_stage",
-                     orientation="h", text="posts",
-                     labels={"posts": "posts", "journey_stage": ""},
-                     title="Posts by journey stage")
-        fig.update_traces(texttemplate="%{text:,}", textposition="outside")
-        fig.update_layout(margin=dict(l=10, r=10, t=40, b=10), height=340, showlegend=False)
+        fig = px.bar(sb, x="posts", y="journey_stage", orientation="h",
+                     color="posts", color_continuous_scale="Blues",
+                     custom_data=["share_of_track_a_pct"],
+                     labels={"posts": "posts", "journey_stage": ""})
+        fig.update_traces(
+            texttemplate="%{x:,}", textposition="outside", cliponaxis=False,
+            hovertemplate="%{y}<br>%{x:,} posts · %{customdata[0]:.1f}% of Track A<extra></extra>")
+        fig.update_layout(margin=dict(l=10, r=10, t=10, b=10), height=360,
+                          coloraxis_showscale=False, showlegend=False,
+                          xaxis_range=[0, float(sb["posts"].max()) * 1.22])
         st.plotly_chart(fig, width="stretch")
+        st.caption("Journey order, earliest to latest; % of Track A on hover.")
     with right:
         show = sb[["journey_stage", "posts", "share_of_track_a_pct",
                    "top1_opportunity", "top1_pct_of_stage"]].copy()
-        show.columns = ["stage", "posts", "share %", "top opportunity", "top opp % of stage"]
-        st.dataframe(show, hide_index=True, width="stretch", height=340)
+        show["posts"] = show["posts"].map(lambda v: f"{int(v):,}" if pd.notna(v) else "—")
+        show["share_of_track_a_pct"] = show["share_of_track_a_pct"].map(_fmt_pct)
+        show["top1_pct_of_stage"] = show["top1_pct_of_stage"].map(_fmt_pct)
+        show.columns = ["stage", "posts", "share of Track A", "top opportunity", "% of stage"]
+        st.dataframe(show, hide_index=True, width="stretch", height=360)
 
 
 # --------------------------------------------------------------------------- tab 2
